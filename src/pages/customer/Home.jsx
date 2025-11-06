@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useFilmsStore } from '../../store/filmsStore';
 import ShowCard from '../../components/cinema/ShowCard';
+import { Film, Sparkles, Ticket } from 'lucide-react';
 
 export default function Home() {
   const { films, loading, fetchFilms, getPlayNowFilms } = useFilmsStore();
@@ -39,21 +40,21 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center">
             <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🎬</span>
+              <Film size={32} className="text-blue-600" />
             </div>
             <h3 className="font-semibold mb-2">Film Terbaru</h3>
             <p className="text-gray-600">Selalu menampilkan film-film terbaru dan terpopuler</p>
           </div>
           <div className="text-center">
             <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🎭</span>
+              <Sparkles size={32} className="text-blue-600" />
             </div>
             <h3 className="font-semibold mb-2">Kualitas Premium</h3>
             <p className="text-gray-600">Audio visual berkualitas tinggi untuk pengalaman terbaik</p>
           </div>
           <div className="text-center">
             <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🎫</span>
+              <Ticket size={32} className="text-blue-600" />
             </div>
             <h3 className="font-semibold mb-2">Booking Mudah</h3>
             <p className="text-gray-600">Sistem pemesanan online yang mudah dan cepat</p>

@@ -91,8 +91,18 @@ export const adminApi = {
     return response.data;
   },
 
+  createSeat: async (seatData) => {
+    const response = await api.post('/admin/seats', seatData);
+    return response.data;
+  },
+
   updateSeat: async (id, seatData) => {
     const response = await api.put(`/admin/seats/${id}`, seatData);
+    return response.data;
+  },
+
+  deleteSeat: async (id) => {
+    const response = await api.delete(`/admin/seats/${id}`);
     return response.data;
   }
 };

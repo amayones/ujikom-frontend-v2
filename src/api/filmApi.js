@@ -19,5 +19,10 @@ export const filmApi = {
   getSeats: async (scheduleId) => {
     const response = await api.get(`/seats/${scheduleId}`);
     return response.data;
+  },
+
+  getStudios: async () => {
+    const response = await api.get('/studios');
+    return response.data;
   }
 };

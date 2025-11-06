@@ -182,7 +182,7 @@ export default function OfflineOrder() {
           schedule_id: selectedSchedule.id,
           seat_ids: selectedSeats.map(s => s.id)
         };
-        const response = await api.post('/cashier/online-order', orderData);
+        const response = await cashierApi.onlineOrder(orderData);
         console.log('Order response:', response.data);
         const orderId = response.data.data?.order?.id || response.data.data?.id || response.data.id;
         console.log('Extracted order ID:', orderId);

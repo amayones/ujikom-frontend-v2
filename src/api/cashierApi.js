@@ -6,6 +6,11 @@ export const cashierApi = {
     return response.data;
   },
 
+  onlineOrder: async (orderData) => {
+    const response = await api.post('/cashier/online-order', orderData);
+    return response.data;
+  },
+
   processOnlineOrder: async (orderId) => {
     const response = await api.get(`/cashier/process-online/${orderId}`);
     return response.data;

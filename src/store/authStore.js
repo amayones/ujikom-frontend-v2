@@ -22,6 +22,20 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  register: async (userData) => {
+    set({ loading: true });
+    try {
+      const response = await authApi.register(userData);
+      const { user, token } = response.data;
+      localStorage.setItem('token', token);
+      set({ user, token, isAuthenticated: true, loading: false });
+      return response;
+    } catch (error) {
+      set({ loading: false });
+      throw error;
+    }
+  },
+
   logout: async () => {
     try {
       await authApi.logout();
