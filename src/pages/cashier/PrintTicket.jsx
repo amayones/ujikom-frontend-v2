@@ -49,9 +49,9 @@ export default function PrintTicket() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8 print:hidden">Cetak Tiket</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 print:hidden">Cetak Tiket</h1>
 
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8 print:hidden">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8 print:hidden">
         <h2 className="text-xl font-bold mb-4">Cari Pesanan</h2>
         <div className="flex space-x-4">
           <Input
@@ -68,7 +68,7 @@ export default function PrintTicket() {
       </div>
 
       {selectedOrder && (
-        <div className="bg-white rounded-lg shadow-md p-8 print:shadow-none">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8 print:shadow-none">
           <div className="flex justify-between items-start mb-8 print:mb-4">
             <div>
               <h1 className="text-3xl font-bold text-blue-600">🎬 Absolute Cinema</h1>
@@ -137,13 +137,13 @@ export default function PrintTicket() {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-md p-6 mt-8 print:hidden">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mt-6 sm:mt-8 print:hidden">
         <h2 className="text-xl font-semibold mb-4">Pesanan Terbaru</h2>
         {orders.length === 0 ? (
           <p className="text-gray-500 text-center py-8">Tidak ada pesanan</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[500px] text-sm">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="text-left py-2 px-3">No. Order</th>

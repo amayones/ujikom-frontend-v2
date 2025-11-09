@@ -204,7 +204,8 @@ export default function ManageFilms() {
       )}
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[800px]">
           <thead className="bg-gray-50">
             <tr>
               <th className="text-left py-3 px-4">Poster</th>
@@ -249,6 +250,7 @@ export default function ManageFilms() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

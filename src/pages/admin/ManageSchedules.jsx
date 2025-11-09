@@ -177,7 +177,7 @@ export default function ManageSchedules() {
                 <Film className="mr-2" size={20} />
                 Pilih Film
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-h-96 overflow-y-auto">
                 {films.length === 0 ? (
                   <div className="col-span-3 text-center py-8 text-gray-500">
                     Tidak ada film tersedia. Silakan tambah film terlebih dahulu.
@@ -211,7 +211,7 @@ export default function ManageSchedules() {
                 <Monitor className="mr-2" size={20} />
                 Pilih Studio
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {studios.map(studio => (
                   <div
                     key={studio.id}

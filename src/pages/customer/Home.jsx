@@ -21,12 +21,12 @@ export default function Home() {
 
   return (
     <div>
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg p-8 mb-8">
-        <h1 className="text-4xl font-bold mb-4">Selamat Datang di Absolute Cinema</h1>
-        <p className="text-xl">Nikmati pengalaman menonton terbaik dengan teknologi terdepan</p>
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg p-6 sm:p-8 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">Selamat Datang di Absolute Cinema</h1>
+        <p className="text-base sm:text-lg lg:text-xl">Nikmati pengalaman menonton terbaik dengan teknologi terdepan</p>
       </div>
 
-      <section className="mb-8">
+      <section className="mb-6 sm:mb-8">
         <h2 className="text-2xl font-bold mb-6">Sedang Tayang</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {playingNow.map(film => (
@@ -35,9 +35,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white rounded-lg p-6">
+      <section className="bg-white rounded-lg p-4 sm:p-6">
         <h2 className="text-2xl font-bold mb-4">Mengapa Memilih Absolute Cinema?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           <div className="text-center">
             <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <Film size={32} className="text-blue-600" />

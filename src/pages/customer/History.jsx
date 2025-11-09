@@ -63,7 +63,7 @@ export default function History() {
     <div>
       <h1 className="text-3xl font-bold mb-8">Riwayat Pemesanan</h1>
       
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {orders.map(order => {
           const filmTitle = order.schedule?.film?.title || 'N/A';
           const studioName = order.schedule?.studio?.name || 'N/A';
@@ -84,7 +84,7 @@ export default function History() {
                 </span>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
                 <div>
                   <p className="text-sm text-gray-500">Kursi</p>
                   <p className="font-semibold">{seats}</p>

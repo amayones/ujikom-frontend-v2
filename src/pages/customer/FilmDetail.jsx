@@ -87,7 +87,7 @@ function SchedulesByDay({ schedules, onSelectSchedule }) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {currentSchedules.map((schedule) => (
           <div 
             key={schedule.id}
@@ -187,7 +187,7 @@ export default function FilmDetail() {
         ← Kembali
       </Button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
         <div className="lg:col-span-1">
           <img 
             src={selectedFilm.poster || '/placeholder-film.jpg'} 
@@ -200,7 +200,7 @@ export default function FilmDetail() {
         </div>
 
         <div className="lg:col-span-2">
-          <h1 className="text-4xl font-bold mb-4">{selectedFilm.title}</h1>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">{selectedFilm.title}</h1>
           
           <div className="flex flex-wrap gap-4 mb-6">
             <div className="flex items-center text-gray-600">

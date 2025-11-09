@@ -46,9 +46,9 @@ export default function ProcessOnline() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Proses Tiket Online</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Proses Tiket Online</h1>
 
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
         <h2 className="text-xl font-bold mb-4">Cari Pesanan</h2>
         <div className="flex space-x-4">
           <Input
@@ -65,7 +65,7 @@ export default function ProcessOnline() {
       </div>
 
       {selectedOrder && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex justify-between items-start mb-6">
             <h2 className="text-xl font-bold">Detail Pesanan</h2>
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedOrder.payment_status)}`}>
@@ -103,13 +103,13 @@ export default function ProcessOnline() {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">Pesanan Online Terbaru</h2>
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Pesanan Online Terbaru</h2>
         {orders.length === 0 ? (
           <p className="text-gray-500 text-center py-8">Tidak ada pesanan online</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[600px] text-sm">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="text-left py-3 px-4">No. Order</th>

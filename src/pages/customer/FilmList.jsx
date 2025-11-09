@@ -38,7 +38,7 @@ export default function FilmList() {
     <div>
       <h1 className="text-3xl font-bold mb-6">Daftar Film</h1>
       
-      <div className="flex space-x-4 mb-8">
+      <div className="flex flex-wrap gap-3 sm:gap-4 mb-6 sm:mb-8">
         <Button
           variant={activeFilter === 'play_now' ? 'primary' : 'outline'}
           onClick={() => handleFilterChange('play_now')}

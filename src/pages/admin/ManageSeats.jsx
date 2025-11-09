@@ -78,7 +78,7 @@ export default function ManageSeats() {
     <div>
       <h1 className="text-3xl font-bold mb-8">Kelola Kursi</h1>
 
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-8">
         <div className="flex justify-between items-center mb-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Pilih Studio</label>
@@ -136,7 +136,7 @@ export default function ManageSeats() {
 
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="font-semibold mb-2">Informasi Layout</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-sm">
             <div>
               <span className="font-medium">Total Kursi:</span>
               <span className="ml-2">{studioSeats.length}</span>
@@ -157,7 +157,7 @@ export default function ManageSeats() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h2 className="text-xl font-semibold mb-4">Petunjuk</h2>
         <ul className="space-y-2 text-sm text-gray-600">
           <li>• Klik pada kursi untuk mengubah tipe (Regular ↔ VIP)</li>

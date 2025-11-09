@@ -164,12 +164,12 @@ export default function ManageCashiers() {
       )}
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-6 border-b">
-          <h2 className="text-xl font-semibold">Daftar Kasir</h2>
+        <div className="p-4 sm:p-6 border-b">
+          <h2 className="text-lg sm:text-xl font-semibold">Daftar Kasir</h2>
         </div>
         
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[600px]">
             <thead className="bg-gray-50">
               <tr>
                 <th className="text-left py-3 px-4">ID</th>
@@ -220,9 +220,9 @@ export default function ManageCashiers() {
         </div>
       </div>
 
-      <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">Statistik Kasir</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="mt-8 bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Statistik Kasir</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <div className="text-center">
             <p className="text-3xl font-bold text-blue-600">{cashiers.length}</p>
             <p className="text-gray-600">Total Kasir</p>

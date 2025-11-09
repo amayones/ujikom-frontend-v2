@@ -95,8 +95,8 @@ export default function Checkout() {
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-8">Checkout</h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <h2 className="text-xl font-bold mb-6">Detail Pesanan</h2>
           
           <div className="space-y-4">
@@ -130,7 +130,7 @@ export default function Checkout() {
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <h2 className="text-xl font-bold mb-6">Ringkasan Pembayaran</h2>
           
           <div className="space-y-3 mb-6">

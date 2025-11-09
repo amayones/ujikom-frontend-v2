@@ -40,15 +40,15 @@ export default function Reports() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Laporan Keuangan</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold">Laporan Keuangan</h1>
         <Button onClick={handleExportPdf} className="flex items-center">
           <Download size={16} className="mr-2" />
           Export PDF
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <Input
           label="Tanggal Mulai"
           type="date"
@@ -63,7 +63,7 @@ export default function Reports() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex items-center">
             <div className="bg-green-100 p-3 rounded-full mr-4">
@@ -105,8 +105,8 @@ export default function Reports() {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-bold mb-6">Detail Transaksi</h2>
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Detail Transaksi</h2>
         
         {loading ? (
           <p className="text-gray-500 text-center py-8">Memuat data...</p>
@@ -114,7 +114,7 @@ export default function Reports() {
           <p className="text-gray-500 text-center py-8">Tidak ada transaksi</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full table-auto">
+            <table className="w-full min-w-[700px] table-auto">
               <thead>
                 <tr className="border-b">
                   <th className="text-left py-3 px-4">No. Order</th>

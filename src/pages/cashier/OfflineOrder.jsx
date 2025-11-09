@@ -245,8 +245,8 @@ export default function OfflineOrder() {
     <div>
       <h1 className="text-3xl font-bold mb-8">Pesan Tiket Offline</h1>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center mb-6">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div className="flex flex-wrap items-center gap-3 mb-6">
           {[1, 2, 3, 4].map(num => (
             <div key={num} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
@@ -261,11 +261,11 @@ export default function OfflineOrder() {
 
         {step === 1 && (
           <div>
-            <h2 className="text-xl font-bold mb-4">1. Pilih Film</h2>
+            <h2 className="text-lg sm:text-xl font-bold mb-4">1. Pilih Film</h2>
             {!Array.isArray(films) || films.length === 0 ? (
               <p className="text-gray-500 text-center py-8">Tidak ada film tersedia</p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {films.map(film => (
                   <div
                     key={film.id}
@@ -290,7 +290,7 @@ export default function OfflineOrder() {
 
         {step === 2 && (
           <div>
-            <h2 className="text-xl font-bold mb-4">2. Pilih Jadwal</h2>
+            <h2 className="text-lg sm:text-xl font-bold mb-4">2. Pilih Jadwal</h2>
             <SchedulesByDayCashier 
               schedules={schedules}
               selectedSchedule={selectedSchedule}
@@ -305,8 +305,8 @@ export default function OfflineOrder() {
 
         {step === 3 && (
           <div>
-            <h2 className="text-xl font-bold mb-4">3. Pilih Kursi</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <h2 className="text-lg sm:text-xl font-bold mb-4">3. Pilih Kursi</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
               <div className="lg:col-span-2">
                 {!Array.isArray(seats) || seats.length === 0 ? (
                   <p className="text-gray-500 text-center py-8">Tidak ada kursi tersedia</p>
@@ -384,7 +384,7 @@ export default function OfflineOrder() {
 
         {step === 4 && (
           <div>
-            <h2 className="text-xl font-bold mb-4">4. Data Pelanggan & Pembayaran</h2>
+            <h2 className="text-lg sm:text-xl font-bold mb-4">4. Data Pelanggan & Pembayaran</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <Input
                 label="Nama Pelanggan"
@@ -402,7 +402,7 @@ export default function OfflineOrder() {
 
             <div className="mb-6">
               <h3 className="font-semibold mb-3">Metode Pembayaran</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div
                   className={`border rounded-lg p-4 cursor-pointer transition-colors ${
                     paymentMethod === 'cash' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'

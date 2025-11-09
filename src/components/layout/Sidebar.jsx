@@ -33,7 +33,7 @@ const menuItems = {
   ]
 };
 
-export default function Sidebar() {
+export default function Sidebar({ mobile, onNavigate }) {
   const { user, logout } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,13 +43,56 @@ export default function Sidebar() {
     navigate('/login');
   };
 
+  const handleNavClick = (path) => {
+    navigate(path);
+    if (onNavigate) onNavigate();
+  };
+
   const currentMenuItems = menuItems[user?.role] || [];
 
+  if (mobile) {
+    return (
+      <nav className="flex-1 p-4">
+        <ul className="space-y-2">
+          {currentMenuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+            
+            return (
+              <li key={item.path}>
+                <button
+                  onClick={() => handleNavClick(item.path)}
+                  className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors w-full text-left ${
+                    isActive 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  }`}
+                >
+                  <Icon size={20} />
+                  <span>{item.label}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="mt-6 pt-6 border-t border-gray-700">
+          <button
+            onClick={handleLogout}
+            className="flex items-center space-x-2 w-full px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md transition-colors"
+          >
+            <LogOut size={20} />
+            <span>Logout</span>
+          </button>
+        </div>
+      </nav>
+    );
+  }
+
   return (
-    <div className="bg-gray-800 text-white w-64 h-screen flex flex-col fixed left-0 top-0 overflow-y-auto">
+    <div className="bg-gray-800 text-white w-64 h-screen flex flex-col fixed left-0 top-0 overflow-y-auto hidden lg:flex">
       <div className="p-4 border-b border-gray-700">
-        <h1 className="text-xl font-bold">Absolute Cinema</h1>
-        <p className="text-sm text-gray-300 capitalize">{user?.role} Panel</p>
+        <h1 className="text-lg sm:text-xl font-bold">Absolute Cinema</h1>
+        <p className="text-xs sm:text-sm text-gray-300 capitalize">{user?.role} Panel</p>
       </div>
       
       <nav className="flex-1 p-4">

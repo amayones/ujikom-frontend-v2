@@ -49,14 +49,14 @@ export default function SeatMap({ seats }) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg">
+    <div className="bg-white p-4 sm:p-6 rounded-lg">
       <div className="text-center mb-6">
         <div className="bg-gray-800 text-white py-2 px-8 rounded-lg inline-block">
           LAYAR
         </div>
       </div>
       
-      <div className="flex flex-col items-center space-y-2">
+      <div className="flex flex-col items-center space-y-2 overflow-x-auto max-w-full">
         {Object.keys(seatsByRow).sort().map((row) => (
           <div key={row} className="flex items-center">
             <span className="w-6 text-center text-sm font-medium text-gray-600 mr-2">
@@ -81,7 +81,7 @@ export default function SeatMap({ seats }) {
         ))}
       </div>
       
-      <div className="mt-6 flex justify-center space-x-6 text-sm">
+      <div className="mt-6 flex flex-wrap justify-center gap-3 sm:gap-6 text-xs sm:text-sm">
         <div className="flex items-center">
           <div className="w-4 h-4 bg-green-200 rounded mr-2"></div>
           <span>Tersedia</span>
