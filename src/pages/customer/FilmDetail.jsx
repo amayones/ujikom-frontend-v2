@@ -190,11 +190,12 @@ export default function FilmDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
         <div className="lg:col-span-1">
           <img 
-            src={selectedFilm.poster || '/placeholder-film.jpg'} 
+            src={selectedFilm.poster || `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`} 
             alt={selectedFilm.title}
             className="w-full rounded-lg shadow-lg"
             onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/400x600?text=' + selectedFilm.title;
+              e.target.onerror = null;
+              e.target.src = `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`;
             }}
           />
         </div>

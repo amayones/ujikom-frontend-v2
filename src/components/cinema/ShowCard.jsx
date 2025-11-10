@@ -15,11 +15,12 @@ function ShowCard({ film }) {
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative">
         <img 
-          src={film.poster} 
+          src={film.poster || `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`} 
           alt={film.title}
           className="w-full h-64 object-cover"
           onError={(e) => {
-            e.target.src = 'https://via.placeholder.com/400x600?text=' + encodeURIComponent(film.title);
+            e.target.onerror = null;
+            e.target.src = `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`;
           }}
         />
         <div className="absolute top-2 right-2">
