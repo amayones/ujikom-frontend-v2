@@ -190,7 +190,15 @@ export default function ManageSchedules() {
                     }`}
                     onClick={() => handleFilmSelect(film)}
                   >
-                    <img src={film.poster} alt={film.title} className="w-full h-32 object-cover rounded mb-2" />
+                    <img 
+                      src={film.poster || `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`} 
+                      alt={film.title} 
+                      className="w-full h-32 object-cover rounded mb-2"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`;
+                      }}
+                    />
                     <h4 className="font-semibold text-sm">{film.title}</h4>
                     <p className="text-xs text-gray-600">{film.genre} • {film.duration} min</p>
                     <p className="text-xs text-blue-600 font-medium mt-1">Rp {film.base_price?.toLocaleString('id-ID')}</p>

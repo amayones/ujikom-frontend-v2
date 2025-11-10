@@ -45,7 +45,7 @@ export default function ManageFilms() {
       duration: parseInt(formData.duration),
       genre: formData.genre,
       status: formData.status,
-      poster: formData.poster || `https://via.placeholder.com/300x450/0066cc/ffffff?text=${encodeURIComponent(formData.title)}`,
+      poster: formData.poster || `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(formData.title)}`,
       base_price: parseFloat(formData.base_price)
     };
 
@@ -221,7 +221,15 @@ export default function ManageFilms() {
             {films.map(film => (
               <tr key={film.id} className="border-b hover:bg-gray-50">
                 <td className="py-3 px-4">
-                  <img src={film.poster} alt={film.title} className="w-12 h-16 object-cover rounded" />
+                  <img 
+                    src={film.poster || `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`} 
+                    alt={film.title} 
+                    className="w-12 h-16 object-cover rounded"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`;
+                    }}
+                  />
                 </td>
                 <td className="py-3 px-4 font-semibold">{film.title}</td>
                 <td className="py-3 px-4">{film.genre}</td>
