@@ -40,9 +40,9 @@ export default function Profile() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Profile Saya</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Profile Saya</h1>
       
-      <div className="bg-white rounded-lg shadow-md p-8">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
         <form onSubmit={handleSubmit}>
           <Input
             label="Nama Lengkap"
@@ -78,7 +78,7 @@ export default function Profile() {
             </div>
           )}
           
-          <div className="flex space-x-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Button type="submit" disabled={loading}>
               {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
             </Button>
@@ -97,8 +97,8 @@ export default function Profile() {
         </form>
       </div>
       
-      <div className="bg-white rounded-lg shadow-md p-8 mt-6">
-        <h2 className="text-xl font-bold mb-4">Informasi Akun</h2>
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8 mt-6">
+        <h2 className="text-lg sm:text-xl font-bold mb-4">Informasi Akun</h2>
         <div className="space-y-3">
           <div>
             <span className="font-semibold">Role:</span>

@@ -46,12 +46,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-6">
+      <div className="max-w-md w-full space-y-4 sm:space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center mb-2">
             <Film size={48} className="text-blue-600" />
           </div>
-          <h2 className="text-4xl font-extrabold text-gray-900">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
             Absolute Cinema
           </h2>
           <p className="mt-2 text-sm text-gray-600">
@@ -59,8 +59,8 @@ export default function Login() {
           </p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="bg-white p-8 rounded-xl shadow-lg space-y-4">
+        <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
+          <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg space-y-3 sm:space-y-4">
             <Input
               label="Email"
               type="email"

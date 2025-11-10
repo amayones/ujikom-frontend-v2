@@ -56,10 +56,10 @@ export default function SeatSelection() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Pilih Kursi</h1>
-        <div className="bg-white rounded-lg p-6 shadow-md">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Pilih Kursi</h1>
+        <div className="bg-white rounded-lg p-4 sm:p-6 shadow-md">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
             <div>
               <p className="font-semibold">Film</p>
               <p className="text-gray-600">{selectedSchedule.film_title}</p>
@@ -76,18 +76,18 @@ export default function SeatSelection() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2">
           <SeatMap seats={seats} />
         </div>
         
-        <div className="bg-white rounded-lg p-6 shadow-md h-fit">
-          <h3 className="text-xl font-bold mb-4">Ringkasan Pesanan</h3>
+        <div className="bg-white rounded-lg p-4 sm:p-6 shadow-md h-fit">
+          <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Ringkasan Pesanan</h3>
           
-          <div className="space-y-3 mb-6">
-            <div className="flex justify-between">
+          <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 text-sm sm:text-base">
+            <div className="flex justify-between items-start">
               <span>Kursi dipilih:</span>
-              <span className="font-semibold">
+              <span className="font-semibold text-right break-words max-w-[60%]">
                 {selectedSeats.length > 0 
                   ? selectedSeats.map(s => `${s.row}${s.column}`).join(', ') 
                   : '-'}
