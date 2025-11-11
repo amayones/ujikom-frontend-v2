@@ -47,7 +47,7 @@ export default function ManageFilms() {
       duration: parseInt(formData.duration),
       genre: formData.genre,
       status: formData.status,
-      poster: formData.poster || `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(formData.title)}`,
+      poster: formData.poster || '',
       base_price: parseFloat(formData.base_price)
     };
 
