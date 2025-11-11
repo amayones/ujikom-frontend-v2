@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { adminApi } from '../../api/adminApi';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Image } from 'lucide-react';
+import PosterSearchModal from '../../components/admin/PosterSearchModal';
 
 export default function ManageFilms() {
   const [films, setFilms] = useState([]);
@@ -26,6 +27,7 @@ export default function ManageFilms() {
   };
   const [showForm, setShowForm] = useState(false);
   const [editingFilm, setEditingFilm] = useState(null);
+  const [showPosterModal, setShowPosterModal] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -172,11 +174,22 @@ export default function ManageFilms() {
               </div>
               
               <div className="md:col-span-2">
-                <Input
-                  label="URL Poster (opsional)"
-                  value={formData.poster}
-                  onChange={(e) => setFormData({...formData, poster: e.target.value})}
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">URL Poster (opsional)</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                    value={formData.poster}
+                    onChange={(e) => setFormData({...formData, poster: e.target.value})}
+                  />
+                  <Button type="button" variant="outline" onClick={() => setShowPosterModal(true)}>
+                    <Image size={16} className="mr-2" />
+                    Cari Poster
+                  </Button>
+                </div>
+                {formData.poster && (
+                  <img src={formData.poster} alt="Preview" className="mt-2 w-32 h-48 object-cover rounded" />
+                )}
               </div>
               
               <div className="md:col-span-2">
@@ -260,6 +273,12 @@ export default function ManageFilms() {
         </table>
         </div>
       </div>
+
+      <PosterSearchModal
+        isOpen={showPosterModal}
+        onClose={() => setShowPosterModal(false)}
+        onSelectPoster={(posterUrl) => setFormData({...formData, poster: posterUrl})}
+      />
     </div>
   );
 }
