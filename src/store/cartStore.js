@@ -14,7 +14,7 @@ export const useCartStore = create((set, get) => ({
 
   fetchPrices: async (schedule) => {
     try {
-      const response = await api.get('/prices');
+      const response = await api.get('/admin/prices');
       const pricesData = response.data.data || response.data;
       
       // Determine day type from schedule
