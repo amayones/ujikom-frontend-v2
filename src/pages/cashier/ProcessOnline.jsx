@@ -120,9 +120,7 @@ export default function ProcessOnline() {
                 </tr>
               </thead>
               <tbody>
-                {orders.length === 0 ? (
-                  <tr><td colSpan="5" className="text-center py-8 text-gray-500">Tidak ada pesanan online</td></tr>
-                ) : orders.slice(0, 10).map(order => (
+                {orders.slice(0, 10).map(order => (
                   <tr key={order.id} className="border-b hover:bg-gray-50">
                     <td className="py-3 px-4 font-mono text-xs">{order.order_number}</td>
                     <td className="py-3 px-4">{order.schedule?.film?.title || 'N/A'}</td>
@@ -138,7 +136,7 @@ export default function ProcessOnline() {
                       </Button>
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
