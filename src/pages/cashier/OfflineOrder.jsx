@@ -99,11 +99,13 @@ export default function OfflineOrder() {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [clientKey, setClientKey] = useState('');
+  const [prices, setPrices] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchFilms();
     fetchClientKey();
+    fetchPrices();
   }, []);
 
   const fetchClientKey = async () => {
@@ -112,6 +114,16 @@ export default function OfflineOrder() {
       setClientKey(response.data.data.client_key);
     } catch (error) {
       console.error('Failed to fetch client key:', error);
+    }
+  };
+
+  const fetchPrices = async () => {
+    try {
+      const response = await api.get('/admin/prices');
+      setPrices(response.data.data || []);
+    } catch (error) {
+      console.error('Failed to fetch prices:', error);
+      setPrices([]);
     }
   };
 
@@ -180,7 +192,9 @@ export default function OfflineOrder() {
       } else {
         const orderData = {
           schedule_id: selectedSchedule.id,
-          seat_ids: selectedSeats.map(s => s.id)
+          seat_ids: selectedSeats.map(s => s.id),
+          customer_name: customerName,
+          customer_phone: customerPhone
         };
         const response = await cashierApi.onlineOrder(orderData);
         console.log('Order response:', response.data);
@@ -233,11 +247,20 @@ export default function OfflineOrder() {
   };
 
   const calculateTotal = () => {
-    if (!selectedSchedule || selectedSeats.length === 0) return 0;
-    const basePrice = selectedSchedule.base_price || 50000;
+    if (!selectedSchedule || selectedSeats.length === 0 || prices.length === 0) return 0;
+    
+    // Determine day type from schedule
+    const showDate = new Date(selectedSchedule.show_time);
+    const dayOfWeek = showDate.getDay();
+    const dayType = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : 'weekday';
+    
+    // Calculate total based on dynamic prices
     return selectedSeats.reduce((sum, seat) => {
-      const price = seat.category === 'vip' ? basePrice * 1.5 : basePrice;
-      return sum + price;
+      const priceData = prices.find(p => 
+        p.day_type === dayType && p.seat_category === seat.category
+      );
+      const seatPrice = priceData ? parseFloat(priceData.price) : 50000;
+      return sum + seatPrice;
     }, 0);
   };
 
