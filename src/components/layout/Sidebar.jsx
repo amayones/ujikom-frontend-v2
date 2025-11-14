@@ -11,6 +11,7 @@ import {
   ShoppingCart,
   Printer,
   CheckCircle,
+  Scan,
   LogOut
 } from 'lucide-react';
 
@@ -27,6 +28,7 @@ const menuItems = {
     { path: '/owner/reports', label: 'Laporan', icon: BarChart3 }
   ],
   cashier: [
+    { path: '/cashier/scan-ticket', label: 'Scan Tiket', icon: Scan },
     { path: '/cashier/offline-order', label: 'Pesan Offline', icon: ShoppingCart },
     { path: '/cashier/print-ticket', label: 'Cetak Tiket', icon: Printer },
     { path: '/cashier/process-online', label: 'Proses Online', icon: CheckCircle }

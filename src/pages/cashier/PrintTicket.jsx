@@ -3,6 +3,7 @@ import api from '../../lib/api';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Printer, Search } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function PrintTicket() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -114,10 +115,11 @@ export default function PrintTicket() {
             <div className="bg-gray-100 p-6 rounded-lg text-center">
               <div className="bg-white p-4 rounded border-2 border-dashed border-gray-300 inline-block">
                 <p className="text-sm text-gray-600 mb-2">QR Code Tiket</p>
-                <div className="w-32 h-32 bg-gray-200 flex items-center justify-center">
-                  <span className="text-xs text-gray-500">QR Code</span>
+                <div className="flex justify-center">
+                  <QRCodeSVG value={selectedOrder.order_number} size={128} level="H" />
                 </div>
                 <p className="text-xs text-gray-500 mt-2">Tunjukkan QR ini saat masuk</p>
+                <p className="text-xs font-mono text-gray-400 mt-1">{selectedOrder.order_number}</p>
               </div>
             </div>
           </div>

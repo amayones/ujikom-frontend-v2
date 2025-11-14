@@ -19,5 +19,10 @@ export const cashierApi = {
   printTicket: async (orderId) => {
     const response = await api.post(`/cashier/print-ticket/${orderId}`);
     return response.data;
+  },
+
+  scanTicket: async (data) => {
+    const response = await api.post('/cashier/scan-ticket', data);
+    return response.data;
   }
 };

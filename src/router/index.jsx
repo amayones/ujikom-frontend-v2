@@ -35,6 +35,7 @@ import Reports from '../pages/owner/Reports';
 import OfflineOrder from '../pages/cashier/OfflineOrder';
 import PrintTicket from '../pages/cashier/PrintTicket';
 import ProcessOnline from '../pages/cashier/ProcessOnline';
+import ScanTicket from '../pages/cashier/ScanTicket';
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
@@ -126,7 +127,8 @@ export const router = createBrowserRouter([
     children: [
       { path: 'offline-order', element: <OfflineOrder /> },
       { path: 'print-ticket', element: <PrintTicket /> },
-      { path: 'process-online', element: <ProcessOnline /> }
+      { path: 'process-online', element: <ProcessOnline /> },
+      { path: 'scan-ticket', element: <ScanTicket /> }
     ]
   }
 ]);
