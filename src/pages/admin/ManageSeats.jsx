@@ -31,35 +31,8 @@ export default function ManageSeats() {
     return acc;
   }, {});
 
-  const toggleSeatType = async (seatId) => {
-    const seat = seats.find(s => s.id === seatId);
-    if (!seat) return;
-    
-    try {
-      const newCategory = seat.category === 'vip' ? 'regular' : 'vip';
-      await adminApi.updateSeat(seatId, { ...seat, category: newCategory });
-      await fetchSeats();
-    } catch (error) {
-      console.error('Error updating seat:', error);
-      alert('Gagal mengubah tipe kursi');
-    }
-  };
-
-
-
-  const getSeatClasses = (type) => {
-    const baseClasses = 'w-8 h-8 m-1 rounded text-xs font-medium flex items-center justify-center cursor-pointer transition-colors border';
-    
-    switch (type) {
-      case 'regular':
-        return `${baseClasses} bg-green-200 hover:bg-green-300 text-green-800 border-green-300`;
-      case 'vip':
-        return `${baseClasses} bg-yellow-200 hover:bg-yellow-300 text-yellow-800 border-yellow-300`;
-      case 'empty':
-        return 'w-8 h-8 m-1';
-      default:
-        return baseClasses;
-    }
+  const getSeatClasses = () => {
+    return 'w-8 h-8 m-1 rounded text-xs font-medium flex items-center justify-center bg-green-200 text-green-800 border border-green-300';
   };
 
   const handleSave = async () => {
@@ -111,9 +84,8 @@ export default function ManageSeats() {
                 {seatsByRow[row].sort((a, b) => a.column - b.column).map((seat) => (
                   <div
                     key={seat.id}
-                    className={getSeatClasses(seat.category)}
-                    onClick={() => toggleSeatType(seat.id)}
-                    title={`${seat.row}${seat.column} - ${seat.category} - Click to toggle`}
+                    className={getSeatClasses()}
+                    title={`${seat.row}${seat.column}`}
                   >
                     {seat.column}
                   </div>
@@ -126,32 +98,24 @@ export default function ManageSeats() {
         <div className="flex justify-center space-x-6 text-sm mb-6">
           <div className="flex items-center">
             <div className="w-4 h-4 bg-green-200 rounded mr-2 border border-green-300"></div>
-            <span>Kursi Regular</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-4 h-4 bg-yellow-200 rounded mr-2 border border-yellow-300"></div>
-            <span>Kursi VIP</span>
+            <span>Kursi Tersedia</span>
           </div>
         </div>
 
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="font-semibold mb-2">Informasi Layout</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
             <div>
               <span className="font-medium">Total Kursi:</span>
               <span className="ml-2">{studioSeats.length}</span>
             </div>
             <div>
-              <span className="font-medium">Kursi Regular:</span>
-              <span className="ml-2">{studioSeats.filter(s => s.category === 'regular').length}</span>
-            </div>
-            <div>
-              <span className="font-medium">Kursi VIP:</span>
-              <span className="ml-2">{studioSeats.filter(s => s.category === 'vip').length}</span>
-            </div>
-            <div>
               <span className="font-medium">Baris:</span>
               <span className="ml-2">{Object.keys(seatsByRow).length}</span>
+            </div>
+            <div>
+              <span className="font-medium">Kolom:</span>
+              <span className="ml-2">{studioSeats.length / Object.keys(seatsByRow).length}</span>
             </div>
           </div>
         </div>
@@ -160,10 +124,9 @@ export default function ManageSeats() {
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h2 className="text-xl font-semibold mb-4">Petunjuk</h2>
         <ul className="space-y-2 text-sm text-gray-600">
-          <li>• Klik pada kursi untuk mengubah tipe (Regular ↔ VIP)</li>
-          <li>• Kursi kosong tidak dapat diubah</li>
-          <li>• Perubahan akan tersimpan setelah menekan tombol "Simpan Layout"</li>
-          <li>• Layout yang sudah digunakan dalam jadwal tidak dapat diubah</li>
+          <li>• Semua kursi memiliki harga yang sama</li>
+          <li>• Harga tiket ditentukan berdasarkan hari (weekday/weekend)</li>
+          <li>• Layout kursi: 5 baris × 10 kolom per studio</li>
         </ul>
       </div>
     </div>

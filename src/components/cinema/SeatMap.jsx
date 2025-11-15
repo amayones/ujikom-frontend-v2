@@ -16,7 +16,6 @@ export default function SeatMap({ seats }) {
     if (seat.is_booked) return 'booked';
     if (seat.status === 'maintenance') return 'maintenance';
     if (selectedSeats.some(s => (s.id || s) === seat.id)) return 'selected';
-    if (seat.category === 'vip') return 'vip';
     return 'available';
   };
 
@@ -26,16 +25,12 @@ export default function SeatMap({ seats }) {
     switch (status) {
       case 'available':
         return `${baseClasses} bg-green-200 hover:bg-green-300 text-green-800`;
-      case 'vip':
-        return `${baseClasses} bg-yellow-200 hover:bg-yellow-300 text-yellow-800`;
       case 'selected':
         return `${baseClasses} bg-blue-600 text-white`;
       case 'booked':
         return `${baseClasses} bg-red-200 text-red-800 cursor-not-allowed`;
       case 'maintenance':
         return `${baseClasses} bg-gray-400 text-gray-600 cursor-not-allowed`;
-      case 'empty':
-        return 'w-8 h-8 m-1';
       default:
         return baseClasses;
     }
@@ -70,7 +65,7 @@ export default function SeatMap({ seats }) {
                     key={seat.id}
                     className={getSeatClasses(status)}
                     onClick={() => handleSeatClick(seat)}
-                    title={`${seat.row}${seat.column} - ${seat.category}`}
+                    title={`${seat.row}${seat.column}`}
                   >
                     {seat.column}
                   </div>
@@ -85,10 +80,6 @@ export default function SeatMap({ seats }) {
         <div className="flex items-center">
           <div className="w-4 h-4 bg-green-200 rounded mr-2"></div>
           <span>Tersedia</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-4 h-4 bg-yellow-200 rounded mr-2"></div>
-          <span>VIP</span>
         </div>
         <div className="flex items-center">
           <div className="w-4 h-4 bg-blue-600 rounded mr-2"></div>

@@ -256,13 +256,9 @@ export default function OfflineOrder() {
     const dayType = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : 'weekday';
     
     // Calculate total based on dynamic prices
-    return selectedSeats.reduce((sum, seat) => {
-      const priceData = prices.find(p => 
-        p.day_type === dayType && p.seat_category === seat.category
-      );
-      const seatPrice = priceData ? parseFloat(priceData.price) : 50000;
-      return sum + seatPrice;
-    }, 0);
+    const priceData = prices.find(p => p.day_type === dayType);
+    const seatPrice = priceData ? parseFloat(priceData.price) : 50000;
+    return selectedSeats.length * seatPrice;
   };
 
   return (
@@ -357,7 +353,6 @@ export default function OfflineOrder() {
                                   className={`w-8 h-8 m-1 rounded text-xs font-medium flex items-center justify-center cursor-pointer transition-colors ${
                                     isBooked ? 'bg-red-200 text-red-800 cursor-not-allowed' :
                                     isSelected ? 'bg-blue-600 text-white' :
-                                    seat.category === 'vip' ? 'bg-yellow-200 hover:bg-yellow-300 text-yellow-800' :
                                     'bg-green-200 hover:bg-green-300 text-green-800'
                                   }`}
                                   onClick={() => {
@@ -380,7 +375,6 @@ export default function OfflineOrder() {
                     </div>
                     <div className="mt-6 flex justify-center space-x-6 text-sm">
                       <div className="flex items-center"><div className="w-4 h-4 bg-green-200 rounded mr-2"></div><span>Tersedia</span></div>
-                      <div className="flex items-center"><div className="w-4 h-4 bg-yellow-200 rounded mr-2"></div><span>VIP</span></div>
                       <div className="flex items-center"><div className="w-4 h-4 bg-blue-600 rounded mr-2"></div><span>Dipilih</span></div>
                       <div className="flex items-center"><div className="w-4 h-4 bg-red-200 rounded mr-2"></div><span>Terisi</span></div>
                     </div>
