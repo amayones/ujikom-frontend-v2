@@ -25,12 +25,14 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4">
+    <nav className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 sticky top-0 z-50 shadow-xl">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/customer/home" className="flex items-center space-x-2 text-gray-900 hover:text-blue-600 transition-colors">
-            <Film size={24} className="text-blue-600" />
+          <Link to="/customer/home" className="flex items-center space-x-2 text-white hover:text-red-400 transition-colors">
+            <div className="bg-red-600 p-1.5 rounded-lg">
+              <Film size={20} className="text-white" />
+            </div>
             <span className="text-base sm:text-lg font-bold">Absolute Cinema</span>
           </Link>
           
@@ -42,15 +44,15 @@ export default function Navbar() {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`text-sm font-medium transition-colors relative ${
+                  className={`text-sm font-semibold transition-colors relative ${
                     active
-                      ? 'text-blue-600'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'text-red-400'
+                      : 'text-gray-300 hover:text-white'
                   }`}
                 >
                   {link.label}
                   {active && (
-                    <span className="absolute -bottom-[17px] left-0 right-0 h-0.5 bg-blue-600"></span>
+                    <span className="absolute -bottom-[17px] left-0 right-0 h-0.5 bg-red-600"></span>
                   )}
                 </Link>
               );
@@ -63,12 +65,12 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setShowDropdown(!showDropdown)}
-                  className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors"
+                  className="flex items-center space-x-2 text-white hover:text-red-400 transition-colors"
                 >
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <User size={16} className="text-blue-600" />
+                  <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                    <User size={16} className="text-white" />
                   </div>
-                  <span className="text-sm font-medium">{user.name}</span>
+                  <span className="text-sm font-semibold">{user.name}</span>
                   <ChevronDown size={16} className={`transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
                 </button>
                 
@@ -96,7 +98,7 @@ export default function Navbar() {
             ) : (
               <Link
                 to="/login"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-6 py-2 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors shadow-lg"
               >
                 Login
               </Link>
@@ -106,7 +108,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="md:hidden p-2 text-gray-600 hover:text-gray-900"
+            className="md:hidden p-2 text-white hover:text-red-400"
           >
             {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -114,7 +116,7 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden py-4 border-t border-gray-200">
+          <div className="md:hidden py-4 border-t border-gray-700 bg-gray-800">
             {/* Mobile Navigation Links */}
             <div className="space-y-2">
               {navLinks.map((link) => {
@@ -124,10 +126,10 @@ export default function Navbar() {
                     key={link.path}
                     to={link.path}
                     onClick={() => setShowMobileMenu(false)}
-                    className={`block px-4 py-2 text-sm font-medium rounded-lg ${
+                    className={`block px-4 py-2 text-sm font-semibold rounded-lg ${
                       active
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'text-gray-600 hover:bg-gray-50'
+                        ? 'bg-red-600 text-white'
+                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                     }`}
                   >
                     {link.label}
@@ -138,32 +140,32 @@ export default function Navbar() {
 
             {/* Mobile User Menu */}
             {user ? (
-              <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
-                <div className="px-4 py-2 text-sm font-medium text-gray-900">
+              <div className="mt-4 pt-4 border-t border-gray-700 space-y-2">
+                <div className="px-4 py-2 text-sm font-bold text-white">
                   {user.name}
                 </div>
                 <Link
                   to="/customer/profile"
                   onClick={() => setShowMobileMenu(false)}
-                  className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg"
+                  className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg"
                 >
                   <User size={16} />
                   <span>Profile</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg w-full text-left"
+                  className="flex items-center space-x-2 px-4 py-2 text-sm text-red-400 hover:bg-red-900/30 rounded-lg w-full text-left"
                 >
                   <LogOut size={16} />
                   <span>Logout</span>
                 </button>
               </div>
             ) : (
-              <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="mt-4 pt-4 border-t border-gray-700">
                 <Link
                   to="/login"
                   onClick={() => setShowMobileMenu(false)}
-                  className="block px-4 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                  className="block px-4 py-2 text-sm font-bold text-center text-white bg-red-600 rounded-lg hover:bg-red-700"
                 >
                   Login
                 </Link>
