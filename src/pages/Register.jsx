@@ -14,8 +14,7 @@ export default function Register() {
     phone: ''
   });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  
+  const { register, loading } = useAuthStore();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,66 +26,43 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
 
     if (formData.password !== formData.password_confirmation) {
       setError('Password tidak cocok');
-      setLoading(false);
       return;
     }
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL.replace('/api', '');
-      const response = await fetch(`${apiUrl}/api/register`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Server error: Invalid response format');
-      }
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        const errorMsg = data.message || data.errors ? Object.values(data.errors).flat().join(', ') : 'Registrasi gagal';
-        throw new Error(errorMsg);
-      }
-
-      localStorage.setItem('token', data.data.token);
-      alert('Registrasi berhasil! Silakan login.');
-      navigate('/login');
+      await register(formData);
+      navigate('/customer/home');
     } catch (error) {
       console.error('Registration error:', error);
-      setError(error.message || 'Registrasi gagal. Silakan coba lagi.');
-    } finally {
-      setLoading(false);
+      const errorMsg = error.response?.data?.message || 
+                      error.response?.data?.errors ? 
+                      Object.values(error.response.data.errors).flat().join(', ') : 
+                      error.message || 'Registrasi gagal. Silakan coba lagi.';
+      setError(errorMsg);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-6 sm:space-y-8">
+    <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gradient-to-br from-blue-50 to-indigo-100 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-6 sm:space-y-8">
         <div className="text-center">
           <div className="flex items-center justify-center mb-2">
             <Film size={48} className="text-blue-600" />
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
+          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
             Absolute Cinema
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Daftar akun baru untuk mulai memesan tiket
           </p>
         </div>
-        
-        <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
-          <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg space-y-3 sm:space-y-4">
+
+        <form className="mt-6 space-y-4 sm:mt-8 sm:space-y-6" onSubmit={handleSubmit}>
+          <div className="p-6 space-y-3 bg-white shadow-lg sm:p-8 rounded-xl sm:space-y-4">
             <Input
               label="Nama Lengkap"
               name="name"
@@ -96,7 +72,7 @@ export default function Register() {
               required
               placeholder="John Doe"
             />
-            
+
             <Input
               label="Email"
               name="email"
@@ -115,7 +91,7 @@ export default function Register() {
               onChange={handleChange}
               placeholder="081234567890"
             />
-            
+
             <Input
               label="Password"
               name="password"
@@ -135,22 +111,22 @@ export default function Register() {
               required
               placeholder="Ulangi password"
             />
-            
+
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div className="px-4 py-3 text-sm text-red-700 border border-red-200 rounded-lg bg-red-50">
                 {error}
               </div>
             )}
-            
-            <Button 
-              type="submit" 
-              className="w-full mt-6" 
+
+            <Button
+              type="submit"
+              className="w-full mt-6"
               disabled={loading}
             >
               {loading ? 'Mendaftar...' : 'Daftar Sekarang'}
             </Button>
 
-            <div className="text-center mt-4">
+            <div className="mt-4 text-center">
               <p className="text-sm text-gray-600">
                 Sudah punya akun?{' '}
                 <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
