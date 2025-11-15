@@ -3,6 +3,7 @@ import { ownerApi } from '../../api/ownerApi';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Download, TrendingUp, Users, Film } from 'lucide-react';
+import { formatRupiah } from '../../utils/currency';
 
 export default function Reports() {
   const [reports, setReports] = useState(null);
@@ -72,7 +73,7 @@ export default function Reports() {
             <div>
               <p className="text-sm text-gray-500">Total Pemasukan</p>
               <p className="text-2xl font-bold text-green-600">
-                Rp {reports?.summary?.total_income?.toLocaleString('id-ID') || '0'}
+                {formatRupiah(reports?.summary?.total_income || 0)}
               </p>
             </div>
           </div>
@@ -132,7 +133,7 @@ export default function Reports() {
                     <td className="py-3 px-4">{transaction.customer_name}</td>
                     <td className="py-3 px-4">{transaction.film_title}</td>
                     <td className="py-3 px-4 text-sm">{transaction.seats}</td>
-                    <td className="py-3 px-4 font-semibold">Rp {parseInt(transaction.total_amount).toLocaleString('id-ID')}</td>
+                    <td className="py-3 px-4 font-semibold">{formatRupiah(parseInt(transaction.total_amount))}</td>
                     <td className="py-3 px-4 text-sm">{new Date(transaction.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
                   </tr>
                 ))}

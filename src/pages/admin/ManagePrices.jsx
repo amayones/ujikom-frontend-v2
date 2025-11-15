@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { adminApi } from '../../api/adminApi';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import { formatRupiah } from '../../utils/currency';
 
 export default function ManagePrices() {
   const [prices, setPrices] = useState([]);
@@ -144,11 +145,11 @@ export default function ManagePrices() {
               <h3 className="font-semibold mb-3 text-blue-600">Hari Biasa</h3>
               <div className="flex justify-between items-center mb-2">
                 <span>Kursi Regular</span>
-                <span className="font-semibold">Rp {priceSettings.weekday_regular.toLocaleString('id-ID')}</span>
+                <span className="font-semibold">{formatRupiah(priceSettings.weekday_regular)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Kursi VIP</span>
-                <span className="font-semibold">Rp {priceSettings.weekday_vip.toLocaleString('id-ID')}</span>
+                <span className="font-semibold">{formatRupiah(priceSettings.weekday_vip)}</span>
               </div>
             </div>
 
@@ -156,11 +157,11 @@ export default function ManagePrices() {
               <h3 className="font-semibold mb-3 text-green-600">Weekend</h3>
               <div className="flex justify-between items-center mb-2">
                 <span>Kursi Regular</span>
-                <span className="font-semibold">Rp {priceSettings.weekend_regular.toLocaleString('id-ID')}</span>
+                <span className="font-semibold">{formatRupiah(priceSettings.weekend_regular)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Kursi VIP</span>
-                <span className="font-semibold">Rp {priceSettings.weekend_vip.toLocaleString('id-ID')}</span>
+                <span className="font-semibold">{formatRupiah(priceSettings.weekend_vip)}</span>
               </div>
             </div>
 

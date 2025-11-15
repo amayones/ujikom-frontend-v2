@@ -4,6 +4,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Plus, Edit, Trash2, Image } from 'lucide-react';
 import PosterSearchModal from '../../components/admin/PosterSearchModal';
+import { formatRupiah } from '../../utils/currency';
 
 export default function ManageFilms() {
   const [films, setFilms] = useState([]);
@@ -247,7 +248,7 @@ export default function ManageFilms() {
                 <td className="py-3 px-4 font-semibold">{film.title}</td>
                 <td className="py-3 px-4">{film.genre}</td>
                 <td className="py-3 px-4">{film.duration} min</td>
-                <td className="py-3 px-4">Rp {parseFloat(film.base_price).toLocaleString('id-ID')}</td>
+                <td className="py-3 px-4">{formatRupiah(parseFloat(film.base_price))}</td>
                 <td className="py-3 px-4">
                   <span className={`px-2 py-1 rounded-full text-xs ${
                     film.status === 'play_now' 

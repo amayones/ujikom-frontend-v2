@@ -3,6 +3,7 @@ import { cashierApi } from '../../api/cashierApi';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Scan, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { formatRupiah } from '../../utils/currency';
 
 export default function ScanTicket() {
   const [orderNumber, setOrderNumber] = useState('');
@@ -124,7 +125,7 @@ export default function ScanTicket() {
               </div>
               <div>
                 <p className="text-gray-600">Total Pembayaran</p>
-                <p className="font-semibold">Rp {parseInt(result.data.total_amount).toLocaleString('id-ID')}</p>
+                <p className="font-semibold">{formatRupiah(parseInt(result.data.total_amount))}</p>
               </div>
               <div>
                 <p className="text-gray-600">Status Pembayaran</p>

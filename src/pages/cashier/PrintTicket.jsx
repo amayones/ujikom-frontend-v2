@@ -4,6 +4,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Printer, Search } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import { formatRupiah } from '../../utils/currency';
 
 export default function PrintTicket() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -101,7 +102,7 @@ export default function PrintTicket() {
                 </div>
                 <div className="flex justify-between">
                   <span>Total:</span>
-                  <span className="font-bold">Rp {parseInt(selectedOrder.total_amount).toLocaleString('id-ID')}</span>
+                  <span className="font-bold">{formatRupiah(parseInt(selectedOrder.total_amount))}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Status:</span>
@@ -161,7 +162,7 @@ export default function PrintTicket() {
                   <tr key={order.id} className="border-b hover:bg-gray-50">
                     <td className="py-2 px-3 font-mono text-xs">{order.order_number}</td>
                     <td className="py-2 px-3">{order.schedule?.film?.title || 'N/A'}</td>
-                    <td className="py-2 px-3">Rp {parseInt(order.total_amount).toLocaleString('id-ID')}</td>
+                    <td className="py-2 px-3">{formatRupiah(parseInt(order.total_amount))}</td>
                     <td className="py-2 px-3">
                       <Button size="sm" onClick={() => setSelectedOrder(order)}>
                         Pilih

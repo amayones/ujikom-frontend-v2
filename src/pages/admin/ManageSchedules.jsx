@@ -4,6 +4,7 @@ import { filmApi } from '../../api/filmApi';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Plus, Edit, Trash2, Film, Monitor, Calendar, Check } from 'lucide-react';
+import { formatRupiah } from '../../utils/currency';
 
 export default function ManageSchedules() {
   const [films, setFilms] = useState([]);
@@ -201,7 +202,7 @@ export default function ManageSchedules() {
                     />
                     <h4 className="font-semibold text-sm">{film.title}</h4>
                     <p className="text-xs text-gray-600">{film.genre} • {film.duration} min</p>
-                    <p className="text-xs text-blue-600 font-medium mt-1">Rp {film.base_price?.toLocaleString('id-ID')}</p>
+                    <p className="text-xs text-blue-600 font-medium mt-1">{formatRupiah(film.base_price)}</p>
                   </div>
                 ))}
               </div>
@@ -364,7 +365,7 @@ export default function ManageSchedules() {
                   <td className="py-3 px-4">
                     {new Date(schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                   </td>
-                  <td className="py-3 px-4">Rp {schedule.film?.base_price?.toLocaleString('id-ID') || 'N/A'}</td>
+                  <td className="py-3 px-4">{schedule.film?.base_price ? formatRupiah(schedule.film.base_price) : 'N/A'}</td>
                   <td className="py-3 px-4">
                     <div className="flex space-x-2">
                       <Button size="sm" variant="outline" onClick={() => handleEdit(schedule)}>

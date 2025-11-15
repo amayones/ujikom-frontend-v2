@@ -6,6 +6,7 @@ import api from '../../lib/api';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { formatRupiah } from '../../utils/currency';
 
 function SchedulesByDayCashier({ schedules, selectedSchedule, onSelectSchedule }) {
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
@@ -393,7 +394,7 @@ export default function OfflineOrder() {
                     <div><strong>Film:</strong> {selectedFilm?.title}</div>
                     <div><strong>Studio:</strong> {selectedSchedule?.studio?.name}</div>
                     <div><strong>Kursi:</strong> {selectedSeats.map(s => `${s.row}${s.column}`).join(', ') || '-'}</div>
-                    <div><strong>Total:</strong> Rp {calculateTotal().toLocaleString('id-ID')}</div>
+                    <div><strong>Total:</strong> {formatRupiah(calculateTotal())}</div>
                   </div>
                 </div>
               </div>
@@ -458,7 +459,7 @@ export default function OfflineOrder() {
                 <div><strong>Pembayaran:</strong> {paymentMethod === 'cash' ? 'Cash' : 'QRIS/Online'}</div>
               </div>
               <div className="mt-4 pt-4 border-t">
-                <div className="text-lg font-bold">Total: Rp {calculateTotal().toLocaleString('id-ID')}</div>
+                <div className="text-lg font-bold">Total: {formatRupiah(calculateTotal())}</div>
               </div>
             </div>
             
