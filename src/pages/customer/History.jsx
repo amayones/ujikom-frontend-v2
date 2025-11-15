@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useOrdersStore } from '../../store/ordersStore';
 import { useAuthStore } from '../../store/authStore';
 import Button from '../../components/ui/Button';
+import { formatRupiah } from '../../utils/currency';
 import { Eye } from 'lucide-react';
 
 export default function History() {
@@ -91,7 +92,7 @@ export default function History() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Total Pembayaran</p>
-                  <p className="font-semibold text-green-600">Rp {total.toLocaleString('id-ID')}</p>
+                  <p className="font-semibold text-green-600">{formatRupiah(total)}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Tanggal Pesan</p>

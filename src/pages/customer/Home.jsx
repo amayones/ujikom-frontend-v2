@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFilmsStore } from '../../store/filmsStore';
 import ShowCard from '../../components/cinema/ShowCard';
 import Button from '../../components/ui/Button';
+import { formatRupiah } from '../../utils/currency';
 import { Film, Sparkles, Ticket, Star, Clock, TrendingUp, ChevronRight, Play } from 'lucide-react';
 
 export default function Home() {
@@ -135,7 +136,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-red-100 text-sm font-medium">Harga Mulai</p>
-              <p className="text-4xl font-bold mt-2">35K</p>
+              <p className="text-4xl font-bold mt-2">{formatRupiah(35000)}</p>
             </div>
             <Ticket size={48} className="text-red-200" />
           </div>

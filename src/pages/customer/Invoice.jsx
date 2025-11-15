@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useOrdersStore } from '../../store/ordersStore';
 import Button from '../../components/ui/Button';
+import { formatRupiah } from '../../utils/currency';
 import { Printer, Download } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -109,7 +110,7 @@ export default function Invoice() {
               </div>
               <div className="flex justify-between">
                 <span>Total Pembayaran:</span>
-                <span className="font-bold">Rp {order.total.toLocaleString('id-ID')}</span>
+                <span className="font-bold">{formatRupiah(order.total)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Metode Pembayaran:</span>

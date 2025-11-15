@@ -4,6 +4,7 @@ import { useCartStore } from '../../store/cartStore';
 import { useFilmsStore } from '../../store/filmsStore';
 import SeatMap from '../../components/cinema/SeatMap';
 import Button from '../../components/ui/Button';
+import { formatRupiah } from '../../utils/currency';
 
 export default function SeatSelection() {
   const navigate = useNavigate();
@@ -99,12 +100,12 @@ export default function SeatSelection() {
             </div>
             <div className="flex justify-between">
               <span>Harga dasar:</span>
-              <span className="font-semibold">Rp {selectedSchedule.base_price?.toLocaleString('id-ID')}</span>
+              <span className="font-semibold">{formatRupiah(selectedSchedule.base_price)}</span>
             </div>
             <hr />
             <div className="flex justify-between text-lg font-bold">
               <span>Total:</span>
-              <span className="text-blue-600">Rp {totalPrice.toLocaleString('id-ID')}</span>
+              <span className="text-blue-600">{formatRupiah(totalPrice)}</span>
             </div>
           </div>
           

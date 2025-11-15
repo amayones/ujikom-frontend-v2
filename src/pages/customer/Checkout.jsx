@@ -4,6 +4,7 @@ import { useCartStore } from '../../store/cartStore';
 import { useOrdersStore } from '../../store/ordersStore';
 import { useAuthStore } from '../../store/authStore';
 import { payWithMidtrans } from '../../services/midtransService';
+import { formatRupiah } from '../../utils/currency';
 import api from '../../lib/api';
 import Button from '../../components/ui/Button';
 
@@ -136,12 +137,12 @@ export default function Checkout() {
           <div className="space-y-3 mb-6">
             <div className="flex justify-between">
               <span>Tiket ({selectedSeats.length}x)</span>
-              <span>Rp {totalPrice.toLocaleString('id-ID')}</span>
+              <span>{formatRupiah(totalPrice)}</span>
             </div>
             <hr />
             <div className="flex justify-between text-lg font-bold">
               <span>Total Pembayaran</span>
-              <span className="text-blue-600">Rp {finalTotal.toLocaleString('id-ID')}</span>
+              <span className="text-blue-600">{formatRupiah(finalTotal)}</span>
             </div>
           </div>
           

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Clock, Star, Play } from 'lucide-react';
 import { memo } from 'react';
 import Button from '../ui/Button';
+import { formatRupiah } from '../../utils/currency';
 
 function ShowCard({ film }) {
   const statusBadge = {
@@ -64,7 +65,7 @@ function ShowCard({ film }) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-xs text-gray-500">Harga mulai</p>
-            <p className="text-lg font-bold text-red-600">Rp {film.base_price?.toLocaleString('id-ID')}</p>
+            <p className="text-lg font-bold text-red-600">{formatRupiah(film.base_price)}</p>
           </div>
         </div>
         

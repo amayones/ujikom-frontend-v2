@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useFilmsStore } from '../../store/filmsStore';
 import { useCartStore } from '../../store/cartStore';
 import Button from '../../components/ui/Button';
+import { formatRupiah } from '../../utils/currency';
 import { Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 
 function SchedulesByDay({ schedules, onSelectSchedule }) {
@@ -229,7 +230,7 @@ export default function FilmDetail() {
             <p className="text-lg">
               <span className="font-semibold">Harga Mulai:</span>{' '}
               <span className="text-2xl font-bold text-blue-600">
-                Rp {selectedFilm.base_price?.toLocaleString('id-ID')}
+                {formatRupiah(selectedFilm.base_price)}
               </span>
             </p>
             <p className="text-sm text-gray-600 mt-1">*Harga dapat berbeda tergantung hari dan kategori kursi</p>
