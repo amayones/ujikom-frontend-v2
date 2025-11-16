@@ -3,7 +3,7 @@ import { adminApi } from '../../api/adminApi';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Plus, Edit, Trash2, Image } from 'lucide-react';
-import PosterSearchModal from '../../components/admin/PosterSearchModal';
+import TMDBSearchModal from '../../components/admin/TMDBSearchModal';
 import { formatRupiah } from '../../utils/currency';
 
 export default function ManageFilms() {
@@ -36,6 +36,7 @@ export default function ManageFilms() {
     genre: '',
     status: 'play_now',
     poster: '',
+    trailer: '',
     base_price: '50000'
   });
 
@@ -74,6 +75,7 @@ export default function ManageFilms() {
       genre: '',
       status: 'play_now',
       poster: '',
+      trailer: '',
       base_price: '50000'
     });
     setShowForm(false);
@@ -88,6 +90,7 @@ export default function ManageFilms() {
       genre: film.genre,
       status: film.status,
       poster: film.poster,
+      trailer: film.trailer || '',
       base_price: film.base_price.toString()
     });
     setEditingFilm(film);
@@ -175,22 +178,32 @@ export default function ManageFilms() {
               </div>
               
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">URL Poster (opsional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Poster & Info Film</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
                     value={formData.poster}
                     onChange={(e) => setFormData({...formData, poster: e.target.value})}
+                    placeholder="URL Poster"
                   />
                   <Button type="button" variant="outline" onClick={() => setShowPosterModal(true)}>
                     <Image size={16} className="mr-2" />
-                    Cari Poster
+                    Cari dari TMDB
                   </Button>
                 </div>
                 {formData.poster && (
                   <img src={formData.poster} alt="Preview" className="mt-2 w-32 h-48 object-cover rounded" />
                 )}
+              </div>
+              
+              <div className="md:col-span-2">
+                <Input
+                  label="URL Trailer YouTube (opsional)"
+                  value={formData.trailer}
+                  onChange={(e) => setFormData({...formData, trailer: e.target.value})}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
               </div>
               
               <div className="md:col-span-2">
@@ -275,10 +288,17 @@ export default function ManageFilms() {
         </div>
       </div>
 
-      <PosterSearchModal
+      <TMDBSearchModal
         isOpen={showPosterModal}
         onClose={() => setShowPosterModal(false)}
-        onSelectPoster={(posterUrl) => setFormData({...formData, poster: posterUrl})}
+        onSelect={(data) => {
+          setFormData({
+            ...formData,
+            poster: data.poster,
+            title: formData.title || data.title,
+            description: formData.description || data.description
+          });
+        }}
       />
     </div>
   );

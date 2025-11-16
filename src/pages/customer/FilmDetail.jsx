@@ -4,7 +4,7 @@ import { useFilmsStore } from '../../store/filmsStore';
 import { useCartStore } from '../../store/cartStore';
 import Button from '../../components/ui/Button';
 import { formatRupiah } from '../../utils/currency';
-import { Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clock, Calendar, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 
 function SchedulesByDay({ schedules, onSelectSchedule }) {
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
@@ -128,6 +128,13 @@ export default function FilmDetail() {
   const { selectedFilm, schedules, fetchFilmById, fetchSchedules } = useFilmsStore();
   const { setSchedule } = useCartStore();
   const [loading, setLoading] = useState(true);
+  const [showTrailer, setShowTrailer] = useState(false);
+
+  const getYouTubeId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+    return match ? match[1] : null;
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -216,18 +223,39 @@ export default function FilmDetail() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-        <div className="lg:col-span-1">
-          <img 
-            src={selectedFilm.poster || `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`} 
-            alt={selectedFilm.title}
-            className="w-full rounded-xl shadow-xl"
-            onError={(e) => {
-              if (e.target.src !== `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`) {
-                e.target.onerror = null;
-                e.target.src = `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`;
-              }
-            }}
-          />
+        <div className="lg:col-span-1 space-y-4">
+          <div className="relative group">
+            <img 
+              src={selectedFilm.poster || `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`} 
+              alt={selectedFilm.title}
+              className="w-full rounded-xl shadow-xl"
+              onError={(e) => {
+                if (e.target.src !== `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`) {
+                  e.target.onerror = null;
+                  e.target.src = `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`;
+                }
+              }}
+            />
+            {selectedFilm.trailer && (
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-xl flex items-center justify-center">
+                <button
+                  onClick={() => setShowTrailer(true)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity bg-red-600 text-white p-4 rounded-full hover:bg-red-700 transform hover:scale-110"
+                >
+                  <Play size={32} fill="white" />
+                </button>
+              </div>
+            )}
+          </div>
+          {selectedFilm.trailer && (
+            <Button 
+              className="w-full" 
+              onClick={() => setShowTrailer(true)}
+            >
+              <Play size={16} className="mr-2" />
+              Tonton Trailer
+            </Button>
+          )}
         </div>
 
         <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
@@ -271,6 +299,33 @@ export default function FilmDetail() {
         schedules={schedules || []}
         onSelectSchedule={handleSelectSchedule}
       />
+
+      {showTrailer && getYouTubeId(selectedFilm.trailer) && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
+          onClick={() => setShowTrailer(false)}
+        >
+          <div 
+            className="relative w-full max-w-4xl aspect-video"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowTrailer(false)}
+              className="absolute -top-10 right-0 text-white hover:text-gray-300 text-xl font-bold"
+            >
+              ✕ Tutup
+            </button>
+            <iframe
+              className="w-full h-full rounded-lg"
+              src={`https://www.youtube.com/embed/${getYouTubeId(selectedFilm.trailer)}?autoplay=1`}
+              title="Trailer"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
