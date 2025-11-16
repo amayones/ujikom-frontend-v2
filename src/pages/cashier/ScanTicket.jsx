@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { cashierApi } from '../../api/cashierApi';
+import api from '../../lib/api';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Scan, CheckCircle, XCircle, Clock } from 'lucide-react';
@@ -22,8 +22,38 @@ export default function ScanTicket() {
     setResult(null);
 
     try {
-      const response = await cashierApi.scanTicket({ order_number: orderNumber });
-      setResult(response.data);
+      // Cari order berdasarkan order_number
+      const ordersResponse = await api.get('/orders');
+      const orders = ordersResponse.data.data || [];
+      const order = orders.find(o => o.order_number === orderNumber.toUpperCase());
+
+      if (!order) {
+        setError('Tiket tidak ditemukan');
+        setLoading(false);
+        return;
+      }
+
+      if (order.payment_status !== 'paid') {
+        setError('Tiket belum dibayar');
+        setLoading(false);
+        return;
+      }
+
+      if (order.ticket_status === 'scanned') {
+        setError('Tiket sudah digunakan pada ' + new Date(order.scanned_at).toLocaleString('id-ID'));
+        setLoading(false);
+        return;
+      }
+
+      // Update ticket status menjadi scanned
+      await api.put(`/orders/${order.id}`, {
+        ticket_status: 'scanned',
+        scanned_at: new Date().toISOString()
+      });
+
+      // Fetch order detail lagi untuk tampilkan
+      const detailResponse = await api.get(`/orders/${order.id}`);
+      setResult({ data: detailResponse.data.data });
       setOrderNumber('');
     } catch (err) {
       setError(err.response?.data?.message || 'Gagal scan tiket');
