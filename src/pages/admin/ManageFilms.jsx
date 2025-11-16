@@ -154,59 +154,56 @@ export default function ManageFilms() {
     if (!trailerSearchTerm.trim()) return;
     setSearchingTrailers(true);
     try {
-      // Use YouTube oEmbed API (no key needed) + scraping approach
-      const searchQuery = encodeURIComponent(trailerSearchTerm + ' official trailer');
+      // Use TMDB API to search movies and get trailers
+      const searchResponse = await fetch(
+        `https://api.themoviedb.org/3/search/movie?api_key=15d2ea6d0dc1d476efbca3eba2b9bbfb&query=${encodeURIComponent(trailerSearchTerm)}`
+      );
+      const searchData = await searchResponse.json();
       
-      // Try Piped API (YouTube frontend alternative)
-      const pipedInstances = [
-        'https://pipedapi.kavin.rocks',
-        'https://pipedapi-libre.kavin.rocks',
-        'https://api-piped.mha.fi'
-      ];
+      if (!searchData.results || searchData.results.length === 0) {
+        throw new Error('Film tidak ditemukan');
+      }
       
-      let results = [];
-      for (const instance of pipedInstances) {
+      // Get trailers for top results
+      const results = [];
+      for (const movie of searchData.results.slice(0, 6)) {
         try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 8000);
+          const videoResponse = await fetch(
+            `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=15d2ea6d0dc1d476efbca3eba2b9bbfb`
+          );
+          const videoData = await videoResponse.json();
           
-          const response = await fetch(
-            `${instance}/search?q=${searchQuery}&filter=videos`,
-            { signal: controller.signal }
+          // Find official trailer
+          const trailer = videoData.results?.find(v => 
+            v.site === 'YouTube' && 
+            (v.type === 'Trailer' || v.type === 'Teaser')
           );
           
-          clearTimeout(timeoutId);
-          
-          if (response.ok) {
-            const data = await response.json();
-            if (data.items && Array.isArray(data.items) && data.items.length > 0) {
-              results = data.items.slice(0, 12).map(video => ({
-                id: { videoId: video.url?.replace('/watch?v=', '') || '' },
-                snippet: {
-                  title: video.title || '',
-                  channelTitle: video.uploaderName || video.uploaderUrl?.split('/').pop() || '',
-                  thumbnails: {
-                    medium: { url: video.thumbnail || `https://i.ytimg.com/vi/${video.url?.replace('/watch?v=', '')}/mqdefault.jpg` }
-                  }
+          if (trailer) {
+            results.push({
+              id: { videoId: trailer.key },
+              snippet: {
+                title: `${movie.title} (${movie.release_date?.substring(0, 4) || 'N/A'})`,
+                channelTitle: trailer.name || 'Official Trailer',
+                thumbnails: {
+                  medium: { url: `https://i.ytimg.com/vi/${trailer.key}/mqdefault.jpg` }
                 }
-              }));
-              break;
-            }
+              }
+            });
           }
         } catch (err) {
-          console.log(`Failed with ${instance}:`, err.message);
           continue;
         }
       }
       
       if (results.length === 0) {
-        throw new Error('No results found from any instance');
+        throw new Error('Trailer tidak ditemukan');
       }
       
       setTrailerResults(results);
     } catch (error) {
       console.error('Error searching trailers:', error);
-      alert('Gagal mencari trailer. Silakan masukkan URL YouTube secara manual atau coba lagi.');
+      alert(error.message || 'Gagal mencari trailer. Silakan coba kata kunci lain.');
       setTrailerResults([]);
     } finally {
       setSearchingTrailers(false);
