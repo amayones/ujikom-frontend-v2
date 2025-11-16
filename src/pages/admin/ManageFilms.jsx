@@ -154,14 +154,25 @@ export default function ManageFilms() {
     if (!trailerSearchTerm.trim()) return;
     setSearchingTrailers(true);
     try {
+      // Use Invidious API as alternative (no API key needed)
       const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${encodeURIComponent(trailerSearchTerm + ' official trailer')}&key=AIzaSyDpNRY8xQS9h6EqLVQKLvJvLqLqLqLqLqI`
+        `https://vid.puffyan.us/api/v1/search?q=${encodeURIComponent(trailerSearchTerm + ' official trailer')}&type=video`
       );
       const data = await response.json();
-      setTrailerResults(data.items || []);
+      const formattedResults = data.slice(0, 12).map(video => ({
+        id: { videoId: video.videoId },
+        snippet: {
+          title: video.title,
+          channelTitle: video.author,
+          thumbnails: {
+            medium: { url: `https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg` }
+          }
+        }
+      }));
+      setTrailerResults(formattedResults);
     } catch (error) {
       console.error('Error searching trailers:', error);
-      alert('Gagal mencari trailer');
+      alert('Gagal mencari trailer. Coba lagi.');
     } finally {
       setSearchingTrailers(false);
     }
