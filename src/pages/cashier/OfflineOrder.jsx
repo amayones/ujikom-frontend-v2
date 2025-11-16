@@ -190,6 +190,8 @@ export default function OfflineOrder() {
         const response = await cashierApi.offlineOrder(orderData);
         alert(`Pesanan berhasil dibuat! No. Order: ${response.data.order_number}`);
         resetForm();
+        // Refresh orders in all-orders page if needed
+        window.dispatchEvent(new Event('orderCreated'));
       } else {
         const orderData = {
           schedule_id: selectedSchedule.id,

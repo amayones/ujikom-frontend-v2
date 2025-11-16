@@ -14,6 +14,13 @@ export default function ProcessOnline() {
 
   useEffect(() => {
     fetchOrders();
+    
+    const handleOrderCreated = () => {
+      fetchOrders();
+    };
+    
+    window.addEventListener('orderCreated', handleOrderCreated);
+    return () => window.removeEventListener('orderCreated', handleOrderCreated);
   }, []);
 
   const fetchOrders = async () => {
@@ -117,11 +124,12 @@ export default function ProcessOnline() {
 
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg sm:text-xl font-semibold">Daftar Pembelian</h2>
+          <h2 className="text-lg sm:text-xl font-semibold">Daftar Pembelian ({filteredOrders.length})</h2>
           <div className="flex gap-2">
             <Button size="sm" variant={filter === 'all' ? 'primary' : 'outline'} onClick={() => setFilter('all')}>Semua</Button>
             <Button size="sm" variant={filter === 'customer' ? 'primary' : 'outline'} onClick={() => setFilter('customer')}>Customer</Button>
             <Button size="sm" variant={filter === 'cashier' ? 'primary' : 'outline'} onClick={() => setFilter('cashier')}>Kasir</Button>
+            <Button size="sm" variant="outline" onClick={fetchOrders}>Refresh</Button>
           </div>
         </div>
         {filteredOrders.length === 0 ? (
