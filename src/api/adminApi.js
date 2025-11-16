@@ -43,6 +43,16 @@ export const adminApi = {
     return response.data;
   },
 
+  toggleUserStatus: async (id) => {
+    const response = await api.post(`/admin/users/${id}/toggle-status`);
+    return response.data;
+  },
+
+  resetUserPassword: async (id) => {
+    const response = await api.post(`/admin/users/${id}/reset-password`);
+    return response.data;
+  },
+
   // Schedules Management
   getSchedules: async () => {
     const response = await api.get('/admin/schedules');

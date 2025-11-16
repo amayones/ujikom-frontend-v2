@@ -12,26 +12,43 @@ export default function ManageUsers() {
   }, []);
 
   const fetchUsers = async () => {
+    setLoading(true);
     try {
       const response = await adminApi.getUsers();
-      // Filter only customers
       setUsers(response.data.filter(u => u.role === 'customer'));
     } catch (error) {
       console.error('Error fetching users:', error);
+      alert('Gagal memuat data pelanggan');
     } finally {
       setLoading(false);
     }
   };
 
   const handleToggleStatus = async (userId) => {
-    // Backend doesn't have status field, this is for future implementation
-    alert('Fitur toggle status akan diimplementasikan di backend');
+    const user = users.find(u => u.id === userId);
+    const action = user?.deleted_at ? 'mengaktifkan' : 'menonaktifkan';
+    
+    if (confirm(`Yakin ingin ${action} pelanggan ini?`)) {
+      try {
+        await adminApi.toggleUserStatus(userId);
+        await fetchUsers();
+        alert(`Pelanggan berhasil ${user?.deleted_at ? 'diaktifkan' : 'dinonaktifkan'}`);
+      } catch (error) {
+        console.error('Error toggling status:', error);
+        alert('Gagal mengubah status pelanggan');
+      }
+    }
   };
 
   const handleResetPassword = async (userId) => {
-    if (confirm('Yakin ingin reset password user ini?')) {
-      // Backend doesn't have reset password endpoint yet
-      alert('Fitur reset password akan diimplementasikan di backend');
+    if (confirm('Yakin ingin reset password user ini? Password akan direset menjadi "password"')) {
+      try {
+        const response = await adminApi.resetUserPassword(userId);
+        alert(`Password berhasil direset!\nEmail: ${response.data.email}\nPassword baru: ${response.data.new_password}`);
+      } catch (error) {
+        console.error('Error resetting password:', error);
+        alert('Gagal reset password');
+      }
     }
   };
 
@@ -79,22 +96,22 @@ export default function ManageUsers() {
                   <td className="py-3 px-4">{user.phone}</td>
                   <td className="py-3 px-4">
                     <span className={`px-2 py-1 rounded-full text-xs ${
-                      (user.status || 'active') === 'active'
+                      !user.deleted_at
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
                     }`}>
-                      {(user.status || 'active') === 'active' ? 'Aktif' : 'Nonaktif'}
+                      {!user.deleted_at ? 'Aktif' : 'Nonaktif'}
                     </span>
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex space-x-2">
                       <Button
                         size="sm"
-                        variant={(user.status || 'active') === 'active' ? 'danger' : 'primary'}
+                        variant={!user.deleted_at ? 'danger' : 'primary'}
                         onClick={() => handleToggleStatus(user.id)}
-                        title={(user.status || 'active') === 'active' ? 'Nonaktifkan' : 'Aktifkan'}
+                        title={!user.deleted_at ? 'Nonaktifkan' : 'Aktifkan'}
                       >
-                        {(user.status || 'active') === 'active' ? <UserX size={14} /> : <UserCheck size={14} />}
+                        {!user.deleted_at ? <UserX size={14} /> : <UserCheck size={14} />}
                       </Button>
                       <Button
                         size="sm"
@@ -122,13 +139,13 @@ export default function ManageUsers() {
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-green-600">
-              {users.filter(u => (u.status || 'active') === 'active').length}
+              {users.filter(u => !u.deleted_at).length}
             </p>
             <p className="text-gray-600">Pelanggan Aktif</p>
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-red-600">
-              {users.filter(u => u.status === 'inactive').length}
+              {users.filter(u => u.deleted_at).length}
             </p>
             <p className="text-gray-600">Pelanggan Nonaktif</p>
           </div>
