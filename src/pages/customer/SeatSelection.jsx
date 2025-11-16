@@ -13,6 +13,29 @@ export default function SeatSelection() {
   const { seats, fetchSeats } = useFilmsStore();
   const [loading, setLoading] = useState(true);
 
+  const handleContinue = useCallback(() => {
+    if (!selectedSchedule?.id) {
+      alert('Data jadwal tidak valid');
+      return;
+    }
+    
+    if (!selectedSeats || selectedSeats.length === 0) {
+      alert('Silakan pilih minimal 1 kursi');
+      return;
+    }
+    
+    if (!totalPrice || totalPrice <= 0) {
+      alert('Total harga tidak valid');
+      return;
+    }
+    
+    try {
+      navigate('/customer/checkout');
+    } catch (err) {
+      console.error('Navigation error:', err);
+    }
+  }, [selectedSeats, selectedSchedule?.id, totalPrice, navigate]);
+
   useEffect(() => {
     let isMounted = true;
     
@@ -66,29 +89,6 @@ export default function SeatSelection() {
       </div>
     );
   }
-  
-  const handleContinue = useCallback(() => {
-    if (!selectedSchedule?.id) {
-      alert('Data jadwal tidak valid');
-      return;
-    }
-    
-    if (!selectedSeats || selectedSeats.length === 0) {
-      alert('Silakan pilih minimal 1 kursi');
-      return;
-    }
-    
-    if (!totalPrice || totalPrice <= 0) {
-      alert('Total harga tidak valid');
-      return;
-    }
-    
-    try {
-      navigate('/customer/checkout');
-    } catch (err) {
-      console.error('Navigation error:', err);
-    }
-  }, [selectedSeats, selectedSchedule?.id, totalPrice, navigate]);
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
