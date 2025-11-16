@@ -46,7 +46,7 @@ export default function ScanTicket() {
       }
 
       // Update ticket status menjadi scanned
-      await api.put(`/orders/${order.id}`, {
+      await api.put(`/cashier/update-ticket/${order.id}`, {
         ticket_status: 'scanned',
         scanned_at: new Date().toISOString()
       });
