@@ -7,6 +7,8 @@ import { Plus, Edit, Trash2, UserCheck, UserX } from 'lucide-react';
 export default function ManageCashiers() {
   const [cashiers, setCashiers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   
   useEffect(() => {
     fetchCashiers();
@@ -112,6 +114,97 @@ export default function ManageCashiers() {
         </Button>
       </div>
 
+      {!showForm && (
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="p-4 sm:p-6 border-b">
+            <h2 className="text-lg sm:text-xl font-semibold">Daftar Kasir</h2>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[600px]">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="text-left py-3 px-4">ID</th>
+                  <th className="text-left py-3 px-4">Nama</th>
+                  <th className="text-left py-3 px-4">Email</th>
+                  <th className="text-left py-3 px-4">Telepon</th>
+                  <th className="text-left py-3 px-4">Status</th>
+                  <th className="text-left py-3 px-4">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cashiers
+                  .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                  .map(cashier => (
+                  <tr key={cashier.id} className="border-b hover:bg-gray-50">
+                    <td className="py-3 px-4 font-mono">{cashier.id}</td>
+                    <td className="py-3 px-4 font-semibold">{cashier.name}</td>
+                    <td className="py-3 px-4">{cashier.email}</td>
+                    <td className="py-3 px-4">{cashier.phone}</td>
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        (cashier.status || 'active') === 'active'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {(cashier.status || 'active') === 'active' ? 'Aktif' : 'Nonaktif'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex space-x-2">
+                        <Button size="sm" variant="outline" onClick={() => handleEdit(cashier)}>
+                          <Edit size={14} />
+                        </Button>
+                        <Button size="sm" variant="danger" onClick={() => handleDelete(cashier.id)}>
+                          <Trash2 size={14} />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-center justify-between p-4 border-t">
+            <p className="text-sm text-gray-600">
+              Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, cashiers.length)} dari {cashiers.length} kasir
+            </p>
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                ← Prev
+              </Button>
+              {Array.from({ length: Math.ceil(cashiers.length / itemsPerPage) }, (_, i) => i + 1)
+                .filter(page => page === 1 || page === Math.ceil(cashiers.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
+                .map((page, idx, arr) => (
+                  <span key={page}>
+                    {idx > 0 && arr[idx - 1] !== page - 1 && <span className="px-2">...</span>}
+                    <Button
+                      size="sm"
+                      variant={currentPage === page ? 'primary' : 'outline'}
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  </span>
+                ))}
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => setCurrentPage(p => Math.min(Math.ceil(cashiers.length / itemsPerPage), p + 1))}
+                disabled={currentPage === Math.ceil(cashiers.length / itemsPerPage)}
+              >
+                Next →
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showForm && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-xl font-bold mb-6">
@@ -162,63 +255,6 @@ export default function ManageCashiers() {
           </form>
         </div>
       )}
-
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-4 sm:p-6 border-b">
-          <h2 className="text-lg sm:text-xl font-semibold">Daftar Kasir</h2>
-        </div>
-        
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[600px]">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="text-left py-3 px-4">ID</th>
-                <th className="text-left py-3 px-4">Nama</th>
-                <th className="text-left py-3 px-4">Email</th>
-                <th className="text-left py-3 px-4">Telepon</th>
-                <th className="text-left py-3 px-4">Status</th>
-                <th className="text-left py-3 px-4">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cashiers.map(cashier => (
-                <tr key={cashier.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4 font-mono">{cashier.id}</td>
-                  <td className="py-3 px-4 font-semibold">{cashier.name}</td>
-                  <td className="py-3 px-4">{cashier.email}</td>
-                  <td className="py-3 px-4">{cashier.phone}</td>
-                  <td className="py-3 px-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      (cashier.status || 'active') === 'active'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {(cashier.status || 'active') === 'active' ? 'Aktif' : 'Nonaktif'}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" onClick={() => handleEdit(cashier)}>
-                        <Edit size={14} />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant={(cashier.status || 'active') === 'active' ? 'danger' : 'primary'}
-                        onClick={() => handleToggleStatus(cashier.id)}
-                      >
-                        {(cashier.status || 'active') === 'active' ? <UserX size={14} /> : <UserCheck size={14} />}
-                      </Button>
-                      <Button size="sm" variant="danger" onClick={() => handleDelete(cashier.id)}>
-                        <Trash2 size={14} />
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
 
       <div className="mt-8 bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">Statistik Kasir</h2>

@@ -21,8 +21,7 @@ const menuItems = {
     { path: '/admin/users', label: 'Kelola Pelanggan', icon: Users },
     { path: '/admin/schedules', label: 'Kelola Jadwal', icon: Calendar },
     { path: '/admin/prices', label: 'Kelola Harga', icon: DollarSign },
-    { path: '/admin/cashiers', label: 'Kelola Kasir', icon: UserCheck },
-    { path: '/admin/seats', label: 'Kelola Kursi', icon: Armchair }
+    { path: '/admin/cashiers', label: 'Kelola Kasir', icon: UserCheck }
   ],
   owner: [
     { path: '/owner/reports', label: 'Laporan', icon: BarChart3 }

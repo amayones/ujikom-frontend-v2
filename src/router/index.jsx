@@ -26,7 +26,6 @@ import ManageUsers from '../pages/admin/ManageUsers';
 import ManageSchedules from '../pages/admin/ManageSchedules';
 import ManagePrices from '../pages/admin/ManagePrices';
 import ManageCashiers from '../pages/admin/ManageCashiers';
-import ManageSeats from '../pages/admin/ManageSeats';
 
 // Owner pages
 import Reports from '../pages/owner/Reports';
@@ -102,8 +101,7 @@ export const router = createBrowserRouter([
       { path: 'users', element: <ManageUsers /> },
       { path: 'schedules', element: <ManageSchedules /> },
       { path: 'prices', element: <ManagePrices /> },
-      { path: 'cashiers', element: <ManageCashiers /> },
-      { path: 'seats', element: <ManageSeats /> }
+      { path: 'cashiers', element: <ManageCashiers /> }
     ]
   },
   {
