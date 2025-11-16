@@ -6,10 +6,8 @@ import {
   Calendar, 
   DollarSign, 
   UserCheck, 
-  Armchair,
   BarChart3,
   ShoppingCart,
-  Printer,
   CheckCircle,
   Scan,
   LogOut
@@ -27,10 +25,9 @@ const menuItems = {
     { path: '/owner/reports', label: 'Laporan', icon: BarChart3 }
   ],
   cashier: [
-    { path: '/cashier/scan-ticket', label: 'Scan Tiket', icon: Scan },
     { path: '/cashier/offline-order', label: 'Pesan Offline', icon: ShoppingCart },
-    { path: '/cashier/print-ticket', label: 'Cetak Tiket', icon: Printer },
-    { path: '/cashier/all-orders', label: 'Semua Pembelian', icon: CheckCircle }
+    { path: '/cashier/all-orders', label: 'Semua Pembelian', icon: CheckCircle },
+    { path: '/cashier/scan-ticket', label: 'Scan Tiket', icon: Scan }
   ]
 };
 

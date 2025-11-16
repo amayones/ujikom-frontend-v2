@@ -32,7 +32,6 @@ import Reports from '../pages/owner/Reports';
 
 // Cashier pages
 import OfflineOrder from '../pages/cashier/OfflineOrder';
-import PrintTicket from '../pages/cashier/PrintTicket';
 import ProcessOnline from '../pages/cashier/ProcessOnline';
 import ScanTicket from '../pages/cashier/ScanTicket';
 
@@ -124,7 +123,6 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: 'offline-order', element: <OfflineOrder /> },
-      { path: 'print-ticket', element: <PrintTicket /> },
       { path: 'all-orders', element: <ProcessOnline /> },
       { path: 'scan-ticket', element: <ScanTicket /> }
     ]

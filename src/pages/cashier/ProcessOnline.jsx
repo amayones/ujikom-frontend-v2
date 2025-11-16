@@ -20,7 +20,7 @@ export default function ProcessOnline() {
     try {
       const response = await api.get('/orders');
       const data = response.data.data || [];
-      setOrders(data.filter(o => o.payment_status === 'paid'));
+      setOrders(data.filter(o => o.payment_status === 'paid').sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
     } catch (error) {
       console.error('Error fetching orders:', error);
       setOrders([]);
