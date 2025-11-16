@@ -8,6 +8,7 @@ export default function ManageCashiers() {
   const [cashiers, setCashiers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
   const itemsPerPage = 10;
   
   useEffect(() => {
@@ -96,6 +97,11 @@ export default function ManageCashiers() {
     alert('Fitur toggle status akan diimplementasikan di backend');
   };
 
+  const filteredCashiers = cashiers.filter(cashier => {
+    return cashier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           cashier.email.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -116,8 +122,15 @@ export default function ManageCashiers() {
 
       {!showForm && (
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-4 sm:p-6 border-b">
+          <div className="p-4 sm:p-6 border-b space-y-4">
             <h2 className="text-lg sm:text-xl font-semibold">Daftar Kasir</h2>
+            <input
+              type="text"
+              placeholder="Cari nama atau email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
           </div>
           
           <div className="overflow-x-auto">
@@ -133,7 +146,13 @@ export default function ManageCashiers() {
                 </tr>
               </thead>
               <tbody>
-                {cashiers
+                {filteredCashiers.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="py-8 text-center text-gray-500">
+                      {searchTerm ? 'Tidak ada data yang sesuai' : 'Belum ada data kasir'}
+                    </td>
+                  </tr>
+                ) : filteredCashiers
                   .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                   .map(cashier => (
                   <tr key={cashier.id} className="border-b hover:bg-gray-50">
@@ -167,7 +186,7 @@ export default function ManageCashiers() {
           </div>
           <div className="flex items-center justify-between p-4 border-t">
             <p className="text-sm text-gray-600">
-              Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, cashiers.length)} dari {cashiers.length} kasir
+              Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, filteredCashiers.length)} dari {filteredCashiers.length} kasir
             </p>
             <div className="flex gap-2">
               <Button 
@@ -178,8 +197,8 @@ export default function ManageCashiers() {
               >
                 ← Prev
               </Button>
-              {Array.from({ length: Math.ceil(cashiers.length / itemsPerPage) }, (_, i) => i + 1)
-                .filter(page => page === 1 || page === Math.ceil(cashiers.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
+              {Array.from({ length: Math.ceil(filteredCashiers.length / itemsPerPage) }, (_, i) => i + 1)
+                .filter(page => page === 1 || page === Math.ceil(filteredCashiers.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
                 .map((page, idx, arr) => (
                   <span key={page}>
                     {idx > 0 && arr[idx - 1] !== page - 1 && <span className="px-2">...</span>}
@@ -195,8 +214,8 @@ export default function ManageCashiers() {
               <Button 
                 size="sm" 
                 variant="outline" 
-                onClick={() => setCurrentPage(p => Math.min(Math.ceil(cashiers.length / itemsPerPage), p + 1))}
-                disabled={currentPage === Math.ceil(cashiers.length / itemsPerPage)}
+                onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredCashiers.length / itemsPerPage), p + 1))}
+                disabled={currentPage === Math.ceil(filteredCashiers.length / itemsPerPage)}
               >
                 Next →
               </Button>

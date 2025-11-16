@@ -23,6 +23,8 @@ export default function ManageSchedules() {
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState('grouped'); // 'grouped' or 'list'
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStudio, setFilterStudio] = useState('all');
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -125,6 +127,12 @@ export default function ManageSchedules() {
     }
   };
 
+  const filteredSchedules = schedules.filter(schedule => {
+    const matchSearch = schedule.film?.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchStudio = filterStudio === 'all' || schedule.studio_id === parseInt(filterStudio);
+    return matchSearch && matchStudio;
+  });
+
   const initialLoading = loading && schedules.length === 0;
 
   if (initialLoading) {
@@ -147,8 +155,9 @@ export default function ManageSchedules() {
 
       {!showForm && (
         <div className="overflow-hidden bg-white rounded-lg shadow-md">
-          <div className="flex items-center justify-between p-6 border-b">
-            <h2 className="text-xl font-semibold">Daftar Jadwal ({schedules.length})</h2>
+          <div className="p-6 border-b space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Daftar Jadwal ({filteredSchedules.length})</h2>
             <div className="flex gap-2">
               <Button 
                 size="sm" 
@@ -164,17 +173,37 @@ export default function ManageSchedules() {
               >
                 Semua
               </Button>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                placeholder="Cari judul film..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+              />
+              <select
+                value={filterStudio}
+                onChange={(e) => setFilterStudio(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="all">Semua Studio</option>
+                {studios.map(studio => (
+                  <option key={studio.id} value={studio.id}>{studio.name}</option>
+                ))}
+              </select>
             </div>
           </div>
           
-          {schedules.length === 0 ? (
+          {filteredSchedules.length === 0 ? (
             <div className="py-12 text-center text-gray-500">
-              Belum ada jadwal. Klik "Tambah Jadwal" untuk membuat jadwal baru.
+              {searchTerm || filterStudio !== 'all' ? 'Tidak ada data yang sesuai' : 'Belum ada jadwal. Klik "Tambah Jadwal" untuk membuat jadwal baru.'}
             </div>
           ) : viewMode === 'grouped' ? (
             <div className="p-6 space-y-6">
               {Object.entries(
-                schedules.reduce((acc, schedule) => {
+                filteredSchedules.reduce((acc, schedule) => {
                   const date = new Date(schedule.show_time).toLocaleDateString('id-ID', {
                     weekday: 'long',
                     day: 'numeric',
@@ -236,7 +265,7 @@ export default function ManageSchedules() {
                     </tr>
                   </thead>
                   <tbody>
-                    {schedules
+                    {filteredSchedules
                       .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                       .map(schedule => (
                       <tr key={schedule.id} className="border-b hover:bg-gray-50">
@@ -266,7 +295,7 @@ export default function ManageSchedules() {
               </div>
               <div className="flex items-center justify-between p-4 border-t">
                   <p className="text-sm text-gray-600">
-                    Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, schedules.length)} dari {schedules.length} jadwal
+                    Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, filteredSchedules.length)} dari {filteredSchedules.length} jadwal
                   </p>
                   <div className="flex gap-2">
                     <Button 
@@ -277,8 +306,8 @@ export default function ManageSchedules() {
                     >
                       ← Prev
                     </Button>
-                    {Array.from({ length: Math.ceil(schedules.length / itemsPerPage) }, (_, i) => i + 1)
-                      .filter(page => page === 1 || page === Math.ceil(schedules.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
+                    {Array.from({ length: Math.ceil(filteredSchedules.length / itemsPerPage) }, (_, i) => i + 1)
+                      .filter(page => page === 1 || page === Math.ceil(filteredSchedules.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
                       .map((page, idx, arr) => (
                         <span key={page}>
                           {idx > 0 && arr[idx - 1] !== page - 1 && <span className="px-2">...</span>}
@@ -294,8 +323,8 @@ export default function ManageSchedules() {
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      onClick={() => setCurrentPage(p => Math.min(Math.ceil(schedules.length / itemsPerPage), p + 1))}
-                      disabled={currentPage === Math.ceil(schedules.length / itemsPerPage)}
+                      onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredSchedules.length / itemsPerPage), p + 1))}
+                      disabled={currentPage === Math.ceil(filteredSchedules.length / itemsPerPage)}
                     >
                       Next →
                     </Button>
