@@ -140,32 +140,6 @@ export default function FilmDetail() {
     return match ? match[1] : null;
   };
 
-  useEffect(() => {
-    let isMounted = true;
-    
-    const loadFilmData = async () => {
-      try {
-        await fetchFilmById(id);
-        await fetchSchedules(id);
-      } catch (error) {
-        if (isMounted) {
-          console.error('Error loading film:', error);
-          alert('Gagal memuat data film');
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-    
-    loadFilmData();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, [id, fetchFilmById, fetchSchedules]);
-
   const handleSelectSchedule = useCallback((schedule) => {
     console.log('Schedule selected:', schedule);
     console.log('Selected film:', selectedFilm);
@@ -214,6 +188,32 @@ export default function FilmDetail() {
       alert('Gagal memilih jadwal: ' + error.message);
     }
   }, [selectedFilm, setSchedule, navigate]);
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    const loadFilmData = async () => {
+      try {
+        await fetchFilmById(id);
+        await fetchSchedules(id);
+      } catch (error) {
+        if (isMounted) {
+          console.error('Error loading film:', error);
+          alert('Gagal memuat data film');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+    
+    loadFilmData();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [id, fetchFilmById, fetchSchedules]);
 
   if (loading) {
     return (
