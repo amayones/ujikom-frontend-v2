@@ -167,8 +167,7 @@ export default function ManageUsers() {
             </tbody>
           </table>
         </div>
-        {Math.ceil(filteredUsers.length / itemsPerPage) > 1 && (
-          <div className="flex items-center justify-between p-4 border-t">
+        <div className="flex items-center justify-between p-4 border-t">
             <p className="text-sm text-gray-600">
               Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, filteredUsers.length)} dari {filteredUsers.length} pelanggan
             </p>
@@ -205,7 +204,6 @@ export default function ManageUsers() {
               </Button>
             </div>
           </div>
-        )}
       </div>
 
       <div className="mt-8 bg-white rounded-lg shadow-md p-4 sm:p-6">

@@ -230,8 +230,7 @@ export default function ManageFilms() {
               </tbody>
             </table>
           </div>
-          {Math.ceil(filteredFilms.length / itemsPerPage) > 1 && (
-            <div className="flex items-center justify-between p-4 border-t">
+          <div className="flex items-center justify-between p-4 border-t">
               <p className="text-sm text-gray-600">
                 Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, filteredFilms.length)} dari {filteredFilms.length} film
               </p>
@@ -268,7 +267,6 @@ export default function ManageFilms() {
                 </Button>
               </div>
             </div>
-          )}
         </div>
       )}
 

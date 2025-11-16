@@ -452,8 +452,7 @@ export default function ManageSchedules() {
                 </tbody>
               </table>
             </div>
-            {Math.ceil(schedules.length / itemsPerPage) > 1 && (
-              <div className="flex items-center justify-between p-4 border-t">
+            <div className="flex items-center justify-between p-4 border-t">
                 <p className="text-sm text-gray-600">
                   Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, schedules.length)} dari {schedules.length} jadwal
                 </p>
@@ -490,7 +489,6 @@ export default function ManageSchedules() {
                   </Button>
                 </div>
               </div>
-            )}
           </>
         )}
       </div>
