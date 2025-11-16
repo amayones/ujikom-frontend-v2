@@ -125,7 +125,7 @@ export const router = createBrowserRouter([
     children: [
       { path: 'offline-order', element: <OfflineOrder /> },
       { path: 'print-ticket', element: <PrintTicket /> },
-      { path: 'process-online', element: <ProcessOnline /> },
+      { path: 'all-orders', element: <ProcessOnline /> },
       { path: 'scan-ticket', element: <ScanTicket /> }
     ]
   },

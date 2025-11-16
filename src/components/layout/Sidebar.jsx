@@ -30,7 +30,7 @@ const menuItems = {
     { path: '/cashier/scan-ticket', label: 'Scan Tiket', icon: Scan },
     { path: '/cashier/offline-order', label: 'Pesan Offline', icon: ShoppingCart },
     { path: '/cashier/print-ticket', label: 'Cetak Tiket', icon: Printer },
-    { path: '/cashier/process-online', label: 'Proses Online', icon: CheckCircle }
+    { path: '/cashier/all-orders', label: 'Semua Pembelian', icon: CheckCircle }
   ]
 };
 

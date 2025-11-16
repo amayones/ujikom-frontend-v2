@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { cashierApi } from '../../api/cashierApi';
 import api from '../../lib/api';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -11,6 +10,7 @@ export default function ProcessOnline() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     fetchOrders();
@@ -20,7 +20,7 @@ export default function ProcessOnline() {
     try {
       const response = await api.get('/orders');
       const data = response.data.data || [];
-      setOrders(data.filter(o => o.order_type === 'online' && o.payment_status === 'paid'));
+      setOrders(data.filter(o => o.payment_status === 'paid'));
     } catch (error) {
       console.error('Error fetching orders:', error);
       setOrders([]);
@@ -41,13 +41,22 @@ export default function ProcessOnline() {
     }
   };
 
-  const getStatusColor = (status) => {
-    return status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
+  const getOrderTypeLabel = (type) => {
+    if (type === 'online') return 'Customer Online';
+    if (type === 'offline') return 'Kasir Tunai';
+    return 'Kasir Online';
   };
+
+  const filteredOrders = orders.filter(o => {
+    if (filter === 'all') return true;
+    if (filter === 'customer') return o.order_type === 'online';
+    if (filter === 'cashier') return o.order_type === 'offline' || o.order_type === 'cashier_online';
+    return true;
+  });
 
   return (
     <div>
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Proses Tiket Online</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Semua Pembelian Tiket</h1>
 
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
         <h2 className="text-xl font-bold mb-4">Cari Pesanan</h2>
@@ -69,9 +78,14 @@ export default function ProcessOnline() {
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex justify-between items-start mb-6">
             <h2 className="text-xl font-bold">Detail Pesanan</h2>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedOrder.payment_status)}`}>
-              {selectedOrder.payment_status === 'paid' ? 'LUNAS' : selectedOrder.payment_status.toUpperCase()}
-            </span>
+            <div className="flex gap-2">
+              <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                {getOrderTypeLabel(selectedOrder.order_type)}
+              </span>
+              <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                LUNAS
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -83,6 +97,8 @@ export default function ProcessOnline() {
                 <div><strong>Studio:</strong> {selectedOrder.schedule?.studio?.name || 'N/A'}</div>
                 <div><strong>Waktu:</strong> {selectedOrder.schedule?.show_time ? new Date(selectedOrder.schedule.show_time).toLocaleString('id-ID') : 'N/A'}</div>
                 <div><strong>Kursi:</strong> {selectedOrder.orderItems?.map(item => `${item.seat?.row}${item.seat?.column}`).join(', ') || '-'}</div>
+                {selectedOrder.customer_name && <div><strong>Nama:</strong> {selectedOrder.customer_name}</div>}
+                {selectedOrder.customer_phone && <div><strong>Telepon:</strong> {selectedOrder.customer_phone}</div>}
               </div>
             </div>
 
@@ -92,45 +108,49 @@ export default function ProcessOnline() {
                 <div><strong>Total:</strong> {formatRupiah(parseFloat(selectedOrder.total_amount || 0))}</div>
                 <div><strong>Jumlah Tiket:</strong> {selectedOrder.orderItems?.length || 0}</div>
                 <div><strong>Tanggal Pesan:</strong> {new Date(selectedOrder.created_at).toLocaleString('id-ID')}</div>
+                <div><strong>Tipe Order:</strong> {getOrderTypeLabel(selectedOrder.order_type)}</div>
               </div>
             </div>
           </div>
-
-          {selectedOrder.payment_status === 'paid' && (
-            <div className="mt-6 bg-green-50 p-4 rounded-lg">
-              <p className="text-green-800">✅ Pesanan telah dibayar. Pelanggan dapat masuk ke bioskop.</p>
-            </div>
-          )}
         </div>
       )}
 
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">Pesanan Online Terbaru</h2>
-        {orders.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">Tidak ada pesanan online</p>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg sm:text-xl font-semibold">Daftar Pembelian</h2>
+          <div className="flex gap-2">
+            <Button size="sm" variant={filter === 'all' ? 'primary' : 'outline'} onClick={() => setFilter('all')}>Semua</Button>
+            <Button size="sm" variant={filter === 'customer' ? 'primary' : 'outline'} onClick={() => setFilter('customer')}>Customer</Button>
+            <Button size="sm" variant={filter === 'cashier' ? 'primary' : 'outline'} onClick={() => setFilter('cashier')}>Kasir</Button>
+          </div>
+        </div>
+        {filteredOrders.length === 0 ? (
+          <p className="text-gray-500 text-center py-8">Tidak ada pesanan</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[600px] text-sm">
+            <table className="w-full min-w-[700px] text-sm">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="text-left py-3 px-4">No. Order</th>
                   <th className="text-left py-3 px-4">Film</th>
                   <th className="text-left py-3 px-4">Total</th>
-                  <th className="text-left py-3 px-4">Status</th>
+                  <th className="text-left py-3 px-4">Tipe</th>
+                  <th className="text-left py-3 px-4">Tanggal</th>
                   <th className="text-left py-3 px-4">Aksi</th>
                 </tr>
               </thead>
               <tbody>
-                {orders.slice(0, 10).map(order => (
+                {filteredOrders.map(order => (
                   <tr key={order.id} className="border-b hover:bg-gray-50">
                     <td className="py-3 px-4 font-mono text-xs">{order.order_number}</td>
                     <td className="py-3 px-4">{order.schedule?.film?.title || 'N/A'}</td>
                     <td className="py-3 px-4">{formatRupiah(parseFloat(order.total_amount || 0))}</td>
                     <td className="py-3 px-4">
-                      <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(order.payment_status)}`}>
-                        {order.payment_status === 'paid' ? 'LUNAS' : order.payment_status.toUpperCase()}
+                      <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                        {getOrderTypeLabel(order.order_type)}
                       </span>
                     </td>
+                    <td className="py-3 px-4 text-xs">{new Date(order.created_at).toLocaleDateString('id-ID')}</td>
                     <td className="py-3 px-4">
                       <Button size="sm" onClick={() => setSelectedOrder(order)}>
                         Lihat
