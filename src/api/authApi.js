@@ -29,5 +29,15 @@ export const authApi = {
   updateProfile: async (userData) => {
     const response = await api.put('/profile', userData);
     return response.data;
+  },
+
+  updatePassword: async (passwordData) => {
+    try {
+      const response = await api.put('/profile/password', passwordData);
+      return response.data;
+    } catch (error) {
+      console.error('Update password API error:', error);
+      throw error;
+    }
   }
 };

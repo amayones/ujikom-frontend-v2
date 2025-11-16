@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import api from '../../lib/api';
 
 export default function Profile() {
   const { user, updateProfile } = useAuthStore();
@@ -24,6 +25,14 @@ export default function Profile() {
   }, [user]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  
+  const [passwordData, setPasswordData] = useState({
+    current_password: '',
+    new_password: '',
+    new_password_confirmation: ''
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState('');
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -56,6 +65,71 @@ export default function Profile() {
       setLoading(false);
     }
   }, [formData, updateProfile]);
+
+  const handlePasswordChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setPasswordData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
+
+  const handlePasswordSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    setPasswordMessage('');
+
+    if (!passwordData.current_password || !passwordData.new_password || !passwordData.new_password_confirmation) {
+      setPasswordMessage('Semua field password harus diisi');
+      return;
+    }
+
+    if (passwordData.new_password.length < 8) {
+      setPasswordMessage('Password baru minimal 8 karakter');
+      return;
+    }
+
+    if (passwordData.new_password !== passwordData.new_password_confirmation) {
+      setPasswordMessage('Konfirmasi password tidak cocok');
+      return;
+    }
+
+    setPasswordLoading(true);
+
+    try {
+      const response = await api.put('/profile/password', {
+        current_password: passwordData.current_password,
+        new_password: passwordData.new_password,
+        new_password_confirmation: passwordData.new_password_confirmation
+      });
+      
+      if (response?.data) {
+        setPasswordMessage('Password berhasil diubah');
+        setPasswordData({
+          current_password: '',
+          new_password: '',
+          new_password_confirmation: ''
+        });
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error) {
+      console.error('Password update error:', error);
+      let errorMsg = 'Gagal mengubah password';
+      
+      if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      } else if (error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+        errorMsg = Object.values(errors).flat().join(', ');
+      } else if (error.message) {
+        errorMsg = error.message;
+      }
+      
+      setPasswordMessage(errorMsg);
+    } finally {
+      setPasswordLoading(false);
+    }
+  }, [passwordData]);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -109,6 +183,55 @@ export default function Profile() {
               Reset
             </Button>
           </div>
+        </form>
+      </div>
+      
+      <div className="p-4 mt-6 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
+        <h2 className="mb-4 text-lg font-bold sm:text-xl">Ubah Password</h2>
+        <form onSubmit={handlePasswordSubmit}>
+          <Input
+            label="Password Saat Ini"
+            name="current_password"
+            type="password"
+            value={passwordData.current_password}
+            onChange={handlePasswordChange}
+            placeholder="Masukkan password saat ini"
+            required
+          />
+          
+          <Input
+            label="Password Baru"
+            name="new_password"
+            type="password"
+            value={passwordData.new_password}
+            onChange={handlePasswordChange}
+            placeholder="Minimal 8 karakter"
+            required
+          />
+          
+          <Input
+            label="Konfirmasi Password Baru"
+            name="new_password_confirmation"
+            type="password"
+            value={passwordData.new_password_confirmation}
+            onChange={handlePasswordChange}
+            placeholder="Ulangi password baru"
+            required
+          />
+          
+          {passwordMessage && (
+            <div className={`p-3 rounded mb-4 ${
+              passwordMessage.includes('berhasil') 
+                ? 'bg-green-100 text-green-700' 
+                : 'bg-red-100 text-red-700'
+            }`}>
+              {passwordMessage}
+            </div>
+          )}
+          
+          <Button type="submit" disabled={passwordLoading}>
+            {passwordLoading ? 'Mengubah...' : 'Ubah Password'}
+          </Button>
         </form>
       </div>
       
