@@ -97,7 +97,11 @@ function SchedulesByDay({ schedules, onSelectSchedule }) {
             <div className="mb-3">
               <h4 className="font-semibold text-lg">{schedule.studio?.name || 'Studio'}</h4>
               <p className="text-sm text-gray-500">
-                {schedule.day_type === 'weekend' ? '🎉 Weekend' : '📅 Weekday'}
+                {(() => {
+                  const showDate = new Date(schedule.show_time);
+                  const dayOfWeek = showDate.getDay();
+                  return (dayOfWeek === 0 || dayOfWeek === 6) ? '🎉 Weekend' : '📅 Weekday';
+                })()}
               </p>
             </div>
             
@@ -169,15 +173,20 @@ export default function FilmDetail() {
     }
     
     try {
+      const showDate = new Date(schedule.show_time);
+      const dayOfWeek = showDate.getDay();
+      const dayType = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : 'weekday';
+      
       const scheduleData = {
         id: schedule.id,
         film_id: selectedFilm.id,
         film_title: selectedFilm.title,
         studio: schedule.studio?.name || 'Studio',
-        date: new Date(schedule.show_time).toLocaleDateString('id-ID'),
-        time: new Date(schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-        base_price: schedule.base_price || selectedFilm.base_price,
-        day_type: schedule.day_type || 'weekday'
+        date: showDate.toLocaleDateString('id-ID'),
+        time: showDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+        show_time: schedule.show_time,
+        base_price: selectedFilm.base_price,
+        day_type: dayType
       };
       
       setSchedule(scheduleData);

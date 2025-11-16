@@ -14,25 +14,26 @@ export const useCartStore = create((set, get) => ({
 
   fetchPrices: async (schedule) => {
     try {
-      const response = await api.get('/admin/prices');
+      const response = await api.get('/prices');
       const pricesData = response.data.data || response.data;
       
       // Determine day type from schedule
-      const showDate = new Date(schedule.show_time);
+      const showDate = new Date(schedule.show_time || schedule.date);
       const dayOfWeek = showDate.getDay();
       const dayType = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : 'weekday';
       
-      // Create price map
-      const priceMap = {};
-      pricesData.forEach(p => {
-        if (p.day_type === dayType) {
-          priceMap[p.seat_category] = parseFloat(p.price);
-        }
-      });
+      // Find price for this day type
+      const priceData = pricesData.find(p => p.day_type === dayType);
+      const seatPrice = priceData ? parseFloat(priceData.price) : (dayType === 'weekend' ? 45000 : 35000);
       
-      set({ prices: priceMap });
+      set({ prices: { seatPrice, dayType } });
     } catch (error) {
       console.error('Failed to fetch prices:', error);
+      // Fallback prices
+      const showDate = new Date(schedule.show_time || schedule.date);
+      const dayOfWeek = showDate.getDay();
+      const dayType = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : 'weekday';
+      set({ prices: { seatPrice: dayType === 'weekend' ? 45000 : 35000, dayType } });
     }
   },
 
@@ -48,11 +49,9 @@ export const useCartStore = create((set, get) => ({
       newSeats = [...selectedSeats, seat];
     }
     
-    // Calculate price using fetched prices
-    const totalPrice = newSeats.reduce((sum, s) => {
-      const seatPrice = prices[s.category] || 50000;
-      return sum + seatPrice;
-    }, 0);
+    // Calculate price using single seat price
+    const seatPrice = prices.seatPrice || 35000;
+    const totalPrice = newSeats.length * seatPrice;
     
     set({ selectedSeats: newSeats, totalPrice });
   },
