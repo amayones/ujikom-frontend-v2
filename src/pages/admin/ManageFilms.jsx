@@ -9,10 +9,14 @@ import { formatRupiah } from '../../utils/currency';
 export default function ManageFilms() {
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchFilms();
   }, []);
+
+  const [showForm, setShowForm] = useState(false);
 
   const fetchFilms = async () => {
     try {
@@ -26,7 +30,6 @@ export default function ManageFilms() {
       setLoading(false);
     }
   };
-  const [showForm, setShowForm] = useState(false);
   const [editingFilm, setEditingFilm] = useState(null);
 
   const [formData, setFormData] = useState({
@@ -50,6 +53,7 @@ export default function ManageFilms() {
       genre: formData.genre,
       status: formData.status,
       poster: formData.poster || '',
+      trailer: formData.trailer || '',
       base_price: parseFloat(formData.base_price)
     };
 
@@ -126,6 +130,107 @@ export default function ManageFilms() {
           Tambah Film
         </Button>
       </div>
+
+      {!showForm && (
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[800px]">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="text-left py-3 px-4">Poster</th>
+                  <th className="text-left py-3 px-4">Judul</th>
+                  <th className="text-left py-3 px-4">Genre</th>
+                  <th className="text-left py-3 px-4">Durasi</th>
+                  <th className="text-left py-3 px-4">Harga</th>
+                  <th className="text-left py-3 px-4">Status</th>
+                  <th className="text-left py-3 px-4">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {films
+                  .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                  .map(film => (
+                  <tr key={film.id} className="border-b hover:bg-gray-50">
+                    <td className="py-3 px-4">
+                      <img 
+                        src={film.poster || `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`} 
+                        alt={film.title} 
+                        className="w-12 h-16 object-cover rounded"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`;
+                        }}
+                      />
+                    </td>
+                    <td className="py-3 px-4 font-semibold">{film.title}</td>
+                    <td className="py-3 px-4">{film.genre}</td>
+                    <td className="py-3 px-4">{film.duration} min</td>
+                    <td className="py-3 px-4">{formatRupiah(parseFloat(film.base_price))}</td>
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        film.status === 'play_now' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-blue-100 text-blue-800'
+                      }`}>
+                        {film.status === 'play_now' ? 'Tayang' : 'Segera'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex space-x-2">
+                        <Button size="sm" variant="outline" onClick={() => handleEdit(film)}>
+                          <Edit size={14} />
+                        </Button>
+                        <Button size="sm" variant="danger" onClick={() => handleDelete(film.id)}>
+                          <Trash2 size={14} />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {Math.ceil(films.length / itemsPerPage) > 1 && (
+            <div className="flex items-center justify-between p-4 border-t">
+              <p className="text-sm text-gray-600">
+                Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, films.length)} dari {films.length} film
+              </p>
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  ← Prev
+                </Button>
+                {Array.from({ length: Math.ceil(films.length / itemsPerPage) }, (_, i) => i + 1)
+                  .filter(page => page === 1 || page === Math.ceil(films.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
+                  .map((page, idx, arr) => (
+                    <span key={page}>
+                      {idx > 0 && arr[idx - 1] !== page - 1 && <span className="px-2">...</span>}
+                      <Button
+                        size="sm"
+                        variant={currentPage === page ? 'primary' : 'outline'}
+                        onClick={() => setCurrentPage(page)}
+                      >
+                        {page}
+                      </Button>
+                    </span>
+                  ))}
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(films.length / itemsPerPage), p + 1))}
+                  disabled={currentPage === Math.ceil(films.length / itemsPerPage)}
+                >
+                  Next →
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {showForm && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -221,66 +326,6 @@ export default function ManageFilms() {
           </form>
         </div>
       )}
-
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="overflow-x-auto">
-        <table className="w-full min-w-[800px]">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="text-left py-3 px-4">Poster</th>
-              <th className="text-left py-3 px-4">Judul</th>
-              <th className="text-left py-3 px-4">Genre</th>
-              <th className="text-left py-3 px-4">Durasi</th>
-              <th className="text-left py-3 px-4">Harga</th>
-              <th className="text-left py-3 px-4">Status</th>
-              <th className="text-left py-3 px-4">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {films.map(film => (
-              <tr key={film.id} className="border-b hover:bg-gray-50">
-                <td className="py-3 px-4">
-                  <img 
-                    src={film.poster || `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`} 
-                    alt={film.title} 
-                    className="w-12 h-16 object-cover rounded"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`;
-                    }}
-                  />
-                </td>
-                <td className="py-3 px-4 font-semibold">{film.title}</td>
-                <td className="py-3 px-4">{film.genre}</td>
-                <td className="py-3 px-4">{film.duration} min</td>
-                <td className="py-3 px-4">{formatRupiah(parseFloat(film.base_price))}</td>
-                <td className="py-3 px-4">
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    film.status === 'play_now' 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-blue-100 text-blue-800'
-                  }`}>
-                    {film.status === 'play_now' ? 'Tayang' : 'Segera'}
-                  </span>
-                </td>
-                <td className="py-3 px-4">
-                  <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(film)}>
-                      <Edit size={14} />
-                    </Button>
-                    <Button size="sm" variant="danger" onClick={() => handleDelete(film.id)}>
-                      <Trash2 size={14} />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        </div>
-      </div>
-
-
     </div>
   );
 }
