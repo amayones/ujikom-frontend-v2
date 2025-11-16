@@ -2,11 +2,12 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useFilmsStore } from '../../store/filmsStore';
 import ShowCard from '../../components/cinema/ShowCard';
 import Button from '../../components/ui/Button';
-import { Film, TrendingUp, Grid3x3 } from 'lucide-react';
+import { Film, TrendingUp, Grid3x3, Search } from 'lucide-react';
 
 export default function FilmList() {
   const { loading, fetchFilms, getPlayNowFilms, getComingSoonFilms, getAllFilms } = useFilmsStore();
   const [activeFilter, setActiveFilter] = useState('play_now');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchFilms();
@@ -40,10 +41,20 @@ export default function FilmList() {
   }, [getAllFilms]);
 
   const filteredFilms = useMemo(() => {
-    if (activeFilter === 'coming_soon') return comingSoonFilms;
-    if (activeFilter === 'all') return allFilms;
-    return playNowFilms;
-  }, [activeFilter, playNowFilms, comingSoonFilms, allFilms]);
+    let films = [];
+    if (activeFilter === 'coming_soon') films = comingSoonFilms;
+    else if (activeFilter === 'all') films = allFilms;
+    else films = playNowFilms;
+    
+    if (!searchQuery.trim()) return films;
+    
+    const query = searchQuery.toLowerCase().trim();
+    return films.filter(film => 
+      film.title?.toLowerCase().includes(query) ||
+      film.genre?.toLowerCase().includes(query) ||
+      film.description?.toLowerCase().includes(query)
+    );
+  }, [activeFilter, playNowFilms, comingSoonFilms, allFilms, searchQuery]);
 
   const filterButtons = useMemo(() => [
     { id: 'play_now', label: 'Sedang Tayang', icon: Film, count: playNowFilms.length },
@@ -73,6 +84,42 @@ export default function FilmList() {
           🎬 Jelajahi Film
         </h1>
         <p className="text-gray-600">Temukan film favorit Anda dan pesan tiket sekarang!</p>
+      </div>
+      
+      {/* Search Bar */}
+      <div className="mb-6">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <input
+            type="text"
+            placeholder="Cari film berdasarkan judul, genre, atau deskripsi..."
+            value={searchQuery}
+            onChange={(e) => {
+              try {
+                setSearchQuery(e.target.value || '');
+              } catch (err) {
+                console.error('Search input error:', err);
+              }
+            }}
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  setSearchQuery('');
+                } catch (err) {
+                  console.error('Clear search error:', err);
+                }
+              }}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
       
       {/* Filter Buttons */}
