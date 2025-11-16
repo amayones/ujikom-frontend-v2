@@ -89,7 +89,7 @@ export default function ProcessOnline() {
             <div>
               <h3 className="font-semibold mb-3">Informasi Pembayaran</h3>
               <div className="space-y-2 text-sm">
-                <div><strong>Total:</strong> {formatRupiah(parseInt(selectedOrder.total_amount))}</div>
+                <div><strong>Total:</strong> {formatRupiah(parseFloat(selectedOrder.total_amount || 0))}</div>
                 <div><strong>Jumlah Tiket:</strong> {selectedOrder.orderItems?.length || 0}</div>
                 <div><strong>Tanggal Pesan:</strong> {new Date(selectedOrder.created_at).toLocaleString('id-ID')}</div>
               </div>
@@ -125,7 +125,7 @@ export default function ProcessOnline() {
                   <tr key={order.id} className="border-b hover:bg-gray-50">
                     <td className="py-3 px-4 font-mono text-xs">{order.order_number}</td>
                     <td className="py-3 px-4">{order.schedule?.film?.title || 'N/A'}</td>
-                    <td className="py-3 px-4">{formatRupiah(parseInt(order.total_amount))}</td>
+                    <td className="py-3 px-4">{formatRupiah(parseFloat(order.total_amount || 0))}</td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(order.payment_status)}`}>
                         {order.payment_status === 'paid' ? 'LUNAS' : order.payment_status.toUpperCase()}

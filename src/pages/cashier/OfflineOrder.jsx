@@ -120,7 +120,7 @@ export default function OfflineOrder() {
 
   const fetchPrices = async () => {
     try {
-      const response = await api.get('/admin/prices');
+      const response = await api.get('/prices');
       setPrices(response.data.data || []);
     } catch (error) {
       console.error('Failed to fetch prices:', error);
@@ -248,7 +248,7 @@ export default function OfflineOrder() {
   };
 
   const calculateTotal = () => {
-    if (!selectedSchedule || selectedSeats.length === 0 || prices.length === 0) return 0;
+    if (!selectedSchedule || selectedSeats.length === 0) return 0;
     
     // Determine day type from schedule
     const showDate = new Date(selectedSchedule.show_time);
@@ -257,7 +257,7 @@ export default function OfflineOrder() {
     
     // Calculate total based on dynamic prices
     const priceData = prices.find(p => p.day_type === dayType);
-    const seatPrice = priceData ? parseFloat(priceData.price) : 50000;
+    const seatPrice = priceData ? parseFloat(priceData.price) : (dayType === 'weekend' ? 45000 : 35000);
     return selectedSeats.length * seatPrice;
   };
 
