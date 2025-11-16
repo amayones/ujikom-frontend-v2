@@ -173,6 +173,7 @@ export default function Invoice() {
   };
 
   const isPending = order.status === 'pending';
+  const isCancelled = order.status === 'cancelled';
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -246,7 +247,14 @@ export default function Invoice() {
           </div>
         </div>
 
-        {isPending ? (
+        {isCancelled ? (
+          <div className="border-t pt-6 mb-8">
+            <div className="bg-red-50 border border-red-200 p-6 rounded-lg text-center">
+              <p className="text-red-800 font-semibold mb-2">❌ Pesanan Dibatalkan</p>
+              <p className="text-sm text-red-700">Pesanan ini telah dibatalkan. Kursi sudah tersedia untuk dipesan kembali.</p>
+            </div>
+          </div>
+        ) : isPending ? (
           <div className="border-t pt-6 mb-8">
             <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-lg">
               <div className="text-center mb-4">
