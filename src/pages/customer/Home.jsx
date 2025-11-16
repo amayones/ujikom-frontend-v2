@@ -12,6 +12,13 @@ export default function Home() {
   const playingNow = getPlayNowFilms();
   const comingSoon = getComingSoonFilms();
   const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [showTrailer, setShowTrailer] = useState(false);
+
+  const getYouTubeId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+    return match ? match[1] : null;
+  };
 
   useEffect(() => {
     fetchFilms();
@@ -84,9 +91,19 @@ export default function Home() {
                   onClick={() => navigate(`/customer/films/${featured.id}`)}
                   className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 text-lg font-semibold flex items-center"
                 >
-                  <Play size={20} className="mr-2" fill="currentColor" />
+                  <Ticket size={20} className="mr-2" />
                   Pesan Sekarang
                 </Button>
+                {featured.trailer && (
+                  <Button 
+                    onClick={() => setShowTrailer(true)}
+                    variant="outline"
+                    className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-3 text-lg font-semibold flex items-center"
+                  >
+                    <Play size={20} className="mr-2" fill="currentColor" />
+                    Tonton Trailer
+                  </Button>
+                )}
                 <Button 
                   onClick={() => navigate(`/customer/films/${featured.id}`)}
                   variant="outline"
@@ -213,6 +230,34 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Trailer Modal */}
+      {showTrailer && featured?.trailer && getYouTubeId(featured.trailer) && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
+          onClick={() => setShowTrailer(false)}
+        >
+          <div 
+            className="relative w-full max-w-4xl aspect-video"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowTrailer(false)}
+              className="absolute -top-10 right-0 text-white hover:text-gray-300 text-xl font-bold"
+            >
+              ✕ Tutup
+            </button>
+            <iframe
+              className="w-full h-full rounded-lg"
+              src={`https://www.youtube.com/embed/${getYouTubeId(featured.trailer)}?autoplay=1`}
+              title="Trailer"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
