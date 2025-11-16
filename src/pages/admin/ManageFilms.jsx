@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { adminApi } from '../../api/adminApi';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
-import { Plus, Edit, Trash2, Image, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Image, Search, Youtube } from 'lucide-react';
 
 import { formatRupiah } from '../../utils/currency';
 
@@ -16,6 +16,10 @@ export default function ManageFilms() {
   const [posterSearchTerm, setPosterSearchTerm] = useState('');
   const [posterResults, setPosterResults] = useState([]);
   const [searchingPosters, setSearchingPosters] = useState(false);
+  const [showTrailerSearch, setShowTrailerSearch] = useState(false);
+  const [trailerSearchTerm, setTrailerSearchTerm] = useState('');
+  const [trailerResults, setTrailerResults] = useState([]);
+  const [searchingTrailers, setSearchingTrailers] = useState(false);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -139,12 +143,38 @@ export default function ManageFilms() {
   const selectPoster = (movie) => {
     setFormData({
       ...formData,
-      poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-      trailer: ''
+      poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     });
     setShowPosterSearch(false);
     setPosterResults([]);
     setPosterSearchTerm('');
+  };
+
+  const searchTrailers = async () => {
+    if (!trailerSearchTerm.trim()) return;
+    setSearchingTrailers(true);
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${encodeURIComponent(trailerSearchTerm + ' official trailer')}&key=AIzaSyDpNRY8xQS9h6EqLVQKLvJvLqLqLqLqLqI`
+      );
+      const data = await response.json();
+      setTrailerResults(data.items || []);
+    } catch (error) {
+      console.error('Error searching trailers:', error);
+      alert('Gagal mencari trailer');
+    } finally {
+      setSearchingTrailers(false);
+    }
+  };
+
+  const selectTrailer = (video) => {
+    setFormData({
+      ...formData,
+      trailer: `https://www.youtube.com/watch?v=${video.id.videoId}`
+    });
+    setShowTrailerSearch(false);
+    setTrailerResults([]);
+    setTrailerSearchTerm('');
   };
 
   const filteredFilms = films.filter(film => {
@@ -309,51 +339,71 @@ export default function ManageFilms() {
           </h2>
           
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                label="Judul Film"
-                value={formData.title}
-                onChange={(e) => setFormData({...formData, title: e.target.value})}
-                required
-              />
-              
-              <Input
-                label="Genre"
-                value={formData.genre}
-                onChange={(e) => setFormData({...formData, genre: e.target.value})}
-                required
-              />
-              
-              <Input
-                label="Durasi (menit)"
-                type="number"
-                value={formData.duration}
-                onChange={(e) => setFormData({...formData, duration: e.target.value})}
-                required
-              />
-              
-              <Input
-                label="Harga Dasar (Rp)"
-                type="number"
-                value={formData.base_price}
-                onChange={(e) => setFormData({...formData, base_price: e.target.value})}
-                required
-              />
-              
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  value={formData.status}
-                  onChange={(e) => setFormData({...formData, status: e.target.value})}
-                >
-                  <option value="play_now">Sedang Tayang</option>
-                  <option value="coming_soon">Segera Tayang</option>
-                </select>
+            <div className="space-y-6">
+              {/* Informasi Dasar */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-gray-700">Informasi Dasar</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    label="Judul Film"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    required
+                  />
+                  <Input
+                    label="Genre"
+                    value={formData.genre}
+                    onChange={(e) => setFormData({...formData, genre: e.target.value})}
+                    placeholder="Action, Drama, Comedy"
+                    required
+                  />
+                  <Input
+                    label="Durasi (menit)"
+                    type="number"
+                    value={formData.duration}
+                    onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                    required
+                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      value={formData.status}
+                      onChange={(e) => setFormData({...formData, status: e.target.value})}
+                    >
+                      <option value="play_now">Sedang Tayang</option>
+                      <option value="coming_soon">Segera Tayang</option>
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Input
+                      label="Harga Dasar (Rp)"
+                      type="number"
+                      value={formData.base_price}
+                      onChange={(e) => setFormData({...formData, base_price: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
               </div>
-              
-              <div className="md:col-span-2">
-                <div className="flex gap-2 items-end">
+
+              {/* Deskripsi */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-gray-700">Deskripsi</h3>
+                <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  rows="4"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="Ceritakan tentang film ini..."
+                  required
+                />
+              </div>
+
+              {/* Poster */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-gray-700">Poster Film</h3>
+                <div className="flex gap-2">
                   <div className="flex-1">
                     <Input
                       label="URL Poster"
@@ -362,33 +412,44 @@ export default function ManageFilms() {
                       placeholder="https://image.tmdb.org/t/p/w500/..."
                     />
                   </div>
-                  <Button type="button" onClick={() => setShowPosterSearch(true)}>
+                  <Button type="button" onClick={() => setShowPosterSearch(true)} className="mt-6">
+                    <Image size={16} className="mr-2" />
                     Cari Poster
                   </Button>
                 </div>
                 {formData.poster && (
-                  <img src={formData.poster} alt="Preview" className="mt-2 w-32 h-48 object-cover rounded" onError={(e) => e.target.src = 'https://via.placeholder.com/300x450?text=Invalid+URL'} />
+                  <img src={formData.poster} alt="Preview" className="mt-3 w-32 h-48 object-cover rounded shadow-md" onError={(e) => e.target.src = 'https://via.placeholder.com/300x450?text=Invalid+URL'} />
                 )}
               </div>
-              
-              <div className="md:col-span-2">
-                <Input
-                  label="URL Trailer YouTube"
-                  value={formData.trailer}
-                  onChange={(e) => setFormData({...formData, trailer: e.target.value})}
-                  placeholder="https://www.youtube.com/watch?v=..."
-                />
-              </div>
-              
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  rows="4"
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  required
-                />
+
+              {/* Trailer */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-gray-700">Trailer YouTube</h3>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Input
+                      label="URL Trailer"
+                      value={formData.trailer}
+                      onChange={(e) => setFormData({...formData, trailer: e.target.value})}
+                      placeholder="https://www.youtube.com/watch?v=..."
+                    />
+                  </div>
+                  <Button type="button" onClick={() => setShowTrailerSearch(true)} className="mt-6">
+                    <Youtube size={16} className="mr-2" />
+                    Cari Trailer
+                  </Button>
+                </div>
+                {formData.trailer && formData.trailer.includes('youtube.com') && (
+                  <div className="mt-3">
+                    <iframe
+                      width="320"
+                      height="180"
+                      src={`https://www.youtube.com/embed/${formData.trailer.match(/[?&]v=([^&]+)/)?.[1] || ''}`}
+                      className="rounded shadow-md"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
               </div>
             </div>
             
@@ -442,6 +503,50 @@ export default function ManageFilms() {
               ))}
             </div>
             {posterResults.length === 0 && !searchingPosters && posterSearchTerm && (
+              <p className="text-center text-gray-500 py-8">Tidak ada hasil. Coba kata kunci lain.</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showTrailerSearch && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold mb-4">Cari Trailer YouTube</h3>
+            <div className="flex gap-2 mb-4">
+              <input
+                type="text"
+                value={trailerSearchTerm}
+                onChange={(e) => setTrailerSearchTerm(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && searchTrailers()}
+                placeholder="Masukkan judul film..."
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+              />
+              <Button onClick={searchTrailers} disabled={searchingTrailers}>
+                {searchingTrailers ? 'Mencari...' : 'Cari'}
+              </Button>
+              <Button variant="outline" onClick={() => setShowTrailerSearch(false)}>
+                Tutup
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {trailerResults.map((video) => (
+                <div
+                  key={video.id.videoId}
+                  className="cursor-pointer border rounded-lg p-3 hover:shadow-lg transition-shadow"
+                  onClick={() => selectTrailer(video)}
+                >
+                  <img
+                    src={video.snippet.thumbnails.medium.url}
+                    alt={video.snippet.title}
+                    className="w-full h-32 object-cover rounded mb-2"
+                  />
+                  <p className="text-sm font-semibold line-clamp-2">{video.snippet.title}</p>
+                  <p className="text-xs text-gray-500 mt-1">{video.snippet.channelTitle}</p>
+                </div>
+              ))}
+            </div>
+            {trailerResults.length === 0 && !searchingTrailers && trailerSearchTerm && (
               <p className="text-center text-gray-500 py-8">Tidak ada hasil. Coba kata kunci lain.</p>
             )}
           </div>
