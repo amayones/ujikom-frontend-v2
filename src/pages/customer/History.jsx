@@ -68,7 +68,7 @@ export default function History() {
       </div>
       
       <div className="space-y-3 sm:space-y-4">
-        {orders.map(order => {
+        {orders.filter(order => order.payment_status !== 'cancelled').map(order => {
           const filmTitle = order.schedule?.film?.title || 'N/A';
           const studioName = order.schedule?.studio?.name || 'N/A';
           const showDate = order.schedule?.show_time ? new Date(order.schedule.show_time).toLocaleDateString('id-ID') : 'N/A';

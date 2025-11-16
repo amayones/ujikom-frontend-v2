@@ -1,19 +1,36 @@
-import { useParams } from 'react-router-dom';
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useOrdersStore } from '../../store/ordersStore';
 import Button from '../../components/ui/Button';
 import { formatRupiah } from '../../utils/currency';
-
+import { payWithMidtrans } from '../../services/midtransService';
+import api from '../../lib/api';
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function Invoice() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { fetchOrderById } = useOrdersStore();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
+  const [clientKey, setClientKey] = useState('');
 
   useEffect(() => {
     let isMounted = true;
+    
+    const fetchClientKey = async () => {
+      try {
+        const response = await api.get('/payment/client-key');
+        if (isMounted && response?.data?.data?.client_key) {
+          setClientKey(response.data.data.client_key);
+        }
+      } catch (error) {
+        console.error('Failed to fetch client key:', error);
+      }
+    };
+    
+    fetchClientKey();
     
     const loadOrder = async () => {
       if (!id) {
@@ -89,7 +106,73 @@ export default function Invoice() {
     );
   }
 
+  const handlePayNow = async () => {
+    if (!clientKey) {
+      alert('Konfigurasi pembayaran belum siap');
+      return;
+    }
+    
+    setProcessing(true);
+    try {
+      const snapResponse = await api.get(`/payment/snap-token/${order.id}`);
+      const snapToken = snapResponse.data?.data?.snap_token;
+      
+      if (!snapToken) {
+        throw new Error('Failed to get payment token');
+      }
 
+      await payWithMidtrans(snapToken, clientKey, {
+        onSuccess: async (result) => {
+          try {
+            if (result?.order_id) {
+              await api.get(`/payment/status/${result.order_id}`);
+            }
+          } catch (err) {
+            console.error('Status check error:', err);
+          }
+          window.location.reload();
+        },
+        onPending: async (result) => {
+          try {
+            if (result?.order_id) {
+              await api.get(`/payment/status/${result.order_id}`);
+            }
+          } catch (err) {
+            console.error('Status check error:', err);
+          }
+          setProcessing(false);
+        },
+        onError: () => {
+          alert('Pembayaran gagal');
+          setProcessing(false);
+        },
+        onClose: () => {
+          setProcessing(false);
+        }
+      });
+    } catch (error) {
+      alert(error.response?.data?.message || 'Gagal memproses pembayaran');
+      setProcessing(false);
+    }
+  };
+
+  const handleCancelOrder = async () => {
+    if (!confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')) {
+      return;
+    }
+    
+    setProcessing(true);
+    try {
+      await api.post(`/orders/${order.id}/cancel`);
+      alert('Pesanan berhasil dibatalkan');
+      navigate('/customer/history');
+    } catch (error) {
+      alert(error.response?.data?.message || 'Gagal membatalkan pesanan');
+      setProcessing(false);
+    }
+  };
+
+  const isPending = order.status === 'pending';
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -154,24 +237,55 @@ export default function Invoice() {
               </div>
               <div className="flex justify-between">
                 <span>Status:</span>
-                <span className="text-green-600 font-semibold capitalize">{order.status}</span>
+                <span className={`font-semibold capitalize ${
+                  order.status === 'paid' ? 'text-green-600' : 
+                  order.status === 'pending' ? 'text-yellow-600' : 'text-red-600'
+                }`}>{order.status}</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t pt-6 mb-8">
-          <div className="bg-gray-100 p-6 rounded-lg text-center">
-            <div className="bg-white p-4 rounded border-2 border-dashed border-gray-300 inline-block">
-              <p className="text-sm text-gray-600 mb-2">QR Code Tiket</p>
-              <div className="flex justify-center">
-                <QRCodeSVG value={order.transaction_id} size={128} level="H" />
+        {isPending ? (
+          <div className="border-t pt-6 mb-8">
+            <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-lg">
+              <div className="text-center mb-4">
+                <p className="text-yellow-800 font-semibold mb-2">⚠️ Pembayaran Belum Selesai</p>
+                <p className="text-sm text-yellow-700">Silakan selesaikan pembayaran atau batalkan pesanan</p>
               </div>
-              <p className="text-xs text-gray-500 mt-2">Tunjukkan QR ini saat masuk</p>
-              <p className="text-xs font-mono text-gray-400 mt-1">{order.transaction_id}</p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button 
+                  onClick={handlePayNow}
+                  disabled={processing}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  {processing ? 'Memproses...' : '💳 Bayar Sekarang'}
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={handleCancelOrder}
+                  disabled={processing}
+                  className="border-red-500 text-red-600 hover:bg-red-50"
+                >
+                  ❌ Batalkan Pesanan
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="border-t pt-6 mb-8">
+            <div className="bg-gray-100 p-6 rounded-lg text-center">
+              <div className="bg-white p-4 rounded border-2 border-dashed border-gray-300 inline-block">
+                <p className="text-sm text-gray-600 mb-2">QR Code Tiket</p>
+                <div className="flex justify-center">
+                  <QRCodeSVG value={order.transaction_id} size={128} level="H" />
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Tunjukkan QR ini saat masuk</p>
+                <p className="text-xs font-mono text-gray-400 mt-1">{order.transaction_id}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="text-center text-sm text-gray-500 mb-6">
           <p>Terima kasih telah memilih Absolute Cinema</p>
