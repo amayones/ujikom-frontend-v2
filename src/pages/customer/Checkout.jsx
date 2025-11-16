@@ -146,11 +146,14 @@ export default function Checkout() {
   const finalTotal = totalPrice || 0;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="mb-8 text-3xl font-bold">Checkout</h1>
+    <div className="max-w-6xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">💳 Checkout</h1>
+        <p className="text-gray-600">Selesaikan pembayaran Anda untuk menonton film favorit</p>
+      </div>
       
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
-        <div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+        <div className="p-6 bg-white rounded-xl shadow-lg">
           <h2 className="mb-6 text-xl font-bold">Detail Pesanan</h2>
           
           <div className="space-y-4">
@@ -184,7 +187,7 @@ export default function Checkout() {
           </div>
         </div>
         
-        <div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+        <div className="p-6 bg-white rounded-xl shadow-lg">
           <h2 className="mb-6 text-xl font-bold">Ringkasan Pembayaran</h2>
           
           <div className="mb-6 space-y-3">

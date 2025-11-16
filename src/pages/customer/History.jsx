@@ -61,8 +61,11 @@ export default function History() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8">Riwayat Pemesanan</h1>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">📜 Riwayat Pemesanan</h1>
+        <p className="text-gray-600">Lihat semua transaksi dan tiket yang pernah Anda pesan</p>
+      </div>
       
       <div className="space-y-3 sm:space-y-4">
         {orders.map(order => {
@@ -78,7 +81,7 @@ export default function History() {
           const total = parseFloat(order.total_amount) || 0;
           
           return (
-            <div key={order.id} className="bg-white rounded-lg shadow-md p-6">
+            <div key={order.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-xl font-bold">{filmTitle}</h3>

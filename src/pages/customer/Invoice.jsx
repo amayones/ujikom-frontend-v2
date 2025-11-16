@@ -92,8 +92,13 @@ export default function Invoice() {
 
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-lg p-8 print:shadow-none">
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">🎫 E-Ticket & Invoice</h1>
+        <p className="text-gray-600">Simpan atau cetak tiket Anda untuk masuk ke bioskop</p>
+      </div>
+      
+      <div className="bg-white rounded-xl shadow-xl p-8 print:shadow-none">
         <div className="flex justify-between items-start mb-8 print:mb-4">
           <div>
             <h1 className="text-3xl font-bold text-blue-600">Absolute Cinema</h1>

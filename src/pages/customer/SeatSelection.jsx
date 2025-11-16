@@ -86,23 +86,25 @@ export default function SeatSelection() {
   }, [selectedSeats, selectedSchedule?.id, totalPrice, navigate]);
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-3xl font-bold mb-3 sm:mb-4">Pilih Kursi</h1>
-        <div className="bg-white rounded-lg p-4 sm:p-6 shadow-md">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
-            <div>
-              <p className="font-semibold">Film</p>
-              <p className="text-gray-600">{selectedSchedule.film_title}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Studio & Waktu</p>
-              <p className="text-gray-600">{selectedSchedule.studio} - {selectedSchedule.time}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Tanggal</p>
-              <p className="text-gray-600">{selectedSchedule.date}</p>
-            </div>
+    <div className="max-w-6xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">🎫 Pilih Kursi</h1>
+        <p className="text-gray-600">Pilih kursi terbaik untuk pengalaman menonton yang nyaman</p>
+      </div>
+      
+      <div className="bg-white rounded-xl p-6 shadow-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
+          <div>
+            <p className="font-semibold">Film</p>
+            <p className="text-gray-600">{selectedSchedule.film_title}</p>
+          </div>
+          <div>
+            <p className="font-semibold">Studio & Waktu</p>
+            <p className="text-gray-600">{selectedSchedule.studio} - {selectedSchedule.time}</p>
+          </div>
+          <div>
+            <p className="font-semibold">Tanggal</p>
+            <p className="text-gray-600">{selectedSchedule.date}</p>
           </div>
         </div>
       </div>
@@ -112,7 +114,7 @@ export default function SeatSelection() {
           <SeatMap seats={seats} />
         </div>
         
-        <div className="bg-white rounded-lg p-4 sm:p-6 shadow-md h-fit">
+        <div className="bg-white rounded-xl p-6 shadow-lg h-fit">
           <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Ringkasan Pesanan</h3>
           
           <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 text-sm sm:text-base">

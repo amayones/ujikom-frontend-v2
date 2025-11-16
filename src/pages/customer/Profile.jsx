@@ -132,10 +132,13 @@ export default function Profile() {
   }, [passwordData]);
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Profile Saya</h1>
+    <div className="max-w-3xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">👤 Profile Saya</h1>
+        <p className="text-gray-600">Kelola informasi akun dan keamanan Anda</p>
+      </div>
       
-      <div className="p-4 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
+      <div className="p-6 bg-white rounded-xl shadow-lg">
         <form onSubmit={handleSubmit}>
           <Input
             label="Nama Lengkap"
@@ -186,7 +189,7 @@ export default function Profile() {
         </form>
       </div>
       
-      <div className="mt-6 p-4 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
+      <div className="p-6 bg-white rounded-xl shadow-lg">
         <h2 className="text-xl font-bold mb-4">Ubah Password</h2>
         <form onSubmit={handlePasswordSubmit}>
           <Input
@@ -235,7 +238,7 @@ export default function Profile() {
         </form>
       </div>
       
-      <div className="mt-6 p-4 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
+      <div className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl shadow-lg">
         <h2 className="text-xl font-bold mb-4">Informasi Akun</h2>
         <div className="space-y-3">
           <div>

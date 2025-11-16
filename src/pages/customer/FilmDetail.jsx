@@ -23,7 +23,7 @@ function SchedulesByDay({ schedules, onSelectSchedule }) {
 
   if (schedules.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-xl shadow-lg p-6">
         <h2 className="text-2xl font-bold mb-6 flex items-center">
           <Calendar className="mr-2" />
           Jadwal Tayang
@@ -39,7 +39,7 @@ function SchedulesByDay({ schedules, onSelectSchedule }) {
   const totalDays = schedulesByDay.length;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-xl shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold flex items-center">
           <Calendar className="mr-2" />
@@ -201,21 +201,26 @@ export default function FilmDetail() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <Button 
-        variant="outline" 
-        onClick={() => navigate('/customer/films')}
-        className="mb-6"
-      >
-        ← Kembali
-      </Button>
+    <div className="max-w-6xl mx-auto space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">🎬 Detail Film</h1>
+          <p className="text-gray-600">Informasi lengkap dan jadwal tayang</p>
+        </div>
+        <Button 
+          variant="outline" 
+          onClick={() => navigate('/customer/films')}
+        >
+          ← Kembali
+        </Button>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-1">
           <img 
             src={selectedFilm.poster || `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`} 
             alt={selectedFilm.title}
-            className="w-full rounded-lg shadow-lg"
+            className="w-full rounded-xl shadow-xl"
             onError={(e) => {
               if (e.target.src !== `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`) {
                 e.target.onerror = null;
@@ -225,7 +230,7 @@ export default function FilmDetail() {
           />
         </div>
 
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
           <h1 className="text-3xl sm:text-4xl font-bold mb-4">{selectedFilm.title}</h1>
           
           <div className="flex flex-wrap gap-4 mb-6">
