@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useCartStore } from '../../store/cartStore';
 import { useFilmsStore } from '../../store/filmsStore';
 import SeatMap from '../../components/cinema/SeatMap';
@@ -14,18 +14,33 @@ export default function SeatSelection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const loadSeats = async () => {
-      if (scheduleId) {
-        try {
-          await fetchSeats(scheduleId);
-        } catch (error) {
+      if (!scheduleId) {
+        setLoading(false);
+        return;
+      }
+      
+      try {
+        await fetchSeats(scheduleId);
+      } catch (error) {
+        if (isMounted) {
           console.error('Error loading seats:', error);
-        } finally {
+          alert('Gagal memuat data kursi');
+        }
+      } finally {
+        if (isMounted) {
           setLoading(false);
         }
       }
     };
+    
     loadSeats();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [scheduleId, fetchSeats]);
 
   if (loading) {
@@ -47,13 +62,28 @@ export default function SeatSelection() {
     );
   }
   
-  const handleContinue = () => {
-    if (selectedSeats.length === 0) {
+  const handleContinue = useCallback(() => {
+    if (!selectedSchedule?.id) {
+      alert('Data jadwal tidak valid');
+      return;
+    }
+    
+    if (!selectedSeats || selectedSeats.length === 0) {
       alert('Silakan pilih minimal 1 kursi');
       return;
     }
-    navigate('/customer/checkout');
-  };
+    
+    if (!totalPrice || totalPrice <= 0) {
+      alert('Total harga tidak valid');
+      return;
+    }
+    
+    try {
+      navigate('/customer/checkout');
+    } catch (err) {
+      console.error('Navigation error:', err);
+    }
+  }, [selectedSeats, selectedSchedule?.id, totalPrice, navigate]);
 
   return (
     <div className="max-w-6xl mx-auto">

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useFilmsStore } from '../../store/filmsStore';
 import { useCartStore } from '../../store/cartStore';
@@ -130,34 +130,56 @@ export default function FilmDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const loadFilmData = async () => {
       try {
         await fetchFilmById(id);
         await fetchSchedules(id);
       } catch (error) {
-        console.error('Error loading film:', error);
+        if (isMounted) {
+          console.error('Error loading film:', error);
+          alert('Gagal memuat data film');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
+    
     loadFilmData();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [id, fetchFilmById, fetchSchedules]);
 
-  const handleSelectSchedule = (schedule) => {
-    const scheduleData = {
-      id: schedule.id,
-      film_id: selectedFilm.id,
-      film_title: selectedFilm.title,
-      studio: schedule.studio?.name || 'Studio',
-      date: new Date(schedule.show_time).toLocaleDateString('id-ID'),
-      time: new Date(schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-      base_price: schedule.base_price || selectedFilm.base_price,
-      day_type: schedule.day_type || 'weekday'
-    };
+  const handleSelectSchedule = useCallback((schedule) => {
+    if (!schedule?.id || !selectedFilm?.id) {
+      alert('Data jadwal tidak valid');
+      return;
+    }
     
-    setSchedule(scheduleData);
-    navigate(`/customer/seats/${schedule.id}`);
-  };
+    try {
+      const scheduleData = {
+        id: schedule.id,
+        film_id: selectedFilm.id,
+        film_title: selectedFilm.title,
+        studio: schedule.studio?.name || 'Studio',
+        date: new Date(schedule.show_time).toLocaleDateString('id-ID'),
+        time: new Date(schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+        base_price: schedule.base_price || selectedFilm.base_price,
+        day_type: schedule.day_type || 'weekday'
+      };
+      
+      setSchedule(scheduleData);
+      navigate(`/customer/seats/${schedule.id}`);
+    } catch (error) {
+      console.error('Error selecting schedule:', error);
+      alert('Gagal memilih jadwal');
+    }
+  }, [selectedFilm, setSchedule, navigate]);
 
   if (loading) {
     return (
@@ -195,8 +217,10 @@ export default function FilmDetail() {
             alt={selectedFilm.title}
             className="w-full rounded-lg shadow-lg"
             onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`;
+              if (e.target.src !== `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`) {
+                e.target.onerror = null;
+                e.target.src = `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(selectedFilm.title)}`;
+              }
             }}
           />
         </div>
@@ -239,7 +263,7 @@ export default function FilmDetail() {
       </div>
 
       <SchedulesByDay 
-        schedules={schedules}
+        schedules={schedules || []}
         onSelectSchedule={handleSelectSchedule}
       />
     </div>

@@ -1,9 +1,9 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useOrdersStore } from '../../store/ordersStore';
 import Button from '../../components/ui/Button';
 import { formatRupiah } from '../../utils/currency';
-import { Printer, Download } from 'lucide-react';
+
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function Invoice() {
@@ -13,32 +13,65 @@ export default function Invoice() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const loadOrder = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+      
       try {
         const orderData = await fetchOrderById(id);
-        // Transform backend data to match UI expectations
+        if (!isMounted) return;
+        
+        if (!orderData) {
+          throw new Error('Order not found');
+        }
+        
+        const seats = (orderData.orderItems || []).reduce((acc, item) => {
+          if (item?.seat?.row && item?.seat?.column) {
+            acc.push(`${item.seat.row}${item.seat.column}`);
+          }
+          return acc;
+        }, []);
+        
         const transformedOrder = {
           id: orderData.id,
-          transaction_id: orderData.order_number,
+          transaction_id: orderData.order_number || 'N/A',
           film_title: orderData.schedule?.film?.title || 'N/A',
           studio: orderData.schedule?.studio?.name || 'N/A',
-          date: orderData.schedule?.show_time ? new Date(orderData.schedule.show_time).toLocaleDateString('id-ID') : 'N/A',
-          time: orderData.schedule?.show_time ? new Date(orderData.schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'N/A',
-          seats: orderData.orderItems?.map(item => `${item.seat?.row}${item.seat?.column}`) || [],
-          total: parseFloat(orderData.total_amount),
+          date: orderData.schedule?.show_time 
+            ? new Date(orderData.schedule.show_time).toLocaleDateString('id-ID') 
+            : 'N/A',
+          time: orderData.schedule?.show_time 
+            ? new Date(orderData.schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) 
+            : 'N/A',
+          seats,
+          total: parseFloat(orderData.total_amount) || 0,
           payment_method: orderData.order_type === 'online' ? 'Online Payment' : 'Cash',
-          status: orderData.payment_status,
+          status: orderData.payment_status || 'unknown',
           created_at: orderData.created_at
         };
         setOrder(transformedOrder);
       } catch (error) {
-        console.error('Error loading order:', error);
+        if (isMounted) {
+          console.error('Error loading order:', error);
+          alert('Gagal memuat invoice');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
+    
     loadOrder();
-  }, [id]);
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [id, fetchOrderById]);
 
   if (loading) {
     return (
@@ -56,9 +89,7 @@ export default function Invoice() {
     );
   }
 
-  const handlePrint = () => {
-    window.print();
-  };
+
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -106,7 +137,7 @@ export default function Invoice() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Jumlah Tiket:</span>
-                <span>{order.seats.length}</span>
+                <span className="font-semibold">{order.seats.length} tiket</span>
               </div>
               <div className="flex justify-between">
                 <span>Total Pembayaran:</span>
@@ -142,16 +173,7 @@ export default function Invoice() {
           <p>Tiket ini berlaku untuk 1 kali masuk sesuai jadwal yang tertera</p>
         </div>
 
-        <div className="flex justify-center space-x-4 print:hidden">
-          <Button onClick={handlePrint} className="flex items-center">
-            <Printer size={16} className="mr-2" />
-            Print Tiket
-          </Button>
-          <Button variant="outline" className="flex items-center">
-            <Download size={16} className="mr-2" />
-            Download PDF
-          </Button>
-        </div>
+
       </div>
     </div>
   );

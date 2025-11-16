@@ -31,6 +31,11 @@ export default function ManageSeats() {
     return acc;
   }, {});
 
+  // Calculate max columns
+  const maxColumns = Object.values(seatsByRow).reduce((max, row) => 
+    Math.max(max, row.length), 0
+  );
+
   const getSeatClasses = () => {
     return 'w-8 h-8 m-1 rounded text-xs font-medium flex items-center justify-center bg-green-200 text-green-800 border border-green-300';
   };
@@ -115,7 +120,7 @@ export default function ManageSeats() {
             </div>
             <div>
               <span className="font-medium">Kolom:</span>
-              <span className="ml-2">{studioSeats.length / Object.keys(seatsByRow).length}</span>
+              <span className="ml-2">{maxColumns}</span>
             </div>
           </div>
         </div>

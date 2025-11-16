@@ -1,48 +1,67 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 
 export default function Profile() {
   const { user, updateProfile } = useAuthStore();
-  const [formData, setFormData] = useState({
+  const initialFormData = useMemo(() => ({
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || ''
-  });
+  }), [user]);
+  
+  const [formData, setFormData] = useState(initialFormData);
+  
+  useEffect(() => {
+    if (user?.name || user?.email || user?.phone) {
+      setFormData({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || ''
+      });
+    }
+  }, [user]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
+    
+    if (!formData.name?.trim() || !formData.phone?.trim()) {
+      setMessage('Nama dan nomor telepon harus diisi');
+      return;
+    }
+    
     setLoading(true);
     setMessage('');
 
     try {
       await updateProfile({
-        name: formData.name,
-        phone: formData.phone
+        name: formData.name.trim(),
+        phone: formData.phone.trim()
       });
       setMessage('Profile berhasil diperbarui');
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Gagal memperbarui profile');
+      setMessage(error.message || error.response?.data?.message || 'Gagal memperbarui profile');
     } finally {
       setLoading(false);
     }
-  };
+  }, [formData, updateProfile]);
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Profile Saya</h1>
+      <h1 className="mb-6 text-2xl font-bold sm:text-3xl sm:mb-8">Profile Saya</h1>
       
-      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
+      <div className="p-4 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
         <form onSubmit={handleSubmit}>
           <Input
             label="Nama Lengkap"
@@ -78,18 +97,14 @@ export default function Profile() {
             </div>
           )}
           
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
             <Button type="submit" disabled={loading}>
               {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
             </Button>
             <Button 
               type="button" 
               variant="outline"
-              onClick={() => setFormData({
-                name: user?.name || '',
-                email: user?.email || '',
-                phone: user?.phone || ''
-              })}
+              onClick={() => setFormData(initialFormData)}
             >
               Reset
             </Button>
@@ -97,8 +112,8 @@ export default function Profile() {
         </form>
       </div>
       
-      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8 mt-6">
-        <h2 className="text-lg sm:text-xl font-bold mb-4">Informasi Akun</h2>
+      <div className="p-4 mt-6 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
+        <h2 className="mb-4 text-lg font-bold sm:text-xl">Informasi Akun</h2>
         <div className="space-y-3">
           <div>
             <span className="font-semibold">Role:</span>

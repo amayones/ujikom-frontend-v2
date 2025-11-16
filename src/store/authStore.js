@@ -26,7 +26,13 @@ export const useAuthStore = create((set, get) => ({
     set({ loading: true });
     try {
       const response = await authApi.register(userData);
-      const { user, token } = response.data;
+      const data = response.data || response;
+      const { user, token } = data;
+      
+      if (!token) {
+        throw new Error('Token tidak ditemukan dalam response');
+      }
+      
       localStorage.setItem('token', token);
       set({ user, token, isAuthenticated: true, loading: false });
       return response;

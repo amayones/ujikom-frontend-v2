@@ -38,10 +38,17 @@ export default function Register() {
       navigate('/customer/home');
     } catch (error) {
       console.error('Registration error:', error);
-      const errorMsg = error.response?.data?.message || 
-                      error.response?.data?.errors ? 
-                      Object.values(error.response.data.errors).flat().join(', ') : 
-                      error.message || 'Registrasi gagal. Silakan coba lagi.';
+      let errorMsg = 'Registrasi gagal. Silakan coba lagi.';
+      
+      if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      } else if (error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+        errorMsg = Object.values(errors).flat().join(', ');
+      } else if (error.message) {
+        errorMsg = error.message;
+      }
+      
       setError(errorMsg);
     }
   };

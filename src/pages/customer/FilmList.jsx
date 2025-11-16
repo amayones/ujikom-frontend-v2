@@ -1,31 +1,61 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useFilmsStore } from '../../store/filmsStore';
 import ShowCard from '../../components/cinema/ShowCard';
 import Button from '../../components/ui/Button';
 import { Film, TrendingUp, Grid3x3 } from 'lucide-react';
 
 export default function FilmList() {
-  const { films, loading, fetchFilms, getPlayNowFilms, getComingSoonFilms, getAllFilms } = useFilmsStore();
+  const { loading, fetchFilms, getPlayNowFilms, getComingSoonFilms, getAllFilms } = useFilmsStore();
   const [activeFilter, setActiveFilter] = useState('play_now');
 
   useEffect(() => {
     fetchFilms();
-  }, []);
+  }, [fetchFilms]);
 
-  const getFilteredFilms = () => {
-    switch (activeFilter) {
-      case 'play_now': return getPlayNowFilms();
-      case 'coming_soon': return getComingSoonFilms();
-      case 'all': return getAllFilms();
-      default: return getPlayNowFilms();
+  const playNowFilms = useMemo(() => {
+    try {
+      return getPlayNowFilms();
+    } catch (err) {
+      console.error('Error getting play now films:', err);
+      return [];
     }
-  };
+  }, [getPlayNowFilms]);
+  
+  const comingSoonFilms = useMemo(() => {
+    try {
+      return getComingSoonFilms();
+    } catch (err) {
+      console.error('Error getting coming soon films:', err);
+      return [];
+    }
+  }, [getComingSoonFilms]);
+  
+  const allFilms = useMemo(() => {
+    try {
+      return getAllFilms();
+    } catch (err) {
+      console.error('Error getting all films:', err);
+      return [];
+    }
+  }, [getAllFilms]);
 
-  const filteredFilms = getFilteredFilms();
+  const filteredFilms = useMemo(() => {
+    if (activeFilter === 'coming_soon') return comingSoonFilms;
+    if (activeFilter === 'all') return allFilms;
+    return playNowFilms;
+  }, [activeFilter, playNowFilms, comingSoonFilms, allFilms]);
 
-  const handleFilterChange = (newFilter) => {
-    setActiveFilter(newFilter);
-  };
+  const filterButtons = useMemo(() => [
+    { id: 'play_now', label: 'Sedang Tayang', icon: Film, count: playNowFilms.length },
+    { id: 'coming_soon', label: 'Segera Tayang', icon: TrendingUp, count: comingSoonFilms.length },
+    { id: 'all', label: 'Semua Film', icon: Grid3x3, count: allFilms.length }
+  ], [playNowFilms.length, comingSoonFilms.length, allFilms.length]);
+
+  const handleFilterChange = useCallback((newFilter) => {
+    if (newFilter !== activeFilter) {
+      setActiveFilter(newFilter);
+    }
+  }, [activeFilter]);
 
   if (loading) {
     return (
@@ -34,12 +64,6 @@ export default function FilmList() {
       </div>
     );
   }
-
-  const filterButtons = [
-    { key: 'play_now', label: 'Sedang Tayang', icon: Film, count: getPlayNowFilms().length },
-    { key: 'coming_soon', label: 'Segera Tayang', icon: TrendingUp, count: getComingSoonFilms().length },
-    { key: 'all', label: 'Semua Film', icon: Grid3x3, count: getAllFilms().length }
-  ];
 
   return (
     <div>
@@ -53,13 +77,13 @@ export default function FilmList() {
       
       {/* Filter Buttons */}
       <div className="flex flex-wrap gap-3 mb-8">
-        {filterButtons.map(({ key, label, icon: Icon, count }) => (
+        {filterButtons.map(({ id, label, icon: Icon, count }) => (
           <Button
-            key={key}
-            variant={activeFilter === key ? 'primary' : 'outline'}
-            onClick={() => handleFilterChange(key)}
+            key={id}
+            variant={activeFilter === id ? 'primary' : 'outline'}
+            onClick={() => handleFilterChange(id)}
             className={`flex items-center space-x-2 px-6 py-3 font-semibold transition-all ${
-              activeFilter === key 
+              activeFilter === id 
                 ? 'bg-red-600 hover:bg-red-700 shadow-lg scale-105' 
                 : 'hover:border-red-600 hover:text-red-600'
             }`}
@@ -67,7 +91,7 @@ export default function FilmList() {
             <Icon size={18} />
             <span>{label}</span>
             <span className={`px-2 py-0.5 rounded-full text-xs ${
-              activeFilter === key ? 'bg-white text-red-600' : 'bg-gray-200 text-gray-700'
+              activeFilter === id ? 'bg-white text-red-600' : 'bg-gray-200 text-gray-700'
             }`}>
               {count}
             </span>

@@ -7,8 +7,13 @@ export const authApi = {
   },
 
   register: async (userData) => {
-    const response = await api.post('/register', userData);
-    return response.data;
+    try {
+      const response = await api.post('/register', userData);
+      return response.data;
+    } catch (error) {
+      console.error('Register API error:', error);
+      throw error;
+    }
   },
 
   logout: async () => {

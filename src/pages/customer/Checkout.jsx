@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { useOrdersStore } from '../../store/ordersStore';
@@ -18,15 +18,27 @@ export default function Checkout() {
   const { user } = useAuthStore();
 
   useEffect(() => {
+    let isMounted = true;
+    
     const fetchClientKey = async () => {
       try {
         const response = await api.get('/payment/client-key');
-        setClientKey(response.data.data.client_key);
+        if (isMounted) {
+          setClientKey(response.data?.data?.client_key || '');
+        }
       } catch (error) {
-        console.error('Failed to fetch client key:', error);
+        if (isMounted) {
+          console.error('Failed to fetch client key:', error);
+          alert('Gagal memuat konfigurasi pembayaran');
+        }
       }
     };
+    
     fetchClientKey();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (!selectedSchedule || selectedSeats.length === 0) {
@@ -40,7 +52,12 @@ export default function Checkout() {
     );
   }
 
-  const handlePayment = async () => {
+  const handlePayment = useCallback(async () => {
+    if (!clientKey) {
+      alert('Konfigurasi pembayaran belum siap');
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -51,7 +68,7 @@ export default function Checkout() {
 
       const result = await checkout(orderData);
       
-      if (!result || !result.order) {
+      if (!result?.order?.id) {
         throw new Error('Invalid response from server');
       }
 
@@ -59,22 +76,42 @@ export default function Checkout() {
       
       // Get snap token
       const snapResponse = await api.get(`/payment/snap-token/${orderId}`);
-      const snapToken = snapResponse.data.data.snap_token;
+      const snapToken = snapResponse.data?.data?.snap_token;
+      
+      if (!snapToken) {
+        throw new Error('Failed to get payment token');
+      }
 
       // Open Midtrans payment
+      if (!snapToken || !clientKey) {
+        throw new Error('Payment configuration incomplete');
+      }
+      
       await payWithMidtrans(snapToken, clientKey, {
         onSuccess: async (result) => {
-          // Check payment status
-          await api.get(`/payment/status/${result.order_id}`);
+          try {
+            if (result?.order_id) {
+              await api.get(`/payment/status/${result.order_id}`);
+            }
+          } catch (err) {
+            console.error('Status check error:', err);
+          }
           clearCart();
           navigate(`/customer/invoice/${orderId}`);
         },
         onPending: async (result) => {
-          await api.get(`/payment/status/${result.order_id}`);
+          try {
+            if (result?.order_id) {
+              await api.get(`/payment/status/${result.order_id}`);
+            }
+          } catch (err) {
+            console.error('Status check error:', err);
+          }
           clearCart();
           navigate(`/customer/invoice/${orderId}`);
         },
-        onError: (result) => {
+        onError: (err) => {
+          console.error('Payment error:', err);
           alert('Pembayaran gagal');
           setLoading(false);
         },
@@ -84,10 +121,10 @@ export default function Checkout() {
       });
     } catch (error) {
       console.error('Checkout error:', error);
-      alert(error.response?.data?.message || 'Terjadi kesalahan saat checkout');
+      alert(error.response?.data?.message || error.message || 'Terjadi kesalahan saat checkout');
       setLoading(false);
     }
-  };
+  }, [clientKey, selectedSchedule, selectedSeats, checkout, clearCart, navigate]);
 
   // Display total from cart or show loading
   const finalTotal = totalPrice || 0;
@@ -136,7 +173,15 @@ export default function Checkout() {
           
           <div className="space-y-3 mb-6">
             <div className="flex justify-between">
-              <span>Tiket ({selectedSeats.length}x)</span>
+              <span>Jumlah Tiket:</span>
+              <span className="font-semibold">{selectedSeats.length} tiket</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Harga per tiket:</span>
+              <span>{formatRupiah(selectedSchedule.base_price)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Subtotal:</span>
               <span>{formatRupiah(totalPrice)}</span>
             </div>
             <hr />

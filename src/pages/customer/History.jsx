@@ -12,7 +12,7 @@ export default function History() {
   
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [fetchOrders]);
 
   if (loading) {
     return (
@@ -70,8 +70,12 @@ export default function History() {
           const studioName = order.schedule?.studio?.name || 'N/A';
           const showDate = order.schedule?.show_time ? new Date(order.schedule.show_time).toLocaleDateString('id-ID') : 'N/A';
           const showTime = order.schedule?.show_time ? new Date(order.schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
-          const seats = (order.orderItems || order.order_items)?.map(item => `${item.seat?.row}${item.seat?.column}`).join(', ') || 'N/A';
-          const total = parseFloat(order.total_amount);
+          const orderItems = order.orderItems || order.order_items || [];
+          const seats = orderItems
+            .filter(item => item?.seat?.row && item?.seat?.column)
+            .map(item => `${item.seat.row}${item.seat.column}`)
+            .join(', ') || 'N/A';
+          const total = parseFloat(order.total_amount) || 0;
           
           return (
             <div key={order.id} className="bg-white rounded-lg shadow-md p-6">
@@ -85,7 +89,11 @@ export default function History() {
                 </span>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
+                <div>
+                  <p className="text-sm text-gray-500">Jumlah Tiket</p>
+                  <p className="font-semibold">{(order.orderItems || order.order_items)?.length || 0} tiket</p>
+                </div>
                 <div>
                   <p className="text-sm text-gray-500">Kursi</p>
                   <p className="font-semibold">{seats}</p>

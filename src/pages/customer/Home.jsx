@@ -15,12 +15,13 @@ export default function Home() {
 
   useEffect(() => {
     fetchFilms();
-  }, []);
+  }, [fetchFilms]);
 
   useEffect(() => {
     if (playingNow.length > 0) {
+      const maxIndex = Math.min(3, playingNow.length);
       const interval = setInterval(() => {
-        setFeaturedIndex((prev) => (prev + 1) % Math.min(3, playingNow.length));
+        setFeaturedIndex((prev) => (prev + 1) % maxIndex);
       }, 5000);
       return () => clearInterval(interval);
     }
