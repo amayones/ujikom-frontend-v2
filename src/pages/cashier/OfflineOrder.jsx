@@ -188,10 +188,11 @@ export default function OfflineOrder() {
           customer_phone: customerPhone
         };
         const response = await cashierApi.offlineOrder(orderData);
+        const orderId = response.data.id;
         alert(`Pesanan berhasil dibuat! No. Order: ${response.data.order_number}`);
-        resetForm();
-        // Refresh orders in all-orders page if needed
+        // Refresh orders and redirect
         window.dispatchEvent(new Event('orderCreated'));
+        navigate('/cashier/all-orders');
       } else {
         const orderData = {
           schedule_id: selectedSchedule.id,
