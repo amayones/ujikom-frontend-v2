@@ -34,7 +34,8 @@ export default function History() {
     );
   }
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status, ticketStatus) => {
+    if (ticketStatus === 'scanned') return 'bg-blue-100 text-blue-800';
     switch (status) {
       case 'paid':
         return 'bg-green-100 text-green-800';
@@ -47,7 +48,8 @@ export default function History() {
     }
   };
 
-  const getStatusText = (status) => {
+  const getStatusText = (status, ticketStatus) => {
+    if (ticketStatus === 'scanned') return 'Sudah Masuk';
     switch (status) {
       case 'paid':
         return 'Lunas';
@@ -87,8 +89,8 @@ export default function History() {
                   <h3 className="text-xl font-bold">{filmTitle}</h3>
                   <p className="text-gray-600">{studioName} - {showDate} {showTime}</p>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.payment_status)}`}>
-                  {getStatusText(order.payment_status)}
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.payment_status, order.ticket_status)}`}>
+                  {getStatusText(order.payment_status, order.ticket_status)}
                 </span>
               </div>
               

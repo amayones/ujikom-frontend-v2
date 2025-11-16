@@ -68,6 +68,8 @@ export default function Invoice() {
           total: parseFloat(orderData.total_amount) || 0,
           payment_method: orderData.order_type === 'online' ? 'Online Payment' : 'Cash',
           status: orderData.payment_status || 'unknown',
+          ticket_status: orderData.ticket_status || 'unused',
+          scanned_at: orderData.scanned_at,
           created_at: orderData.created_at
         };
         setOrder(transformedOrder);
@@ -174,6 +176,7 @@ export default function Invoice() {
 
   const isPending = order.status === 'pending';
   const isCancelled = order.status === 'cancelled';
+  const isScanned = order.ticket_status === 'scanned';
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -237,17 +240,32 @@ export default function Invoice() {
                 <span className="capitalize">{order.payment_method}</span>
               </div>
               <div className="flex justify-between">
-                <span>Status:</span>
+                <span>Status Pembayaran:</span>
                 <span className={`font-semibold capitalize ${
                   order.status === 'paid' ? 'text-green-600' : 
                   order.status === 'pending' ? 'text-yellow-600' : 'text-red-600'
-                }`}>{order.status}</span>
+                }`}>{order.status === 'paid' ? 'Lunas' : order.status === 'pending' ? 'Menunggu' : 'Dibatalkan'}</span>
               </div>
+              {order.status === 'paid' && (
+                <div className="flex justify-between">
+                  <span>Status Tiket:</span>
+                  <span className={`font-semibold ${
+                    order.ticket_status === 'scanned' ? 'text-blue-600' : 'text-green-600'
+                  }`}>{order.ticket_status === 'scanned' ? '✓ Sudah Masuk' : 'Belum Digunakan'}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {isCancelled ? (
+        {isScanned ? (
+          <div className="border-t pt-6 mb-8">
+            <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg text-center">
+              <p className="text-blue-800 font-semibold mb-2">✓ Tiket Sudah Digunakan</p>
+              <p className="text-sm text-blue-700">Tiket ini sudah di-scan pada {new Date(order.scanned_at).toLocaleString('id-ID')}</p>
+            </div>
+          </div>
+        ) : isCancelled ? (
           <div className="border-t pt-6 mb-8">
             <div className="bg-red-50 border border-red-200 p-6 rounded-lg text-center">
               <p className="text-red-800 font-semibold mb-2">❌ Pesanan Dibatalkan</p>
