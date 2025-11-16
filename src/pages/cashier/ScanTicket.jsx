@@ -23,7 +23,7 @@ export default function ScanTicket() {
 
     try {
       // Cari order berdasarkan order_number
-      const ordersResponse = await api.get('/orders');
+      const ordersResponse = await api.get('/cashier/orders');
       const orders = ordersResponse.data.data || [];
       const order = orders.find(o => o.order_number === orderNumber.toUpperCase());
 

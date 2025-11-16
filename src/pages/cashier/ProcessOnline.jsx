@@ -23,7 +23,7 @@ export default function ProcessOnline() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/orders');
+      const response = await api.get('/cashier/orders');
       const data = response.data.data || [];
       setOrders(data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
     } catch (error) {
