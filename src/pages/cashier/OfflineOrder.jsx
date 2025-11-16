@@ -166,10 +166,10 @@ export default function OfflineOrder() {
     fetchSchedules(film.id);
   };
 
-  const handleScheduleSelect = (schedule) => {
+  const handleScheduleSelect = async (schedule) => {
     setSelectedSchedule(schedule);
     setSelectedSeats([]);
-    fetchSeats(schedule.id);
+    await fetchSeats(schedule.id);
   };
 
   const handleCreateOrder = async () => {
@@ -198,8 +198,21 @@ export default function OfflineOrder() {
           customer_phone: customerPhone
         };
         const response = await cashierApi.onlineOrder(orderData);
-        console.log('Order response:', response.data);
-        const orderId = response.data.data?.order?.id || response.data.data?.id || response.data.id;
+        console.log('Full response:', response);
+        console.log('Response data:', response.data);
+        
+        // Extract order ID from response
+        let orderId;
+        if (response.data?.order?.id) {
+          orderId = response.data.order.id;
+        } else if (response.data?.data?.order?.id) {
+          orderId = response.data.data.order.id;
+        } else if (response.data?.data?.id) {
+          orderId = response.data.data.id;
+        } else if (response.data?.id) {
+          orderId = response.data.id;
+        }
+        
         console.log('Extracted order ID:', orderId);
         
         if (!orderId) {
