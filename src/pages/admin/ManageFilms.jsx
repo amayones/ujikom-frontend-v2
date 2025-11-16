@@ -154,47 +154,59 @@ export default function ManageFilms() {
     if (!trailerSearchTerm.trim()) return;
     setSearchingTrailers(true);
     try {
-      // Try multiple Invidious instances for reliability
-      const instances = [
-        'https://inv.nadeko.net',
-        'https://invidious.privacyredirect.com',
-        'https://vid.puffyan.us'
+      // Use YouTube oEmbed API (no key needed) + scraping approach
+      const searchQuery = encodeURIComponent(trailerSearchTerm + ' official trailer');
+      
+      // Try Piped API (YouTube frontend alternative)
+      const pipedInstances = [
+        'https://pipedapi.kavin.rocks',
+        'https://pipedapi-libre.kavin.rocks',
+        'https://api-piped.mha.fi'
       ];
       
-      let data = null;
-      for (const instance of instances) {
+      let results = [];
+      for (const instance of pipedInstances) {
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
+          
           const response = await fetch(
-            `${instance}/api/v1/search?q=${encodeURIComponent(trailerSearchTerm + ' official trailer')}&type=video`,
-            { signal: AbortSignal.timeout(5000) }
+            `${instance}/search?q=${searchQuery}&filter=videos`,
+            { signal: controller.signal }
           );
+          
+          clearTimeout(timeoutId);
+          
           if (response.ok) {
-            data = await response.json();
-            break;
+            const data = await response.json();
+            if (data.items && Array.isArray(data.items) && data.items.length > 0) {
+              results = data.items.slice(0, 12).map(video => ({
+                id: { videoId: video.url?.replace('/watch?v=', '') || '' },
+                snippet: {
+                  title: video.title || '',
+                  channelTitle: video.uploaderName || video.uploaderUrl?.split('/').pop() || '',
+                  thumbnails: {
+                    medium: { url: video.thumbnail || `https://i.ytimg.com/vi/${video.url?.replace('/watch?v=', '')}/mqdefault.jpg` }
+                  }
+                }
+              }));
+              break;
+            }
           }
         } catch (err) {
+          console.log(`Failed with ${instance}:`, err.message);
           continue;
         }
       }
       
-      if (!data || !Array.isArray(data)) {
-        throw new Error('No results found');
+      if (results.length === 0) {
+        throw new Error('No results found from any instance');
       }
       
-      const formattedResults = data.slice(0, 12).map(video => ({
-        id: { videoId: video.videoId },
-        snippet: {
-          title: video.title,
-          channelTitle: video.author,
-          thumbnails: {
-            medium: { url: `https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg` }
-          }
-        }
-      }));
-      setTrailerResults(formattedResults);
+      setTrailerResults(results);
     } catch (error) {
       console.error('Error searching trailers:', error);
-      alert('Gagal mencari trailer. Silakan masukkan URL YouTube secara manual.');
+      alert('Gagal mencari trailer. Silakan masukkan URL YouTube secara manual atau coba lagi.');
       setTrailerResults([]);
     } finally {
       setSearchingTrailers(false);
