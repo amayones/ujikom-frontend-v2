@@ -45,15 +45,30 @@ export default function ManageUsers() {
     }
   };
 
-  const handleResetPassword = async (userId) => {
-    if (confirm('Yakin ingin reset password user ini? Password akan direset menjadi "password"')) {
-      try {
-        const response = await adminApi.resetUserPassword(userId);
-        alert(`Password berhasil direset!\nEmail: ${response.data.email}\nPassword baru: ${response.data.new_password}`);
-      } catch (error) {
-        console.error('Error resetting password:', error);
-        alert('Gagal reset password');
-      }
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
+
+  const handleResetPassword = (userId) => {
+    setSelectedUserId(userId);
+    setNewPassword('');
+    setShowPasswordModal(true);
+  };
+
+  const submitResetPassword = async () => {
+    if (!newPassword || newPassword.length < 8) {
+      alert('Password minimal 8 karakter');
+      return;
+    }
+    try {
+      await adminApi.resetUserPassword(selectedUserId, newPassword);
+      alert('Password berhasil direset!');
+      setShowPasswordModal(false);
+      setNewPassword('');
+      setSelectedUserId(null);
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      alert(error.response?.data?.message || 'Gagal reset password');
     }
   };
 
@@ -205,6 +220,26 @@ export default function ManageUsers() {
             </div>
           </div>
       </div>
+
+      {showPasswordModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-xl font-bold mb-4">Reset Password</h3>
+            <Input
+              label="Password Baru"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Minimal 8 karakter"
+              required
+            />
+            <div className="flex space-x-3 mt-6">
+              <Button onClick={submitResetPassword}>Reset Password</Button>
+              <Button variant="outline" onClick={() => setShowPasswordModal(false)}>Batal</Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">Statistik Pelanggan</h2>

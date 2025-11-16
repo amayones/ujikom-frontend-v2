@@ -48,8 +48,8 @@ export const adminApi = {
     return response.data;
   },
 
-  resetUserPassword: async (id) => {
-    const response = await api.post(`/admin/users/${id}/reset-password`);
+  resetUserPassword: async (id, password) => {
+    const response = await api.post(`/admin/users/${id}/reset-password`, { password });
     return response.data;
   },
 
