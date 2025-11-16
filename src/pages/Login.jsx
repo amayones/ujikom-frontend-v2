@@ -27,7 +27,7 @@ export default function Login() {
       const redirectPaths = {
         customer: '/customer/home',
         admin: '/admin/films',
-        owner: '/owner/reports',
+        owner: '/owner/dashboard',
         cashier: '/cashier/offline-order'
       };
       
