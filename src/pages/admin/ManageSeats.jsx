@@ -15,7 +15,7 @@ export default function ManageSeats() {
     try {
       const response = await adminApi.getSeats();
       setSeats(response.data);
-    } catch (error) {
+    } catch (error) { 
       console.error('Error fetching seats:', error);
     } finally {
       setLoading(false);
@@ -46,7 +46,7 @@ export default function ManageSeats() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex items-center justify-center h-64">
         <div className="text-lg">Memuat data...</div>
       </div>
     );
@@ -54,12 +54,12 @@ export default function ManageSeats() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Kelola Kursi</h1>
+      <h1 className="mb-8 text-3xl font-bold">Kelola Kursi</h1>
 
-      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-8">
-        <div className="flex justify-between items-center mb-6">
+      <div className="p-4 mb-8 bg-white rounded-lg shadow-md sm:p-6">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Pilih Studio</label>
+            <label className="block mb-2 text-sm font-medium text-gray-700">Pilih Studio</label>
             <select
               className="px-3 py-2 border border-gray-300 rounded-md"
               value={selectedStudio}
@@ -73,16 +73,16 @@ export default function ManageSeats() {
           <Button onClick={handleSave}>Simpan Layout</Button>
         </div>
 
-        <div className="text-center mb-6">
-          <div className="bg-gray-800 text-white py-2 px-8 rounded-lg inline-block">
+        <div className="mb-6 text-center">
+          <div className="inline-block px-8 py-2 text-white bg-gray-800 rounded-lg">
             LAYAR
           </div>
         </div>
 
-        <div className="flex flex-col items-center space-y-2 mb-6">
+        <div className="flex flex-col items-center mb-6 space-y-2">
           {Object.keys(seatsByRow).sort().map((row) => (
             <div key={row} className="flex items-center">
-              <span className="w-6 text-center text-sm font-medium text-gray-600 mr-2">
+              <span className="w-6 mr-2 text-sm font-medium text-center text-gray-600">
                 {row}
               </span>
               <div className="flex">
@@ -100,16 +100,16 @@ export default function ManageSeats() {
           ))}
         </div>
 
-        <div className="flex justify-center space-x-6 text-sm mb-6">
+        <div className="flex justify-center mb-6 space-x-6 text-sm">
           <div className="flex items-center">
-            <div className="w-4 h-4 bg-green-200 rounded mr-2 border border-green-300"></div>
+            <div className="w-4 h-4 mr-2 bg-green-200 border border-green-300 rounded"></div>
             <span>Kursi Tersedia</span>
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold mb-2">Informasi Layout</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
+        <div className="p-4 rounded-lg bg-gray-50">
+          <h3 className="mb-2 font-semibold">Informasi Layout</h3>
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3 sm:gap-4">
             <div>
               <span className="font-medium">Total Kursi:</span>
               <span className="ml-2">{studioSeats.length}</span>
@@ -126,8 +126,8 @@ export default function ManageSeats() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-        <h2 className="text-xl font-semibold mb-4">Petunjuk</h2>
+      <div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+        <h2 className="mb-4 text-xl font-semibold">Petunjuk</h2>
         <ul className="space-y-2 text-sm text-gray-600">
           <li>• Semua kursi memiliki harga yang sama</li>
           <li>• Harga tiket ditentukan berdasarkan hari (weekday/weekend)</li>

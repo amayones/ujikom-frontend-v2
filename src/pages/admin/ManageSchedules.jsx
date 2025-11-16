@@ -5,7 +5,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Plus, Edit, Trash2, Film, Monitor, Calendar, Check } from 'lucide-react';
 import { formatRupiah } from '../../utils/currency';
-
+ 
 export default function ManageSchedules() {
   const [films, setFilms] = useState([]);
   const [schedules, setSchedules] = useState([]);
@@ -126,7 +126,7 @@ export default function ManageSchedules() {
 
   if (initialLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex items-center justify-center h-64">
         <div className="text-lg">Memuat data...</div>
       </div>
     );
@@ -134,7 +134,7 @@ export default function ManageSchedules() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Kelola Jadwal</h1>
         <Button onClick={() => setShowForm(true)} className="flex items-center">
           <Plus size={16} className="mr-2" />
@@ -143,8 +143,8 @@ export default function ManageSchedules() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-bold mb-6">
+        <div className="p-6 mb-8 bg-white rounded-lg shadow-md">
+          <h2 className="mb-6 text-xl font-bold">
             {editingSchedule ? 'Edit Jadwal' : 'Tambah Jadwal Baru'}
           </h2>
           
@@ -162,7 +162,7 @@ export default function ManageSchedules() {
             ))}
           </div>
 
-          <div className="text-center mb-6">
+          <div className="mb-6 text-center">
             <p className="text-sm text-gray-600">
               {step === 1 && 'Pilih Film'}
               {step === 2 && 'Pilih Studio'}
@@ -174,13 +174,13 @@ export default function ManageSchedules() {
           {/* Step 1: Pilih Film */}
           {step === 1 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <h3 className="flex items-center mb-4 text-lg font-semibold">
                 <Film className="mr-2" size={20} />
                 Pilih Film
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-h-96 overflow-y-auto">
+              <div className="grid grid-cols-1 gap-3 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3 sm:gap-4 max-h-96">
                 {films.length === 0 ? (
-                  <div className="col-span-3 text-center py-8 text-gray-500">
+                  <div className="col-span-3 py-8 text-center text-gray-500">
                     Tidak ada film tersedia. Silakan tambah film terlebih dahulu.
                   </div>
                 ) : films.map(film => (
@@ -194,15 +194,15 @@ export default function ManageSchedules() {
                     <img 
                       src={film.poster || `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`} 
                       alt={film.title} 
-                      className="w-full h-32 object-cover rounded mb-2"
+                      className="object-cover w-full h-32 mb-2 rounded"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = `https://placehold.co/300x450/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`;
                       }}
                     />
-                    <h4 className="font-semibold text-sm">{film.title}</h4>
+                    <h4 className="text-sm font-semibold">{film.title}</h4>
                     <p className="text-xs text-gray-600">{film.genre} • {film.duration} min</p>
-                    <p className="text-xs text-blue-600 font-medium mt-1">{formatRupiah(film.base_price)}</p>
+                    <p className="mt-1 text-xs font-medium text-blue-600">{formatRupiah(film.base_price)}</p>
                   </div>
                 ))}
               </div>
@@ -216,11 +216,11 @@ export default function ManageSchedules() {
           {/* Step 2: Pilih Studio */}
           {step === 2 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <h3 className="flex items-center mb-4 text-lg font-semibold">
                 <Monitor className="mr-2" size={20} />
                 Pilih Studio
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
                 {studios.map(studio => (
                   <div
                     key={studio.id}
@@ -231,7 +231,7 @@ export default function ManageSchedules() {
                   >
                     <div className="text-center">
                       <Monitor size={40} className="mx-auto mb-2 text-blue-600" />
-                      <h4 className="font-semibold text-lg">{studio.name}</h4>
+                      <h4 className="text-lg font-semibold">{studio.name}</h4>
                       <p className="text-sm text-gray-600">Kapasitas: 50 kursi</p>
                     </div>
                   </div>
@@ -247,7 +247,7 @@ export default function ManageSchedules() {
           {/* Step 3: Pilih Waktu */}
           {step === 3 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <h3 className="flex items-center mb-4 text-lg font-semibold">
                 <Calendar className="mr-2" size={20} />
                 Pilih Waktu Tayang
               </h3>
@@ -259,7 +259,7 @@ export default function ManageSchedules() {
                   onChange={(e) => setFormData({...formData, show_time: e.target.value})}
                   required
                 />
-                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="p-4 mt-4 border border-yellow-200 rounded-lg bg-yellow-50">
                   <p className="text-sm text-yellow-800">
                     <strong>Tips:</strong> Pastikan waktu tayang tidak bentrok dengan jadwal lain di studio yang sama.
                   </p>
@@ -275,14 +275,14 @@ export default function ManageSchedules() {
           {/* Step 4: Konfirmasi */}
           {step === 4 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <h3 className="flex items-center mb-4 text-lg font-semibold">
                 <Check className="mr-2" size={20} />
                 Konfirmasi Jadwal
               </h3>
-              <div className="max-w-md mx-auto bg-gray-50 rounded-lg p-6">
+              <div className="max-w-md p-6 mx-auto rounded-lg bg-gray-50">
                 <div className="space-y-4">
                   <div className="flex items-start">
-                    <Film className="mr-3 mt-1 text-blue-600" size={20} />
+                    <Film className="mt-1 mr-3 text-blue-600" size={20} />
                     <div>
                       <p className="text-sm text-gray-600">Film</p>
                       <p className="font-semibold">{selectedFilm?.title}</p>
@@ -290,14 +290,14 @@ export default function ManageSchedules() {
                     </div>
                   </div>
                   <div className="flex items-start">
-                    <Monitor className="mr-3 mt-1 text-blue-600" size={20} />
+                    <Monitor className="mt-1 mr-3 text-blue-600" size={20} />
                     <div>
                       <p className="text-sm text-gray-600">Studio</p>
                       <p className="font-semibold">{selectedStudio?.name}</p>
                     </div>
                   </div>
                   <div className="flex items-start">
-                    <Calendar className="mr-3 mt-1 text-blue-600" size={20} />
+                    <Calendar className="mt-1 mr-3 text-blue-600" size={20} />
                     <div>
                       <p className="text-sm text-gray-600">Waktu Tayang</p>
                       <p className="font-semibold">
@@ -331,7 +331,7 @@ export default function ManageSchedules() {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="overflow-hidden bg-white rounded-lg shadow-md">
         <div className="p-6 border-b">
           <h2 className="text-xl font-semibold">Daftar Jadwal</h2>
         </div>
@@ -340,33 +340,33 @@ export default function ManageSchedules() {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="text-left py-3 px-4">Film</th>
-                <th className="text-left py-3 px-4">Studio</th>
-                <th className="text-left py-3 px-4">Tanggal</th>
-                <th className="text-left py-3 px-4">Waktu</th>
-                <th className="text-left py-3 px-4">Harga</th>
-                <th className="text-left py-3 px-4">Aksi</th>
+                <th className="px-4 py-3 text-left">Film</th>
+                <th className="px-4 py-3 text-left">Studio</th>
+                <th className="px-4 py-3 text-left">Tanggal</th>
+                <th className="px-4 py-3 text-left">Waktu</th>
+                <th className="px-4 py-3 text-left">Harga</th>
+                <th className="px-4 py-3 text-left">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {schedules.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center py-8 text-gray-500">
+                  <td colSpan="6" className="py-8 text-center text-gray-500">
                     Belum ada jadwal. Klik "Tambah Jadwal" untuk membuat jadwal baru.
                   </td>
                 </tr>
               ) : schedules.map(schedule => (
                 <tr key={schedule.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4 font-semibold">{schedule.film?.title || 'N/A'}</td>
-                  <td className="py-3 px-4">{schedule.studio?.name || 'N/A'}</td>
-                  <td className="py-3 px-4">
+                  <td className="px-4 py-3 font-semibold">{schedule.film?.title || 'N/A'}</td>
+                  <td className="px-4 py-3">{schedule.studio?.name || 'N/A'}</td>
+                  <td className="px-4 py-3">
                     {new Date(schedule.show_time).toLocaleDateString('id-ID')}
                   </td>
-                  <td className="py-3 px-4">
+                  <td className="px-4 py-3">
                     {new Date(schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                   </td>
-                  <td className="py-3 px-4">{schedule.film?.base_price ? formatRupiah(schedule.film.base_price) : 'N/A'}</td>
-                  <td className="py-3 px-4">
+                  <td className="px-4 py-3">{schedule.film?.base_price ? formatRupiah(schedule.film.base_price) : 'N/A'}</td>
+                  <td className="px-4 py-3">
                     <div className="flex space-x-2">
                       <Button size="sm" variant="outline" onClick={() => handleEdit(schedule)}>
                         <Edit size={14} />
