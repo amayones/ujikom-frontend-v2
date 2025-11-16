@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { adminApi } from '../../api/adminApi';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
-import { UserCheck, UserX, RotateCcw, Search } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -29,59 +29,21 @@ export default function ManageUsers() {
     }
   };
 
-  const handleToggleStatus = async (userId) => {
-    const user = users.find(u => u.id === userId);
-    const action = user?.deleted_at ? 'mengaktifkan' : 'menonaktifkan';
-    
-    if (confirm(`Yakin ingin ${action} pelanggan ini?`)) {
-      setLoading(true);
+  const handleDelete = async (id) => {
+    if (confirm('Yakin ingin menghapus pelanggan ini?')) {
       try {
-        await adminApi.toggleUserStatus(userId);
+        await adminApi.deleteUser(id);
         await fetchUsers();
-        alert(`Pelanggan berhasil ${user?.deleted_at ? 'diaktifkan' : 'dinonaktifkan'}`);
       } catch (error) {
-        console.error('Error toggling status:', error);
-        alert(error.response?.data?.message || 'Gagal mengubah status pelanggan');
-      } finally {
-        setLoading(false);
+        console.error('Error deleting user:', error);
+        alert('Gagal menghapus pelanggan');
       }
     }
   };
 
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [newPassword, setNewPassword] = useState('');
-
-  const handleResetPassword = (userId) => {
-    setSelectedUserId(userId);
-    setNewPassword('');
-    setShowPasswordModal(true);
-  };
-
-  const submitResetPassword = async () => {
-    if (!newPassword || newPassword.length < 8) {
-      alert('Password minimal 8 karakter');
-      return;
-    }
-    try {
-      await adminApi.resetUserPassword(selectedUserId, newPassword);
-      alert('Password berhasil direset!');
-      setShowPasswordModal(false);
-      setNewPassword('');
-      setSelectedUserId(null);
-    } catch (error) {
-      console.error('Error resetting password:', error);
-      alert(error.response?.data?.message || 'Gagal reset password');
-    }
-  };
-
   const filteredUsers = users.filter(user => {
-    const matchSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                       user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchStatus = filterStatus === 'all' || 
-                       (filterStatus === 'active' && !user.deleted_at) ||
-                       (filterStatus === 'inactive' && user.deleted_at);
-    return matchSearch && matchStatus;
+    return user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           user.email.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   if (loading) {
@@ -99,29 +61,13 @@ export default function ManageUsers() {
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-4 sm:p-6 border-b space-y-4">
           <h2 className="text-lg sm:text-xl font-semibold">Daftar Pelanggan</h2>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                <input
-                  type="text"
-                  placeholder="Cari nama atau email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
-                />
-              </div>
-            </div>
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md"
-            >
-              <option value="all">Semua Status</option>
-              <option value="active">Aktif</option>
-              <option value="inactive">Nonaktif</option>
-            </select>
-          </div>
+          <input
+            type="text"
+            placeholder="Cari nama atau email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          />
         </div>
         
         <div className="overflow-x-auto">
@@ -140,7 +86,7 @@ export default function ManageUsers() {
               {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="py-8 text-center text-gray-500">
-                    {searchTerm || filterStatus !== 'all' ? 'Tidak ada data yang sesuai' : 'Belum ada data pelanggan'}
+                    {searchTerm ? 'Tidak ada data yang sesuai' : 'Belum ada data pelanggan'}
                   </td>
                 </tr>
               ) : filteredUsers
@@ -152,33 +98,14 @@ export default function ManageUsers() {
                   <td className="py-3 px-4">{user.email}</td>
                   <td className="py-3 px-4">{user.phone}</td>
                   <td className="py-3 px-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      !user.deleted_at
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {!user.deleted_at ? 'Aktif' : 'Nonaktif'}
+                    <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                      Aktif
                     </span>
                   </td>
                   <td className="py-3 px-4">
-                    <div className="flex space-x-2">
-                      <Button
-                        size="sm"
-                        variant={!user.deleted_at ? 'danger' : 'primary'}
-                        onClick={() => handleToggleStatus(user.id)}
-                        title={!user.deleted_at ? 'Nonaktifkan' : 'Aktifkan'}
-                      >
-                        {!user.deleted_at ? <UserX size={14} /> : <UserCheck size={14} />}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleResetPassword(user.id)}
-                        title="Reset Password"
-                      >
-                        <RotateCcw size={14} />
-                      </Button>
-                    </div>
+                    <Button size="sm" variant="danger" onClick={() => handleDelete(user.id)}>
+                      <Trash2 size={14} />
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -224,26 +151,6 @@ export default function ManageUsers() {
           </div>
       </div>
 
-      {showPasswordModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-xl font-bold mb-4">Reset Password</h3>
-            <Input
-              label="Password Baru"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Minimal 8 karakter"
-              required
-            />
-            <div className="flex space-x-3 mt-6">
-              <Button onClick={submitResetPassword}>Reset Password</Button>
-              <Button variant="outline" onClick={() => setShowPasswordModal(false)}>Batal</Button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="mt-8 bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">Statistik Pelanggan</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
@@ -252,16 +159,8 @@ export default function ManageUsers() {
             <p className="text-gray-600">Total Pelanggan</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold text-green-600">
-              {users.filter(u => !u.deleted_at).length}
-            </p>
+            <p className="text-3xl font-bold text-green-600">{users.length}</p>
             <p className="text-gray-600">Pelanggan Aktif</p>
-          </div>
-          <div className="text-center">
-            <p className="text-3xl font-bold text-red-600">
-              {users.filter(u => u.deleted_at).length}
-            </p>
-            <p className="text-gray-600">Pelanggan Nonaktif</p>
           </div>
         </div>
       </div>
