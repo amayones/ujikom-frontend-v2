@@ -436,8 +436,8 @@ export default function OfflineOrder() {
                   }`}
                   onClick={() => setPaymentMethod('qris')}
                 >
-                  <div className="font-semibold">📱 QRIS/Online</div>
-                  <p className="text-sm text-gray-600">Bayar via Midtrans</p>
+                  <div className="font-semibold">💳 Bayar Online</div>
+                  <p className="text-sm text-gray-600">QRIS, E-Wallet, Transfer Bank</p>
                 </div>
               </div>
             </div>
@@ -450,7 +450,7 @@ export default function OfflineOrder() {
                 <div><strong>Kursi:</strong> {selectedSeats.map(s => `${s.row}${s.column}`).join(', ')}</div>
                 <div><strong>Pelanggan:</strong> {customerName}</div>
                 <div><strong>Telepon:</strong> {customerPhone}</div>
-                <div><strong>Pembayaran:</strong> {paymentMethod === 'cash' ? 'Cash' : 'QRIS/Online'}</div>
+                <div><strong>Pembayaran:</strong> {paymentMethod === 'cash' ? 'Cash' : 'Online (Midtrans)'}</div>
               </div>
               <div className="mt-4 pt-4 border-t">
                 <div className="text-lg font-bold">Total: {formatRupiah(calculateTotal())}</div>
