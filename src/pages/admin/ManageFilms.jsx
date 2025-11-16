@@ -12,6 +12,10 @@ export default function ManageFilms() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [showPosterSearch, setShowPosterSearch] = useState(false);
+  const [posterSearchTerm, setPosterSearchTerm] = useState('');
+  const [posterResults, setPosterResults] = useState([]);
+  const [searchingPosters, setSearchingPosters] = useState(false);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -113,6 +117,34 @@ export default function ManageFilms() {
         alert('Gagal menghapus film');
       }
     }
+  };
+
+  const searchPosters = async () => {
+    if (!posterSearchTerm.trim()) return;
+    setSearchingPosters(true);
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/search/movie?api_key=15d2ea6d0dc1d476efbca3eba2b9bbfb&query=${encodeURIComponent(posterSearchTerm)}`
+      );
+      const data = await response.json();
+      setPosterResults(data.results || []);
+    } catch (error) {
+      console.error('Error searching posters:', error);
+      alert('Gagal mencari poster');
+    } finally {
+      setSearchingPosters(false);
+    }
+  };
+
+  const selectPoster = (movie) => {
+    setFormData({
+      ...formData,
+      poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+      trailer: ''
+    });
+    setShowPosterSearch(false);
+    setPosterResults([]);
+    setPosterSearchTerm('');
   };
 
   const filteredFilms = films.filter(film => {
@@ -321,12 +353,19 @@ export default function ManageFilms() {
               </div>
               
               <div className="md:col-span-2">
-                <Input
-                  label="URL Poster (contoh: https://m.media-amazon.com/images/...)"
-                  value={formData.poster}
-                  onChange={(e) => setFormData({...formData, poster: e.target.value})}
-                  placeholder="https://m.media-amazon.com/images/M/..."
-                />
+                <div className="flex gap-2 items-end">
+                  <div className="flex-1">
+                    <Input
+                      label="URL Poster"
+                      value={formData.poster}
+                      onChange={(e) => setFormData({...formData, poster: e.target.value})}
+                      placeholder="https://image.tmdb.org/t/p/w500/..."
+                    />
+                  </div>
+                  <Button type="button" onClick={() => setShowPosterSearch(true)}>
+                    Cari Poster
+                  </Button>
+                </div>
                 {formData.poster && (
                   <img src={formData.poster} alt="Preview" className="mt-2 w-32 h-48 object-cover rounded" onError={(e) => e.target.src = 'https://via.placeholder.com/300x450?text=Invalid+URL'} />
                 )}
@@ -362,6 +401,50 @@ export default function ManageFilms() {
               </Button>
             </div>
           </form>
+        </div>
+      )}
+
+      {showPosterSearch && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold mb-4">Cari Poster Film</h3>
+            <div className="flex gap-2 mb-4">
+              <input
+                type="text"
+                value={posterSearchTerm}
+                onChange={(e) => setPosterSearchTerm(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && searchPosters()}
+                placeholder="Masukkan judul film..."
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+              />
+              <Button onClick={searchPosters} disabled={searchingPosters}>
+                {searchingPosters ? 'Mencari...' : 'Cari'}
+              </Button>
+              <Button variant="outline" onClick={() => setShowPosterSearch(false)}>
+                Tutup
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {posterResults.map((movie) => (
+                <div
+                  key={movie.id}
+                  className="cursor-pointer border rounded-lg p-2 hover:shadow-lg transition-shadow"
+                  onClick={() => selectPoster(movie)}
+                >
+                  <img
+                    src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image'}
+                    alt={movie.title}
+                    className="w-full h-48 object-cover rounded mb-2"
+                  />
+                  <p className="text-sm font-semibold line-clamp-2">{movie.title}</p>
+                  <p className="text-xs text-gray-500">{movie.release_date?.substring(0, 4)}</p>
+                </div>
+              ))}
+            </div>
+            {posterResults.length === 0 && !searchingPosters && posterSearchTerm && (
+              <p className="text-center text-gray-500 py-8">Tidak ada hasil. Coba kata kunci lain.</p>
+            )}
+          </div>
         </div>
       )}
     </div>
