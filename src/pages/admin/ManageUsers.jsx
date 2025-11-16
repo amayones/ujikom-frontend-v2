@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 import { adminApi } from '../../api/adminApi';
 import Button from '../../components/ui/Button';
-import { UserCheck, UserX, RotateCcw } from 'lucide-react';
+import Input from '../../components/ui/Input';
+import { UserCheck, UserX, RotateCcw, Search } from 'lucide-react';
 
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchUsers();
@@ -52,6 +57,15 @@ export default function ManageUsers() {
     }
   };
 
+  const filteredUsers = users.filter(user => {
+    const matchSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                       user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchStatus = filterStatus === 'all' || 
+                       (filterStatus === 'active' && !user.deleted_at) ||
+                       (filterStatus === 'inactive' && user.deleted_at);
+    return matchSearch && matchStatus;
+  });
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -65,8 +79,31 @@ export default function ManageUsers() {
       <h1 className="text-3xl font-bold mb-8">Kelola Pelanggan</h1>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-4 sm:p-6 border-b">
+        <div className="p-4 sm:p-6 border-b space-y-4">
           <h2 className="text-lg sm:text-xl font-semibold">Daftar Pelanggan</h2>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Cari nama atau email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-md"
+            >
+              <option value="all">Semua Status</option>
+              <option value="active">Aktif</option>
+              <option value="inactive">Nonaktif</option>
+            </select>
+          </div>
         </div>
         
         <div className="overflow-x-auto">
@@ -82,13 +119,15 @@ export default function ManageUsers() {
               </tr>
             </thead>
             <tbody>
-              {users.length === 0 ? (
+              {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="py-8 text-center text-gray-500">
-                    Belum ada data pelanggan
+                    {searchTerm || filterStatus !== 'all' ? 'Tidak ada data yang sesuai' : 'Belum ada data pelanggan'}
                   </td>
                 </tr>
-              ) : users.map(user => (
+              ) : filteredUsers
+                .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                .map(user => (
                 <tr key={user.id} className="border-b hover:bg-gray-50">
                   <td className="py-3 px-4 font-mono">{user.id}</td>
                   <td className="py-3 px-4 font-semibold">{user.name}</td>
@@ -128,6 +167,45 @@ export default function ManageUsers() {
             </tbody>
           </table>
         </div>
+        {Math.ceil(filteredUsers.length / itemsPerPage) > 1 && (
+          <div className="flex items-center justify-between p-4 border-t">
+            <p className="text-sm text-gray-600">
+              Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, filteredUsers.length)} dari {filteredUsers.length} pelanggan
+            </p>
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                ← Prev
+              </Button>
+              {Array.from({ length: Math.ceil(filteredUsers.length / itemsPerPage) }, (_, i) => i + 1)
+                .filter(page => page === 1 || page === Math.ceil(filteredUsers.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
+                .map((page, idx, arr) => (
+                  <span key={page}>
+                    {idx > 0 && arr[idx - 1] !== page - 1 && <span className="px-2">...</span>}
+                    <Button
+                      size="sm"
+                      variant={currentPage === page ? 'primary' : 'outline'}
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  </span>
+                ))}
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredUsers.length / itemsPerPage), p + 1))}
+                disabled={currentPage === Math.ceil(filteredUsers.length / itemsPerPage)}
+              >
+                Next →
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="mt-8 bg-white rounded-lg shadow-md p-4 sm:p-6">

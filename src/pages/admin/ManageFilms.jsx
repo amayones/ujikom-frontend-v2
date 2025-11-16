@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { adminApi } from '../../api/adminApi';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
-import { Plus, Edit, Trash2, Image } from 'lucide-react';
+import { Plus, Edit, Trash2, Image, Search } from 'lucide-react';
 
 import { formatRupiah } from '../../utils/currency';
 
@@ -10,6 +10,8 @@ export default function ManageFilms() {
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -113,6 +115,13 @@ export default function ManageFilms() {
     }
   };
 
+  const filteredFilms = films.filter(film => {
+    const matchSearch = film.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                       film.genre.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchStatus = filterStatus === 'all' || film.status === filterStatus;
+    return matchSearch && matchStatus;
+  });
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -133,6 +142,31 @@ export default function ManageFilms() {
 
       {!showForm && (
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="p-4 border-b space-y-4">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Cari judul atau genre..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              </div>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="all">Semua Status</option>
+                <option value="play_now">Sedang Tayang</option>
+                <option value="coming_soon">Segera Tayang</option>
+              </select>
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[800px]">
               <thead className="bg-gray-50">
@@ -147,7 +181,13 @@ export default function ManageFilms() {
                 </tr>
               </thead>
               <tbody>
-                {films
+                {filteredFilms.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="py-8 text-center text-gray-500">
+                      {searchTerm || filterStatus !== 'all' ? 'Tidak ada data yang sesuai' : 'Belum ada data film'}
+                    </td>
+                  </tr>
+                ) : filteredFilms
                   .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                   .map(film => (
                   <tr key={film.id} className="border-b hover:bg-gray-50">
@@ -190,10 +230,10 @@ export default function ManageFilms() {
               </tbody>
             </table>
           </div>
-          {Math.ceil(films.length / itemsPerPage) > 1 && (
+          {Math.ceil(filteredFilms.length / itemsPerPage) > 1 && (
             <div className="flex items-center justify-between p-4 border-t">
               <p className="text-sm text-gray-600">
-                Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, films.length)} dari {films.length} film
+                Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, filteredFilms.length)} dari {filteredFilms.length} film
               </p>
               <div className="flex gap-2">
                 <Button 
@@ -204,8 +244,8 @@ export default function ManageFilms() {
                 >
                   ← Prev
                 </Button>
-                {Array.from({ length: Math.ceil(films.length / itemsPerPage) }, (_, i) => i + 1)
-                  .filter(page => page === 1 || page === Math.ceil(films.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
+                {Array.from({ length: Math.ceil(filteredFilms.length / itemsPerPage) }, (_, i) => i + 1)
+                  .filter(page => page === 1 || page === Math.ceil(filteredFilms.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
                   .map((page, idx, arr) => (
                     <span key={page}>
                       {idx > 0 && arr[idx - 1] !== page - 1 && <span className="px-2">...</span>}
@@ -221,8 +261,8 @@ export default function ManageFilms() {
                 <Button 
                   size="sm" 
                   variant="outline" 
-                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(films.length / itemsPerPage), p + 1))}
-                  disabled={currentPage === Math.ceil(films.length / itemsPerPage)}
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredFilms.length / itemsPerPage), p + 1))}
+                  disabled={currentPage === Math.ceil(filteredFilms.length / itemsPerPage)}
                 >
                   Next →
                 </Button>
