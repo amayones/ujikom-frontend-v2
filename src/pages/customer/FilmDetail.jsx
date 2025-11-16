@@ -167,8 +167,22 @@ export default function FilmDetail() {
   }, [id, fetchFilmById, fetchSchedules]);
 
   const handleSelectSchedule = useCallback((schedule) => {
-    if (!schedule?.id || !selectedFilm?.id) {
+    console.log('Schedule selected:', schedule);
+    console.log('Selected film:', selectedFilm);
+    
+    if (!schedule) {
       alert('Data jadwal tidak valid');
+      return;
+    }
+    
+    if (!schedule.id) {
+      alert('ID jadwal tidak ditemukan');
+      console.error('Schedule missing id:', schedule);
+      return;
+    }
+    
+    if (!selectedFilm?.id) {
+      alert('Data film tidak valid');
       return;
     }
     
@@ -189,11 +203,15 @@ export default function FilmDetail() {
         day_type: dayType
       };
       
+      console.log('Setting schedule data:', scheduleData);
       setSchedule(scheduleData);
-      navigate(`/customer/seats/${schedule.id}`);
+      
+      const targetUrl = `/customer/seats/${schedule.id}`;
+      console.log('Navigating to:', targetUrl);
+      navigate(targetUrl);
     } catch (error) {
       console.error('Error selecting schedule:', error);
-      alert('Gagal memilih jadwal');
+      alert('Gagal memilih jadwal: ' + error.message);
     }
   }, [selectedFilm, setSchedule, navigate]);
 

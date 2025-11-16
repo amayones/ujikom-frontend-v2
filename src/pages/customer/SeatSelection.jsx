@@ -17,17 +17,22 @@ export default function SeatSelection() {
     let isMounted = true;
     
     const loadSeats = async () => {
+      console.log('Loading seats for schedule:', scheduleId);
+      console.log('Selected schedule:', selectedSchedule);
+      
       if (!scheduleId) {
+        console.error('No scheduleId provided');
         setLoading(false);
         return;
       }
       
       try {
         await fetchSeats(scheduleId);
+        console.log('Seats loaded successfully');
       } catch (error) {
         if (isMounted) {
           console.error('Error loading seats:', error);
-          alert('Gagal memuat data kursi');
+          alert('Gagal memuat data kursi: ' + error.message);
         }
       } finally {
         if (isMounted) {
@@ -41,7 +46,7 @@ export default function SeatSelection() {
     return () => {
       isMounted = false;
     };
-  }, [scheduleId, fetchSeats]);
+  }, [scheduleId, fetchSeats, selectedSchedule]);
 
   if (loading) {
     return (
