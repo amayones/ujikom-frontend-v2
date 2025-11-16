@@ -12,6 +12,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [clientKey, setClientKey] = useState('');
+  const [error, setError] = useState(null);
   
   const { selectedSchedule, selectedSeats, totalPrice, clearCart } = useCartStore();
   const { checkout } = useOrdersStore();
@@ -23,13 +24,17 @@ export default function Checkout() {
     const fetchClientKey = async () => {
       try {
         const response = await api.get('/payment/client-key');
-        if (isMounted) {
-          setClientKey(response.data?.data?.client_key || '');
+        if (isMounted && response?.data?.data?.client_key) {
+          setClientKey(response.data.data.client_key);
+          setError(null);
+        } else if (isMounted) {
+          throw new Error('Client key tidak ditemukan');
         }
       } catch (error) {
         if (isMounted) {
+          const errorMsg = error.response?.data?.message || error.message || 'Gagal memuat konfigurasi pembayaran';
           console.error('Failed to fetch client key:', error);
-          alert('Gagal memuat konfigurasi pembayaran');
+          setError(errorMsg);
         }
       }
     };
@@ -43,10 +48,21 @@ export default function Checkout() {
 
   if (!selectedSchedule || selectedSeats.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 text-lg mb-4">Tidak ada pesanan yang valid</p>
+      <div className="py-12 text-center">
+        <p className="mb-4 text-lg text-gray-500">Tidak ada pesanan yang valid</p>
         <Button onClick={() => navigate('/customer/films')}>
           Kembali ke Daftar Film
+        </Button>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="py-12 text-center">
+        <p className="mb-4 text-lg text-red-500">{error}</p>
+        <Button onClick={() => window.location.reload()}>
+          Coba Lagi
         </Button>
       </div>
     );
@@ -131,11 +147,11 @@ export default function Checkout() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+      <h1 className="mb-8 text-3xl font-bold">Checkout</h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 className="text-xl font-bold mb-6">Detail Pesanan</h2>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+        <div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+          <h2 className="mb-6 text-xl font-bold">Detail Pesanan</h2>
           
           <div className="space-y-4">
             <div>
@@ -168,10 +184,10 @@ export default function Checkout() {
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 className="text-xl font-bold mb-6">Ringkasan Pembayaran</h2>
+        <div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+          <h2 className="mb-6 text-xl font-bold">Ringkasan Pembayaran</h2>
           
-          <div className="space-y-3 mb-6">
+          <div className="mb-6 space-y-3">
             <div className="flex justify-between">
               <span>Jumlah Tiket:</span>
               <span className="font-semibold">{selectedSeats.length} tiket</span>
