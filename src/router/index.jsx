@@ -28,7 +28,8 @@ import ManagePrices from '../pages/admin/ManagePrices';
 import ManageCashiers from '../pages/admin/ManageCashiers';
 
 // Owner pages
-import Reports from '../pages/owner/Reports';
+import Dashboard from '../pages/owner/Dashboard';
+import Transactions from '../pages/owner/Transactions';
 
 // Cashier pages
 import OfflineOrder from '../pages/cashier/OfflineOrder';
@@ -111,7 +112,8 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { path: 'reports', element: <Reports /> }
+      { path: 'dashboard', element: <Dashboard /> },
+      { path: 'transactions', element: <Transactions /> }
     ]
   },
   {

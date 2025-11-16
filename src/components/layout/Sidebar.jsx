@@ -10,7 +10,8 @@ import {
   ShoppingCart,
   CheckCircle,
   Scan,
-  LogOut
+  LogOut,
+  Receipt
 } from 'lucide-react';
 
 const menuItems = {
@@ -22,7 +23,8 @@ const menuItems = {
     { path: '/admin/cashiers', label: 'Kelola Kasir', icon: UserCheck }
   ],
   owner: [
-    { path: '/owner/reports', label: 'Laporan', icon: BarChart3 }
+    { path: '/owner/dashboard', label: 'Dashboard', icon: BarChart3 },
+    { path: '/owner/transactions', label: 'Detail Transaksi', icon: Receipt }
   ],
   cashier: [
     { path: '/cashier/offline-order', label: 'Pesan Offline', icon: ShoppingCart },

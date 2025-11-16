@@ -5,7 +5,7 @@ import Input from '../../components/ui/Input';
 import { Download, TrendingUp, Users, Film } from 'lucide-react';
 import { formatRupiah } from '../../utils/currency';
 
-export default function Reports() {
+export default function Transactions() {
   const [reports, setReports] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dateRange, setDateRange] = useState({
