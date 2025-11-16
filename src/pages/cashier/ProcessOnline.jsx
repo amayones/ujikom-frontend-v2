@@ -1,15 +1,12 @@
 import { useState, useEffect } from 'react';
 import api from '../../lib/api';
 import Button from '../../components/ui/Button';
-import Input from '../../components/ui/Input';
-import { Search } from 'lucide-react';
 import { formatRupiah } from '../../utils/currency';
+import { RefreshCw } from 'lucide-react';
 
 export default function ProcessOnline() {
-  const [searchQuery, setSearchQuery] = useState('');
   const [orders, setOrders] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
@@ -24,30 +21,25 @@ export default function ProcessOnline() {
   }, []);
 
   const fetchOrders = async () => {
+    setLoading(true);
     try {
       const response = await api.get('/orders');
-      console.log('All orders from API:', response.data.data);
       const data = response.data.data || [];
-      console.log('Total orders:', data.length);
       setOrders(data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
     } catch (error) {
       console.error('Error fetching orders:', error);
       setOrders([]);
-    }
-  };
-
-  const handleSearch = async () => {
-    if (!searchQuery) return;
-    
-    setLoading(true);
-    try {
-      const response = await api.get(`/orders/${searchQuery}`);
-      setSelectedOrder(response.data.data);
-    } catch (error) {
-      alert('Order tidak ditemukan');
     } finally {
       setLoading(false);
     }
+  };
+
+  const getStatusColor = (status) => {
+    return status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+  };
+
+  const getStatusText = (status) => {
+    return status === 'paid' ? 'Lunas' : 'Pending';
   };
 
   const getOrderTypeLabel = (type) => {
@@ -64,116 +56,105 @@ export default function ProcessOnline() {
     return true;
   });
 
-  return (
-    <div>
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Semua Pembelian Tiket</h1>
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-lg">Memuat data pembelian...</div>
+      </div>
+    );
+  }
 
-      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
-        <h2 className="text-xl font-bold mb-4">Cari Pesanan</h2>
-        <div className="flex space-x-4">
-          <Input
-            placeholder="Masukkan ID Pesanan"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-          />
-          <Button onClick={handleSearch} disabled={loading} className="flex items-center">
-            <Search size={16} className="mr-2" />
-            {loading ? 'Mencari...' : 'Cari'}
-          </Button>
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">📋 Semua Pembelian Tiket</h1>
+          <p className="text-gray-600">Lihat semua transaksi dari customer dan kasir</p>
         </div>
+        <Button onClick={fetchOrders} className="flex items-center" size="sm">
+          <RefreshCw size={16} className="mr-2" />
+          Refresh
+        </Button>
       </div>
 
-      {selectedOrder && (
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
-          <div className="flex justify-between items-start mb-6">
-            <h2 className="text-xl font-bold">Detail Pesanan</h2>
-            <div className="flex gap-2">
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                {getOrderTypeLabel(selectedOrder.order_type)}
-              </span>
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                LUNAS
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold mb-3">Informasi Tiket</h3>
-              <div className="space-y-2 text-sm">
-                <div><strong>No. Order:</strong> {selectedOrder.order_number}</div>
-                <div><strong>Film:</strong> {selectedOrder.schedule?.film?.title || 'N/A'}</div>
-                <div><strong>Studio:</strong> {selectedOrder.schedule?.studio?.name || 'N/A'}</div>
-                <div><strong>Waktu:</strong> {selectedOrder.schedule?.show_time ? new Date(selectedOrder.schedule.show_time).toLocaleString('id-ID') : 'N/A'}</div>
-                <div><strong>Kursi:</strong> {selectedOrder.orderItems?.map(item => `${item.seat?.row}${item.seat?.column}`).join(', ') || '-'}</div>
-                {selectedOrder.customer_name && <div><strong>Nama:</strong> {selectedOrder.customer_name}</div>}
-                {selectedOrder.customer_phone && <div><strong>Telepon:</strong> {selectedOrder.customer_phone}</div>}
+      <div className="flex gap-2">
+        <Button size="sm" variant={filter === 'all' ? 'primary' : 'outline'} onClick={() => setFilter('all')}>
+          Semua ({orders.filter(o => o.payment_status === 'paid').length})
+        </Button>
+        <Button size="sm" variant={filter === 'customer' ? 'primary' : 'outline'} onClick={() => setFilter('customer')}>
+          Customer ({orders.filter(o => o.order_type === 'online' && o.payment_status === 'paid').length})
+        </Button>
+        <Button size="sm" variant={filter === 'cashier' ? 'primary' : 'outline'} onClick={() => setFilter('cashier')}>
+          Kasir ({orders.filter(o => (o.order_type === 'offline' || o.order_type === 'cashier_online') && o.payment_status === 'paid').length})
+        </Button>
+      </div>
+      
+      {filteredOrders.length === 0 ? (
+        <div className="text-center py-12 bg-white rounded-lg shadow">
+          <p className="text-gray-500 text-lg">Tidak ada pembelian</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredOrders.map(order => {
+            const filmTitle = order.schedule?.film?.title || 'N/A';
+            const studioName = order.schedule?.studio?.name || 'N/A';
+            const showDate = order.schedule?.show_time ? new Date(order.schedule.show_time).toLocaleDateString('id-ID') : 'N/A';
+            const showTime = order.schedule?.show_time ? new Date(order.schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+            const orderItems = order.orderItems || order.order_items || [];
+            const seats = orderItems
+              .filter(item => item?.seat?.row && item?.seat?.column)
+              .map(item => `${item.seat.row}${item.seat.column}`)
+              .join(', ') || 'N/A';
+            const total = parseFloat(order.total_amount) || 0;
+            const customerName = order.customer_name || order.user?.name || 'N/A';
+            
+            return (
+              <div key={order.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold">{filmTitle}</h3>
+                    <p className="text-gray-600">{studioName} - {showDate} {showTime}</p>
+                    <p className="text-sm text-gray-500 mt-1">Customer: {customerName}</p>
+                  </div>
+                  <div className="flex flex-col gap-2 items-end">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.payment_status)}`}>
+                      {getStatusText(order.payment_status)}
+                    </span>
+                    <span className="px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                      {getOrderTypeLabel(order.order_type)}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <p className="text-sm text-gray-500">Jumlah Tiket</p>
+                    <p className="font-semibold">{orderItems.length || 0} tiket</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Kursi</p>
+                    <p className="font-semibold">{seats}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Total Pembayaran</p>
+                    <p className="font-semibold text-green-600">{formatRupiah(total)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Tanggal Pesan</p>
+                    <p className="font-semibold">{new Date(order.created_at).toLocaleDateString('id-ID')}</p>
+                  </div>
+                </div>
+                
+                <div className="flex justify-between items-center pt-4 border-t">
+                  <p className="text-sm text-gray-500">
+                    ID: {order.order_number}
+                  </p>
+                </div>
               </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold mb-3">Informasi Pembayaran</h3>
-              <div className="space-y-2 text-sm">
-                <div><strong>Total:</strong> {formatRupiah(parseFloat(selectedOrder.total_amount || 0))}</div>
-                <div><strong>Jumlah Tiket:</strong> {selectedOrder.orderItems?.length || 0}</div>
-                <div><strong>Tanggal Pesan:</strong> {new Date(selectedOrder.created_at).toLocaleString('id-ID')}</div>
-                <div><strong>Tipe Order:</strong> {getOrderTypeLabel(selectedOrder.order_type)}</div>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
       )}
-
-      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg sm:text-xl font-semibold">Daftar Pembelian ({filteredOrders.length})</h2>
-          <div className="flex gap-2">
-            <Button size="sm" variant={filter === 'all' ? 'primary' : 'outline'} onClick={() => setFilter('all')}>Semua</Button>
-            <Button size="sm" variant={filter === 'customer' ? 'primary' : 'outline'} onClick={() => setFilter('customer')}>Customer</Button>
-            <Button size="sm" variant={filter === 'cashier' ? 'primary' : 'outline'} onClick={() => setFilter('cashier')}>Kasir</Button>
-            <Button size="sm" variant="outline" onClick={fetchOrders}>Refresh</Button>
-          </div>
-        </div>
-        {filteredOrders.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">Tidak ada pesanan</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[700px] text-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="text-left py-3 px-4">No. Order</th>
-                  <th className="text-left py-3 px-4">Film</th>
-                  <th className="text-left py-3 px-4">Total</th>
-                  <th className="text-left py-3 px-4">Tipe</th>
-                  <th className="text-left py-3 px-4">Tanggal</th>
-                  <th className="text-left py-3 px-4">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredOrders.map(order => (
-                  <tr key={order.id} className="border-b hover:bg-gray-50">
-                    <td className="py-3 px-4 font-mono text-xs">{order.order_number}</td>
-                    <td className="py-3 px-4">{order.schedule?.film?.title || 'N/A'}</td>
-                    <td className="py-3 px-4">{formatRupiah(parseFloat(order.total_amount || 0))}</td>
-                    <td className="py-3 px-4">
-                      <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                        {getOrderTypeLabel(order.order_type)}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-xs">{new Date(order.created_at).toLocaleDateString('id-ID')}</td>
-                    <td className="py-3 px-4">
-                      <Button size="sm" onClick={() => setSelectedOrder(order)}>
-                        Lihat
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
