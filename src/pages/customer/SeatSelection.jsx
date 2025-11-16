@@ -39,23 +39,24 @@ export default function SeatSelection() {
   useEffect(() => {
     let isMounted = true;
     
-    const loadSeats = async () => {
-      console.log('Loading seats for schedule:', scheduleId);
-      console.log('Selected schedule:', selectedSchedule);
-      
+    const loadData = async () => {
       if (!scheduleId) {
-        console.error('No scheduleId provided');
         setLoading(false);
         return;
       }
       
       try {
         await fetchSeats(scheduleId);
-        console.log('Seats loaded successfully');
+        
+        // If no schedule selected, redirect back
+        if (!selectedSchedule && isMounted) {
+          alert('Silakan pilih jadwal terlebih dahulu');
+          navigate('/customer/films');
+        }
       } catch (error) {
         if (isMounted) {
-          console.error('Error loading seats:', error);
-          alert('Gagal memuat data kursi: ' + error.message);
+          console.error('Error loading data:', error);
+          alert('Gagal memuat data');
         }
       } finally {
         if (isMounted) {
@@ -64,12 +65,12 @@ export default function SeatSelection() {
       }
     };
     
-    loadSeats();
+    loadData();
     
     return () => {
       isMounted = false;
     };
-  }, [scheduleId, fetchSeats, selectedSchedule]);
+  }, [scheduleId, fetchSeats, selectedSchedule, navigate]);
 
   if (loading) {
     return (
