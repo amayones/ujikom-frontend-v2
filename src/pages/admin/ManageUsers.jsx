@@ -34,13 +34,16 @@ export default function ManageUsers() {
     const action = user?.deleted_at ? 'mengaktifkan' : 'menonaktifkan';
     
     if (confirm(`Yakin ingin ${action} pelanggan ini?`)) {
+      setLoading(true);
       try {
         await adminApi.toggleUserStatus(userId);
         await fetchUsers();
         alert(`Pelanggan berhasil ${user?.deleted_at ? 'diaktifkan' : 'dinonaktifkan'}`);
       } catch (error) {
         console.error('Error toggling status:', error);
-        alert('Gagal mengubah status pelanggan');
+        alert(error.response?.data?.message || 'Gagal mengubah status pelanggan');
+      } finally {
+        setLoading(false);
       }
     }
   };
