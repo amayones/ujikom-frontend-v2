@@ -4,7 +4,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { formatRupiah } from '../../utils/currency';
 
-export default function ManagePrices() {
+export default function ManagePrices() { 
   const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [priceSettings, setPriceSettings] = useState({
@@ -69,7 +69,7 @@ export default function ManagePrices() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex items-center justify-center h-64">
         <div className="text-lg">Memuat data...</div>
       </div>
     );
@@ -77,15 +77,15 @@ export default function ManagePrices() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Kelola Harga</h1>
+      <h1 className="mb-8 text-3xl font-bold">Kelola Harga</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 className="text-xl font-bold mb-6">Pengaturan Harga Tiket</h2>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+        <div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+          <h2 className="mb-6 text-xl font-bold">Pengaturan Harga Tiket</h2>
           
           <div className="space-y-6">
             <div>
-              <h3 className="font-semibold text-lg mb-4 text-blue-600">Hari Biasa (Senin - Kamis)</h3>
+              <h3 className="mb-4 text-lg font-semibold text-blue-600">Hari Biasa (Senin - Kamis)</h3>
               <Input
                 label="Harga Tiket"
                 type="number"
@@ -95,7 +95,7 @@ export default function ManagePrices() {
             </div>
 
             <div>
-              <h3 className="font-semibold text-lg mb-4 text-green-600">Weekend (Jumat - Minggu)</h3>
+              <h3 className="mb-4 text-lg font-semibold text-green-600">Weekend (Jumat - Minggu)</h3>
               <Input
                 label="Harga Tiket"
                 type="number"
@@ -114,21 +114,21 @@ export default function ManagePrices() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 className="text-xl font-bold mb-6">Preview Harga</h2>
+        <div className="p-4 bg-white rounded-lg shadow-md sm:p-6">
+          <h2 className="mb-6 text-xl font-bold">Preview Harga</h2>
           
           <div className="space-y-6">
-            <div className="border rounded-lg p-4">
-              <h3 className="font-semibold mb-3 text-blue-600">Hari Biasa</h3>
-              <div className="flex justify-between items-center">
+            <div className="p-4 border rounded-lg">
+              <h3 className="mb-3 font-semibold text-blue-600">Hari Biasa</h3>
+              <div className="flex items-center justify-between">
                 <span>Harga Tiket</span>
                 <span className="font-semibold">{formatRupiah(priceSettings.weekday)}</span>
               </div>
             </div>
 
-            <div className="border rounded-lg p-4">
-              <h3 className="font-semibold mb-3 text-green-600">Weekend</h3>
-              <div className="flex justify-between items-center">
+            <div className="p-4 border rounded-lg">
+              <h3 className="mb-3 font-semibold text-green-600">Weekend</h3>
+              <div className="flex items-center justify-between">
                 <span>Harga Tiket</span>
                 <span className="font-semibold">{formatRupiah(priceSettings.weekend)}</span>
               </div>
@@ -137,9 +137,9 @@ export default function ManagePrices() {
 
           </div>
 
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold mb-2">Catatan:</h4>
-            <ul className="text-sm text-gray-600 space-y-1">
+          <div className="p-4 mt-6 rounded-lg bg-gray-50">
+            <h4 className="mb-2 font-semibold">Catatan:</h4>
+            <ul className="space-y-1 text-sm text-gray-600">
               <li>• Harga sudah termasuk pajak</li>
               <li>• Perubahan harga berlaku untuk jadwal baru</li>
               <li>• Jadwal yang sudah ada tidak terpengaruh</li>
