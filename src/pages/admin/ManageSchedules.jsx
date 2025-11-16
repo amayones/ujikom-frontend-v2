@@ -145,6 +145,167 @@ export default function ManageSchedules() {
         </Button>
       </div>
 
+      {!showForm && (
+        <div className="overflow-hidden bg-white rounded-lg shadow-md">
+          <div className="flex items-center justify-between p-6 border-b">
+            <h2 className="text-xl font-semibold">Daftar Jadwal ({schedules.length})</h2>
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                variant={viewMode === 'grouped' ? 'primary' : 'outline'}
+                onClick={() => setViewMode('grouped')}
+              >
+                Per Tanggal
+              </Button>
+              <Button 
+                size="sm" 
+                variant={viewMode === 'list' ? 'primary' : 'outline'}
+                onClick={() => setViewMode('list')}
+              >
+                Semua
+              </Button>
+            </div>
+          </div>
+          
+          {schedules.length === 0 ? (
+            <div className="py-12 text-center text-gray-500">
+              Belum ada jadwal. Klik "Tambah Jadwal" untuk membuat jadwal baru.
+            </div>
+          ) : viewMode === 'grouped' ? (
+            <div className="p-6 space-y-6">
+              {Object.entries(
+                schedules.reduce((acc, schedule) => {
+                  const date = new Date(schedule.show_time).toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  });
+                  if (!acc[date]) acc[date] = [];
+                  acc[date].push(schedule);
+                  return acc;
+                }, {})
+              ).sort((a, b) => new Date(b[1][0].show_time) - new Date(a[1][0].show_time)).map(([date, daySchedules]) => (
+                <div key={date} className="border rounded-lg">
+                  <div className="p-4 font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700">
+                    📅 {date} ({daySchedules.length} jadwal)
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 p-4 md:grid-cols-2 lg:grid-cols-3">
+                    {daySchedules.map(schedule => (
+                      <div key={schedule.id} className="p-4 transition-shadow border rounded-lg hover:shadow-md">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-blue-600">{schedule.film?.title || 'N/A'}</h4>
+                            <p className="text-sm text-gray-600">{schedule.studio?.name || 'N/A'}</p>
+                          </div>
+                          <span className="px-2 py-1 text-xs font-bold text-white bg-blue-600 rounded">
+                            {new Date(schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-semibold text-green-600">
+                            {schedule.film?.base_price ? formatRupiah(schedule.film.base_price) : 'N/A'}
+                          </span>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" onClick={() => handleEdit(schedule)}>
+                              <Edit size={14} />
+                            </Button>
+                            <Button size="sm" variant="danger" onClick={() => handleDelete(schedule.id)}>
+                              <Trash2 size={14} />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left">Film</th>
+                      <th className="px-4 py-3 text-left">Studio</th>
+                      <th className="px-4 py-3 text-left">Tanggal</th>
+                      <th className="px-4 py-3 text-left">Waktu</th>
+                      <th className="px-4 py-3 text-left">Harga</th>
+                      <th className="px-4 py-3 text-left">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {schedules
+                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                      .map(schedule => (
+                      <tr key={schedule.id} className="border-b hover:bg-gray-50">
+                        <td className="px-4 py-3 font-semibold">{schedule.film?.title || 'N/A'}</td>
+                        <td className="px-4 py-3">{schedule.studio?.name || 'N/A'}</td>
+                        <td className="px-4 py-3">
+                          {new Date(schedule.show_time).toLocaleDateString('id-ID')}
+                        </td>
+                        <td className="px-4 py-3">
+                          {new Date(schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                        </td>
+                        <td className="px-4 py-3">{schedule.film?.base_price ? formatRupiah(schedule.film.base_price) : 'N/A'}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex space-x-2">
+                            <Button size="sm" variant="outline" onClick={() => handleEdit(schedule)}>
+                              <Edit size={14} />
+                            </Button>
+                            <Button size="sm" variant="danger" onClick={() => handleDelete(schedule.id)}>
+                              <Trash2 size={14} />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex items-center justify-between p-4 border-t">
+                  <p className="text-sm text-gray-600">
+                    Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, schedules.length)} dari {schedules.length} jadwal
+                  </p>
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                    >
+                      ← Prev
+                    </Button>
+                    {Array.from({ length: Math.ceil(schedules.length / itemsPerPage) }, (_, i) => i + 1)
+                      .filter(page => page === 1 || page === Math.ceil(schedules.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
+                      .map((page, idx, arr) => (
+                        <span key={page}>
+                          {idx > 0 && arr[idx - 1] !== page - 1 && <span className="px-2">...</span>}
+                          <Button
+                            size="sm"
+                            variant={currentPage === page ? 'primary' : 'outline'}
+                            onClick={() => setCurrentPage(page)}
+                          >
+                            {page}
+                          </Button>
+                        </span>
+                      ))}
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      onClick={() => setCurrentPage(p => Math.min(Math.ceil(schedules.length / itemsPerPage), p + 1))}
+                      disabled={currentPage === Math.ceil(schedules.length / itemsPerPage)}
+                    >
+                      Next →
+                    </Button>
+                  </div>
+                </div>
+            </>
+          )}
+        </div>
+      )}
+
       {showForm && (
         <div className="p-6 mb-8 bg-white rounded-lg shadow-md">
           <h2 className="mb-6 text-xl font-bold">
@@ -334,164 +495,6 @@ export default function ManageSchedules() {
         </div>
       )}
 
-      <div className="overflow-hidden bg-white rounded-lg shadow-md">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold">Daftar Jadwal ({schedules.length})</h2>
-          <div className="flex gap-2">
-            <Button 
-              size="sm" 
-              variant={viewMode === 'grouped' ? 'primary' : 'outline'}
-              onClick={() => setViewMode('grouped')}
-            >
-              Per Tanggal
-            </Button>
-            <Button 
-              size="sm" 
-              variant={viewMode === 'list' ? 'primary' : 'outline'}
-              onClick={() => setViewMode('list')}
-            >
-              Semua
-            </Button>
-          </div>
-        </div>
-        
-        {schedules.length === 0 ? (
-          <div className="py-12 text-center text-gray-500">
-            Belum ada jadwal. Klik "Tambah Jadwal" untuk membuat jadwal baru.
-          </div>
-        ) : viewMode === 'grouped' ? (
-          <div className="p-6 space-y-6">
-            {Object.entries(
-              schedules.reduce((acc, schedule) => {
-                const date = new Date(schedule.show_time).toLocaleDateString('id-ID', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                });
-                if (!acc[date]) acc[date] = [];
-                acc[date].push(schedule);
-                return acc;
-              }, {})
-            ).sort((a, b) => new Date(b[1][0].show_time) - new Date(a[1][0].show_time)).map(([date, daySchedules]) => (
-              <div key={date} className="border rounded-lg">
-                <div className="p-4 font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700">
-                  📅 {date} ({daySchedules.length} jadwal)
-                </div>
-                <div className="grid grid-cols-1 gap-3 p-4 md:grid-cols-2 lg:grid-cols-3">
-                  {daySchedules.map(schedule => (
-                    <div key={schedule.id} className="p-4 transition-shadow border rounded-lg hover:shadow-md">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-blue-600">{schedule.film?.title || 'N/A'}</h4>
-                          <p className="text-sm text-gray-600">{schedule.studio?.name || 'N/A'}</p>
-                        </div>
-                        <span className="px-2 py-1 text-xs font-bold text-white bg-blue-600 rounded">
-                          {new Date(schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-semibold text-green-600">
-                          {schedule.film?.base_price ? formatRupiah(schedule.film.base_price) : 'N/A'}
-                        </span>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline" onClick={() => handleEdit(schedule)}>
-                            <Edit size={14} />
-                          </Button>
-                          <Button size="sm" variant="danger" onClick={() => handleDelete(schedule.id)}>
-                            <Trash2 size={14} />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left">Film</th>
-                    <th className="px-4 py-3 text-left">Studio</th>
-                    <th className="px-4 py-3 text-left">Tanggal</th>
-                    <th className="px-4 py-3 text-left">Waktu</th>
-                    <th className="px-4 py-3 text-left">Harga</th>
-                    <th className="px-4 py-3 text-left">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {schedules
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                    .map(schedule => (
-                    <tr key={schedule.id} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3 font-semibold">{schedule.film?.title || 'N/A'}</td>
-                      <td className="px-4 py-3">{schedule.studio?.name || 'N/A'}</td>
-                      <td className="px-4 py-3">
-                        {new Date(schedule.show_time).toLocaleDateString('id-ID')}
-                      </td>
-                      <td className="px-4 py-3">
-                        {new Date(schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                      </td>
-                      <td className="px-4 py-3">{schedule.film?.base_price ? formatRupiah(schedule.film.base_price) : 'N/A'}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="outline" onClick={() => handleEdit(schedule)}>
-                            <Edit size={14} />
-                          </Button>
-                          <Button size="sm" variant="danger" onClick={() => handleDelete(schedule.id)}>
-                            <Trash2 size={14} />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="flex items-center justify-between p-4 border-t">
-                <p className="text-sm text-gray-600">
-                  Menampilkan {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, schedules.length)} dari {schedules.length} jadwal
-                </p>
-                <div className="flex gap-2">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                  >
-                    ← Prev
-                  </Button>
-                  {Array.from({ length: Math.ceil(schedules.length / itemsPerPage) }, (_, i) => i + 1)
-                    .filter(page => page === 1 || page === Math.ceil(schedules.length / itemsPerPage) || Math.abs(page - currentPage) <= 1)
-                    .map((page, idx, arr) => (
-                      <span key={page}>
-                        {idx > 0 && arr[idx - 1] !== page - 1 && <span className="px-2">...</span>}
-                        <Button
-                          size="sm"
-                          variant={currentPage === page ? 'primary' : 'outline'}
-                          onClick={() => setCurrentPage(page)}
-                        >
-                          {page}
-                        </Button>
-                      </span>
-                    ))}
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(schedules.length / itemsPerPage), p + 1))}
-                    disabled={currentPage === Math.ceil(schedules.length / itemsPerPage)}
-                  >
-                    Next →
-                  </Button>
-                </div>
-              </div>
-          </>
-        )}
-      </div>
     </div>
   );
 }
