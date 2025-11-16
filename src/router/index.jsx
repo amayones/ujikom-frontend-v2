@@ -6,6 +6,9 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import CustomerLayout from '../components/layout/CustomerLayout';
 import AdminLayout from '../components/layout/AdminLayout';
 
+// Public
+import Landing from '../pages/Landing';
+
 // Auth
 import Login from '../pages/Login';
 import Register from '../pages/Register';
@@ -58,7 +61,7 @@ function ProtectedRoute({ children, allowedRoles }) {
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/customer/home" replace />,
+    element: <Landing />,
     errorElement: <ErrorBoundary />
   },
   {
