@@ -213,18 +213,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-2xl p-8 lg:p-12 text-center shadow-xl">
-        <h2 className="text-3xl lg:text-4xl font-bold mb-4">Siap Menonton Film Favorit Anda?</h2>
-        <p className="text-xl mb-8 text-red-100">Pesan tiket sekarang dan nikmati pengalaman menonton yang tak terlupakan!</p>
-        <Button 
-          onClick={() => navigate('/customer/films')}
-          className="bg-white text-red-600 hover:bg-gray-100 px-10 py-4 text-lg font-bold shadow-lg"
-        >
-          Pesan Tiket Sekarang
-        </Button>
-      </section>
     </div>
   );
 }

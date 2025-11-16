@@ -133,7 +133,7 @@ export default function Profile() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="mb-6 text-2xl font-bold sm:text-3xl sm:mb-8">Profile Saya</h1>
+      <h1 className="text-3xl font-bold mb-8">Profile Saya</h1>
       
       <div className="p-4 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
         <form onSubmit={handleSubmit}>
@@ -186,8 +186,8 @@ export default function Profile() {
         </form>
       </div>
       
-      <div className="p-4 mt-6 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
-        <h2 className="mb-4 text-lg font-bold sm:text-xl">Ubah Password</h2>
+      <div className="mt-6 p-4 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
+        <h2 className="text-xl font-bold mb-4">Ubah Password</h2>
         <form onSubmit={handlePasswordSubmit}>
           <Input
             label="Password Saat Ini"
@@ -235,8 +235,8 @@ export default function Profile() {
         </form>
       </div>
       
-      <div className="p-4 mt-6 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
-        <h2 className="mb-4 text-lg font-bold sm:text-xl">Informasi Akun</h2>
+      <div className="mt-6 p-4 bg-white rounded-lg shadow-md sm:p-6 lg:p-8">
+        <h2 className="text-xl font-bold mb-4">Informasi Akun</h2>
         <div className="space-y-3">
           <div>
             <span className="font-semibold">Role:</span>

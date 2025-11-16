@@ -226,7 +226,7 @@ export default function FilmDetail() {
         </div>
 
         <div className="lg:col-span-2">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">{selectedFilm.title}</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4">{selectedFilm.title}</h1>
           
           <div className="flex flex-wrap gap-4 mb-6">
             <div className="flex items-center text-gray-600">

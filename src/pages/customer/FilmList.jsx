@@ -80,7 +80,7 @@ export default function FilmList() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-red-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">
           🎬 Jelajahi Film
         </h1>
         <p className="text-gray-600">Temukan film favorit Anda dan pesan tiket sekarang!</p>
