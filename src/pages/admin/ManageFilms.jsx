@@ -154,11 +154,33 @@ export default function ManageFilms() {
     if (!trailerSearchTerm.trim()) return;
     setSearchingTrailers(true);
     try {
-      // Use Invidious API as alternative (no API key needed)
-      const response = await fetch(
-        `https://vid.puffyan.us/api/v1/search?q=${encodeURIComponent(trailerSearchTerm + ' official trailer')}&type=video`
-      );
-      const data = await response.json();
+      // Try multiple Invidious instances for reliability
+      const instances = [
+        'https://inv.nadeko.net',
+        'https://invidious.privacyredirect.com',
+        'https://vid.puffyan.us'
+      ];
+      
+      let data = null;
+      for (const instance of instances) {
+        try {
+          const response = await fetch(
+            `${instance}/api/v1/search?q=${encodeURIComponent(trailerSearchTerm + ' official trailer')}&type=video`,
+            { signal: AbortSignal.timeout(5000) }
+          );
+          if (response.ok) {
+            data = await response.json();
+            break;
+          }
+        } catch (err) {
+          continue;
+        }
+      }
+      
+      if (!data || !Array.isArray(data)) {
+        throw new Error('No results found');
+      }
+      
       const formattedResults = data.slice(0, 12).map(video => ({
         id: { videoId: video.videoId },
         snippet: {
@@ -172,7 +194,8 @@ export default function ManageFilms() {
       setTrailerResults(formattedResults);
     } catch (error) {
       console.error('Error searching trailers:', error);
-      alert('Gagal mencari trailer. Coba lagi.');
+      alert('Gagal mencari trailer. Silakan masukkan URL YouTube secara manual.');
+      setTrailerResults([]);
     } finally {
       setSearchingTrailers(false);
     }
