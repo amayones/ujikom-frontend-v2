@@ -137,7 +137,7 @@ export default function ProcessOnline() {
                       </Button>
                     </td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>

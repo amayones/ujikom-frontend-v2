@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useFilmsStore } from '../../store/filmsStore';
 import ShowCard from '../../components/cinema/ShowCard';
 import Button from '../../components/ui/Button';
-import { Film, TrendingUp, Grid3x3, Search } from 'lucide-react';
+import { Film, TrendingUp, LayoutGrid, Search } from 'lucide-react';
 
 export default function FilmList() {
   const { loading, fetchFilms, getPlayNowFilms, getComingSoonFilms, getAllFilms } = useFilmsStore();
@@ -59,7 +59,7 @@ export default function FilmList() {
   const filterButtons = useMemo(() => [
     { id: 'play_now', label: 'Sedang Tayang', icon: Film, count: playNowFilms.length },
     { id: 'coming_soon', label: 'Segera Tayang', icon: TrendingUp, count: comingSoonFilms.length },
-    { id: 'all', label: 'Semua Film', icon: Grid3x3, count: allFilms.length }
+    { id: 'all', label: 'Semua Film', icon: LayoutGrid, count: allFilms.length }
   ], [playNowFilms.length, comingSoonFilms.length, allFilms.length]);
 
   const handleFilterChange = useCallback((newFilter) => {
