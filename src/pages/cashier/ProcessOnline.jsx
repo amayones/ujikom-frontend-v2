@@ -26,8 +26,12 @@ export default function ProcessOnline() {
   const fetchOrders = async () => {
     try {
       const response = await api.get('/orders');
+      console.log('All orders from API:', response.data.data);
       const data = response.data.data || [];
-      setOrders(data.filter(o => o.payment_status === 'paid').sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
+      const paidOrders = data.filter(o => o.payment_status === 'paid');
+      console.log('Paid orders:', paidOrders);
+      console.log('Order types:', paidOrders.map(o => ({ id: o.id, type: o.order_type, status: o.payment_status })));
+      setOrders(paidOrders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
     } catch (error) {
       console.error('Error fetching orders:', error);
       setOrders([]);
