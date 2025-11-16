@@ -6,8 +6,8 @@ import Input from '../../components/ui/Input';
 import { Plus, Edit, Trash2, Film, Monitor, Calendar, Check } from 'lucide-react';
 import { formatRupiah } from '../../utils/currency';
  
-export default function ManageSchedules() {
-  const [films, setFilms] = useState([]);
+export default function ManageSchedules() { 
+\  const [films, setFilms] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [studios, setStudios] = useState([]);
   const [loading, setLoading] = useState(true);

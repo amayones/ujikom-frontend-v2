@@ -6,7 +6,7 @@ import SeatMap from '../../components/cinema/SeatMap';
 import Button from '../../components/ui/Button';
 import { formatRupiah } from '../../utils/currency';
 
-export default function SeatSelection() {
+export default function SeatSelection() { 
   const navigate = useNavigate();
   const { scheduleId } = useParams();
   const { selectedSchedule, selectedSeats, totalPrice } = useCartStore();
@@ -45,7 +45,7 @@ export default function SeatSelection() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex items-center justify-center h-64">
         <div className="text-lg">Memuat layout kursi...</div>
       </div>
     );
@@ -53,8 +53,8 @@ export default function SeatSelection() {
 
   if (!selectedSchedule) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 text-lg mb-4">Silakan pilih jadwal terlebih dahulu</p>
+      <div className="py-12 text-center">
+        <p className="mb-4 text-lg text-gray-500">Silakan pilih jadwal terlebih dahulu</p>
         <Button onClick={() => navigate('/customer/films')}>
           Kembali ke Daftar Film
         </Button>
@@ -88,12 +88,12 @@ export default function SeatSelection() {
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold mb-2">🎫 Pilih Kursi</h1>
+        <h1 className="mb-2 text-3xl font-bold">🎫 Pilih Kursi</h1>
         <p className="text-gray-600">Pilih kursi terbaik untuk pengalaman menonton yang nyaman</p>
       </div>
       
-      <div className="bg-white rounded-xl p-6 shadow-lg">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
+      <div className="p-6 bg-white shadow-lg rounded-xl">
+        <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-3 sm:gap-4">
           <div>
             <p className="font-semibold">Film</p>
             <p className="text-gray-600">{selectedSchedule.film_title}</p>
@@ -109,16 +109,16 @@ export default function SeatSelection() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
         <div className="lg:col-span-2">
           <SeatMap seats={seats} />
         </div>
         
-        <div className="bg-white rounded-xl p-6 shadow-lg h-fit">
-          <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Ringkasan Pesanan</h3>
+        <div className="p-6 bg-white shadow-lg rounded-xl h-fit">
+          <h3 className="mb-3 text-lg font-bold sm:text-xl sm:mb-4">Ringkasan Pesanan</h3>
           
-          <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 text-sm sm:text-base">
-            <div className="flex justify-between items-start">
+          <div className="mb-4 space-y-2 text-sm sm:space-y-3 sm:mb-6 sm:text-base">
+            <div className="flex items-start justify-between">
               <span>Kursi dipilih:</span>
               <span className="font-semibold text-right break-words max-w-[60%]">
                 {selectedSeats.length > 0 

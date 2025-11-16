@@ -10,7 +10,7 @@ export default function ManagePrices() {
   const [priceSettings, setPriceSettings] = useState({
     weekday: 35000,
     weekend: 45000
-  });
+  }); 
 
   useEffect(() => {
     fetchPrices();
