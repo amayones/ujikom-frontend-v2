@@ -45,16 +45,16 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-4 sm:space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center mb-2">
-            <Film size={48} className="text-blue-600" />
+            <Film size={48} className="text-red-600" />
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
             Absolute Cinema
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-300">
             Masuk ke akun Anda untuk memesan tiket
           </p>
         </div>
@@ -104,7 +104,7 @@ export default function Login() {
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600">
                 Belum punya akun?{' '}
-                <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
+                <Link to="/register" className="font-medium text-red-600 hover:text-red-500">
                   Daftar di sini
                 </Link>
               </p>
