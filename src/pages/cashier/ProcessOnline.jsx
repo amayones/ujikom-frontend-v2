@@ -20,10 +20,12 @@ export default function ProcessOnline() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/cashier/orders');
+      const response = await api.get('/cashier/all-purchases');
+      console.log('Fetched orders:', response.data);
       setOrders(response.data.data || []);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching orders:', error);
+      console.error('Error response:', error.response);
       setOrders([]);
     } finally {
       setLoading(false);
@@ -69,7 +71,8 @@ export default function ProcessOnline() {
       
       {filteredOrders.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg shadow">
-          <p className="text-gray-500">Tidak ada pembelian</p>
+          <p className="text-gray-500 text-lg mb-2">Tidak ada pembelian</p>
+          <p className="text-sm text-gray-400">Total data: {orders.length} | Filter: {filter}</p>
         </div>
       ) : (
         <div className="space-y-4">
