@@ -57,7 +57,7 @@ export default function Register() {
       <div className="w-full max-w-md space-y-6 sm:space-y-8">
         <div className="text-center">
           <div className="flex items-center justify-center mb-2">
-            <Film size={48} className="text-red-500" />
+            <Film size={48} className="text-emerald-600" />
           </div>
           <h2 className="text-3xl font-extrabold text-gray-800 sm:text-4xl">
             Absolute Cinema
@@ -126,7 +126,7 @@ export default function Register() {
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-600">
                 Sudah punya akun?{' '}
-                <Link to="/login" className="font-semibold text-red-500 hover:text-red-600 transition-colors">
+                <Link to="/login" className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
                   Masuk di sini
                 </Link>
               </p>

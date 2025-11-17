@@ -49,7 +49,7 @@ export default function Login() {
       <div className="max-w-md w-full space-y-4 sm:space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center mb-2">
-            <Film size={48} className="text-red-500" />
+            <Film size={48} className="text-emerald-600" />
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800">
             Absolute Cinema
@@ -104,7 +104,7 @@ export default function Login() {
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600">
                 Belum punya akun?{' '}
-                <Link to="/register" className="font-semibold text-red-500 hover:text-red-600 transition-colors">
+                <Link to="/register" className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
                   Daftar di sini
                 </Link>
               </p>
@@ -115,7 +115,7 @@ export default function Login() {
         <div className="bg-white p-4 rounded-xl shadow-lg border border-gray-200">
           <button
             onClick={() => setShowDemo(!showDemo)}
-            className="w-full text-left font-semibold text-gray-800 flex items-center justify-between hover:text-red-500 transition-colors"
+            className="w-full text-left font-semibold text-gray-800 flex items-center justify-between hover:text-emerald-600 transition-colors"
           >
             <span>Demo Accounts</span>
             {showDemo ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
@@ -124,27 +124,27 @@ export default function Login() {
             <div className="mt-3 space-y-2">
               <button
                 onClick={() => quickLogin('customer@test.com', 'password')}
-                className="w-full text-left text-sm p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                className="w-full text-left text-sm p-2 hover:bg-emerald-50 rounded-lg transition-colors"
               >
-                <strong className="text-blue-600">Customer:</strong> customer@test.com
+                <strong className="text-emerald-600">Customer:</strong> customer@test.com
               </button>
               <button
                 onClick={() => quickLogin('admin@test.com', 'password')}
-                className="w-full text-left text-sm p-2 hover:bg-purple-50 rounded-lg transition-colors"
+                className="w-full text-left text-sm p-2 hover:bg-emerald-50 rounded-lg transition-colors"
               >
-                <strong className="text-purple-600">Admin:</strong> admin@test.com
+                <strong className="text-emerald-600">Admin:</strong> admin@test.com
               </button>
               <button
                 onClick={() => quickLogin('owner@test.com', 'password')}
-                className="w-full text-left text-sm p-2 hover:bg-green-50 rounded-lg transition-colors"
+                className="w-full text-left text-sm p-2 hover:bg-emerald-50 rounded-lg transition-colors"
               >
-                <strong className="text-green-600">Owner:</strong> owner@test.com
+                <strong className="text-emerald-600">Owner:</strong> owner@test.com
               </button>
               <button
                 onClick={() => quickLogin('cashier@test.com', 'password')}
-                className="w-full text-left text-sm p-2 hover:bg-orange-50 rounded-lg transition-colors"
+                className="w-full text-left text-sm p-2 hover:bg-emerald-50 rounded-lg transition-colors"
               >
-                <strong className="text-orange-600">Cashier:</strong> cashier@test.com
+                <strong className="text-emerald-600">Cashier:</strong> cashier@test.com
               </button>
             </div>
           )}
