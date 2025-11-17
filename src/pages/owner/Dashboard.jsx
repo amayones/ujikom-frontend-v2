@@ -8,24 +8,42 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [period, setPeriod] = useState('month');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStats();
   }, [period]);
 
   const fetchStats = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await api.get(`/owner/reports?period=${period}`);
+      console.log('Dashboard data:', response.data);
       setStats(response.data.data);
     } catch (error) {
       console.error('Error fetching stats:', error);
+      setError(error.response?.data?.message || 'Gagal memuat data');
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return <div className="flex items-center justify-center h-64">Memuat data...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64">
+        <p className="text-red-600 mb-4">{error}</p>
+        <button onClick={fetchStats} className="px-4 py-2 bg-blue-600 text-white rounded">Coba Lagi</button>
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return <div className="flex items-center justify-center h-64">Tidak ada data</div>;
   }
 
 

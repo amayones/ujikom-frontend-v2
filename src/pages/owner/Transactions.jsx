@@ -17,10 +17,12 @@ export default function Transactions() {
     setLoading(true);
     try {
       const response = await ownerApi.getReports(dateRange);
-      setReports(response.data);
+      console.log('Reports data:', response);
+      setReports(response.data || response);
     } catch (error) {
       console.error('Error fetching reports:', error);
       alert('Gagal memuat laporan: ' + (error.response?.data?.message || error.message));
+      setReports(null);
     } finally {
       setLoading(false);
     }
@@ -87,6 +89,18 @@ export default function Transactions() {
             <div>
               <p className="text-sm text-gray-500">Total Transaksi</p>
               <p className="text-2xl font-bold text-blue-600">{reports?.summary?.total_transactions || 0}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center">
+            <div className="bg-purple-100 p-3 rounded-full mr-4">
+              <Film className="text-purple-600" size={24} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Tiket</p>
+              <p className="text-2xl font-bold text-purple-600">{reports?.summary?.total_tickets || 0}</p>
             </div>
           </div>
         </div>
