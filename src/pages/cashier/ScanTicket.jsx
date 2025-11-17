@@ -21,11 +21,16 @@ export default function ScanTicket() {
     setError(null);
     setOrder(null);
 
+    const response = await api.post('/cashier/scan', {
+      order_number: orderNumber.toUpperCase()
+    });
+    
+    console.log(response);
     try {
       const response = await api.post('/cashier/scan', {
         order_number: orderNumber.toUpperCase()
       });
-      
+      // console.log(response);
       setOrder(response.data.data);
       setOrderNumber('');
     } catch (err) {
@@ -37,20 +42,20 @@ export default function ScanTicket() {
 
   const getStatusBadge = (status) => {
     if (status === 'scanned') {
-      return <span className="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">✓ Sudah Masuk</span>;
+      return <span className="px-3 py-1 text-sm text-blue-800 bg-blue-100 rounded-full">✓ Sudah Masuk</span>;
     }
-    return <span className="px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">Lunas</span>;
+    return <span className="px-3 py-1 text-sm text-green-800 bg-green-100 rounded-full">Lunas</span>;
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2">🎫 Scan Tiket</h1>
+        <h1 className="mb-2 text-3xl font-bold">🎫 Scan Tiket</h1>
         <p className="text-gray-600">Scan QR code atau input nomor order untuk verifikasi tiket</p>
       </div>
 
       {/* Input Section */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex gap-3">
           <Input
             placeholder="Masukkan nomor order (ORD-...)"
@@ -69,9 +74,9 @@ export default function ScanTicket() {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="p-4 border border-red-200 rounded-lg bg-red-50">
           <div className="flex items-start">
-            <XCircle className="text-red-600 mr-3 flex-shrink-0" size={24} />
+            <XCircle className="flex-shrink-0 mr-3 text-red-600" size={24} />
             <div>
               <h3 className="font-bold text-red-900">Gagal Scan Tiket</h3>
               <p className="text-red-700">{error}</p>
@@ -83,9 +88,9 @@ export default function ScanTicket() {
       {/* Success - Display Order Card (Like History) */}
       {order && (
         <div>
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+          <div className="p-4 mb-4 border border-green-200 rounded-lg bg-green-50">
             <div className="flex items-center">
-              <CheckCircle className="text-green-600 mr-3" size={24} />
+              <CheckCircle className="mr-3 text-green-600" size={24} />
               <div>
                 <h3 className="font-bold text-green-900">✅ Tiket Valid - Pelanggan Dapat Masuk</h3>
                 <p className="text-sm text-green-700">Scan berhasil pada {new Date().toLocaleString('id-ID')}</p>
@@ -94,32 +99,32 @@ export default function ScanTicket() {
           </div>
 
           {/* Order Card - Same Style as History */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex justify-between items-start mb-4">
+          <div className="p-6 bg-white shadow-lg rounded-xl">
+            <div className="flex items-start justify-between mb-4">
               <div>
                 <h3 className="text-xl font-bold">{order.schedule?.film?.title || 'N/A'}</h3>
                 <p className="text-gray-600">
                   {order.schedule?.studio?.name || 'N/A'} - {' '}
-                  {order.schedule?.show_time 
+                  {order.schedule?.show_time
                     ? new Date(order.schedule.show_time).toLocaleDateString('id-ID')
                     : 'N/A'} {' '}
-                  {order.schedule?.show_time 
+                  {order.schedule?.show_time
                     ? new Date(order.schedule.show_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
                     : ''}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="mt-1 text-sm text-gray-500">
                   Customer: {order.customer_name || order.user?.name || 'N/A'}
                 </p>
               </div>
-              <div className="flex flex-col gap-2 items-end">
+              <div className="flex flex-col items-end gap-2">
                 {getStatusBadge(order.ticket_status)}
-                <span className="px-3 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
+                <span className="px-3 py-1 text-xs text-gray-800 bg-gray-100 rounded-full">
                   {order.order_type === 'online' ? 'Customer Online' : 'Kasir Tunai'}
                 </span>
               </div>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+
+            <div className="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <p className="text-sm text-gray-500">Jumlah Tiket</p>
                 <p className="font-semibold">{order.orderItems?.length || 0} tiket</p>
@@ -139,8 +144,8 @@ export default function ScanTicket() {
                 <p className="font-semibold">{new Date(order.created_at).toLocaleDateString('id-ID')}</p>
               </div>
             </div>
-            
-            <div className="flex justify-between items-center pt-4 border-t">
+
+            <div className="flex items-center justify-between pt-4 border-t">
               <p className="text-sm text-gray-500">ID Transaksi: {order.order_number}</p>
               {order.ticket_status === 'scanned' && (
                 <p className="text-sm text-blue-600">
@@ -153,9 +158,9 @@ export default function ScanTicket() {
       )}
 
       {/* Info Box */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-semibold text-blue-900 mb-2">ℹ️ Informasi</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
+      <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+        <h4 className="mb-2 font-semibold text-blue-900">ℹ️ Informasi</h4>
+        <ul className="space-y-1 text-sm text-blue-800">
           <li>• Scan QR code atau input nomor order manual</li>
           <li>• Tiket harus sudah dibayar (status: Lunas)</li>
           <li>• Tiket hanya bisa di-scan 1 kali</li>
