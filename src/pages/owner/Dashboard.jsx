@@ -108,7 +108,7 @@ export default function Dashboard() {
               <YAxis />
               <Tooltip formatter={(value) => formatRupiah(value)} />
               <Legend />
-              <Bar dataKey="revenue" fill="#3B82F6" name="Pendapatan" />
+              <Bar dataKey="value" fill="#3B82F6" name="Pendapatan" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -123,7 +123,7 @@ export default function Dashboard() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="count" stroke="#10B981" name="Transaksi" strokeWidth={2} />
+              <Line type="monotone" dataKey="value" stroke="#10B981" name="Transaksi" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
         </div>
