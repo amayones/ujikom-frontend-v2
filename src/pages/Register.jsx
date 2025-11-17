@@ -53,7 +53,7 @@ export default function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-6 sm:space-y-8">
         <div className="text-center">
           <div className="flex items-center justify-center mb-2">
@@ -68,7 +68,7 @@ export default function Register() {
         </div>
 
         <form className="mt-6 space-y-4 sm:mt-8 sm:space-y-6" onSubmit={handleSubmit}>
-          <div className="p-6 space-y-3 bg-white shadow-xl border border-gray-100 sm:p-8 rounded-2xl sm:space-y-4">
+          <div className="p-6 space-y-3 bg-white shadow-lg border border-gray-200 sm:p-8 rounded-xl sm:space-y-4">
             <Input
               label="Nama Lengkap"
               name="name"

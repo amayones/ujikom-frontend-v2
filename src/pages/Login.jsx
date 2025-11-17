@@ -45,7 +45,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-4 sm:space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center mb-2">
@@ -60,7 +60,7 @@ export default function Login() {
         </div>
         
         <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
-          <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-100 space-y-3 sm:space-y-4">
+          <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-200 space-y-3 sm:space-y-4">
             <Input
               label="Email"
               type="email"
@@ -112,7 +112,7 @@ export default function Login() {
           </div>
         </form>
         
-        <div className="bg-white p-4 rounded-2xl shadow-xl border border-gray-100">
+        <div className="bg-white p-4 rounded-xl shadow-lg border border-gray-200">
           <button
             onClick={() => setShowDemo(!showDemo)}
             className="w-full text-left font-semibold text-gray-800 flex items-center justify-between hover:text-red-500 transition-colors"
