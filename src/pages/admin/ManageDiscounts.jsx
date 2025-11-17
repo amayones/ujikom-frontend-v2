@@ -8,6 +8,7 @@ import { formatRupiah } from '../../utils/currency';
 export default function ManageDiscounts() {
   const [discounts, setDiscounts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingDiscount, setEditingDiscount] = useState(null);
   const [formData, setFormData] = useState({
@@ -28,11 +29,18 @@ export default function ManageDiscounts() {
 
   const fetchDiscounts = async () => {
     try {
+      setLoading(true);
+      setError(null);
       const response = await discountApi.getAll();
-      setDiscounts(response.data.data);
+      console.log('Discount API Response:', response);
+      
+      // Handle different response structures
+      const data = response.data?.data || response.data || [];
+      setDiscounts(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching discounts:', error);
-      alert('Gagal memuat data diskon');
+      const errorMsg = error.response?.data?.message || error.message || 'Gagal memuat data diskon';
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -107,6 +115,17 @@ export default function ManageDiscounts() {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="text-lg">Memuat data...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center h-64 space-y-4">
+        <div className="text-lg text-red-600">❌ {error}</div>
+        <Button onClick={fetchDiscounts} className="bg-emerald-600 hover:bg-emerald-700">
+          Coba Lagi
+        </Button>
       </div>
     );
   }
