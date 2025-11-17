@@ -1,11 +1,13 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useFilmsStore } from '../../store/filmsStore';
+import { useThemeClasses } from '../../hooks/useThemeClasses';
 import ShowCard from '../../components/cinema/ShowCard';
 import Button from '../../components/ui/Button';
 import { Film, TrendingUp, LayoutGrid, Search } from 'lucide-react';
 
 export default function FilmList() {
   const { loading, fetchFilms, getPlayNowFilms, getComingSoonFilms, getAllFilms } = useFilmsStore();
+  const { text, textMuted, bg, border } = useThemeClasses();
   const [activeFilter, setActiveFilter] = useState('play_now');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -80,10 +82,10 @@ export default function FilmList() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">
+        <h1 className={`text-3xl font-bold mb-2 ${text}`}>
           🎬 Jelajahi Film
         </h1>
-        <p className="text-gray-600">Temukan film favorit Anda dan pesan tiket sekarang!</p>
+        <p className={textMuted}>Temukan film favorit Anda dan pesan tiket sekarang!</p>
       </div>
       
       {/* Search Bar */}
@@ -101,7 +103,7 @@ export default function FilmList() {
                 console.error('Search input error:', err);
               }
             }}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            className={`w-full pl-10 pr-4 py-3 border ${border} ${bg} ${text} rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
           />
           {searchQuery && (
             <button
@@ -155,7 +157,7 @@ export default function FilmList() {
         </div>
       ) : (
         <>
-          <div className="mb-4 text-gray-600">
+          <div className={`mb-4 ${textMuted}`}>
             Menampilkan <span className="font-bold text-red-600">{filteredFilms.length}</span> film
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

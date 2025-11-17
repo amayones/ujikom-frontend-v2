@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { Film, User, LogOut, ChevronDown, Menu, X } from 'lucide-react';
+import { useThemeStore } from '../../store/themeStore';
+import { Film, User, LogOut, ChevronDown, Menu, X, Moon, Sun } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuthStore();
+  const { isDark, toggleTheme } = useThemeStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -60,7 +62,16 @@ export default function Navbar() {
           </div>
           
           {/* Desktop User Menu */}
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-300 hover:text-white transition-colors rounded-lg hover:bg-gray-700"
+              title={isDark ? 'Light Mode' : 'Dark Mode'}
+            >
+              {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            
             {user ? (
               <div className="relative">
                 <button
@@ -136,6 +147,17 @@ export default function Navbar() {
                   </Link>
                 );
               })}
+            </div>
+
+            {/* Mobile Theme Toggle */}
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <button
+                onClick={toggleTheme}
+                className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg w-full"
+              >
+                {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+              </button>
             </div>
 
             {/* Mobile User Menu */}

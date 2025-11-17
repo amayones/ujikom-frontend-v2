@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Clock, Star, Play } from 'lucide-react';
 import { memo } from 'react';
+import { useThemeClasses } from '../../hooks/useThemeClasses';
 import Button from '../ui/Button';
 import { formatRupiah } from '../../utils/currency';
 
 function ShowCard({ film }) {
+  const { bg, text, textMuted } = useThemeClasses();
   const statusBadge = {
     play_now: { text: 'NOW PLAYING', color: 'bg-red-600 text-white' },
     coming_soon: { text: 'COMING SOON', color: 'bg-blue-600 text-white' }
@@ -13,7 +15,7 @@ function ShowCard({ film }) {
   const badge = statusBadge[film.status] || statusBadge.play_now;
 
   return (
-    <div className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+    <div className={`group ${bg} rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2`}>
       <div className="relative overflow-hidden">
         <img 
           src={film.poster || `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`} 
@@ -46,9 +48,9 @@ function ShowCard({ film }) {
       </div>
       
       <div className="p-5">
-        <h3 className="font-bold text-xl mb-3 line-clamp-2 group-hover:text-red-600 transition-colors">{film.title}</h3>
+        <h3 className={`font-bold text-xl mb-3 line-clamp-2 group-hover:text-red-600 transition-colors ${text}`}>{film.title}</h3>
         
-        <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+        <div className={`flex items-center space-x-4 text-sm ${textMuted} mb-3`}>
           <div className="flex items-center">
             <Clock size={16} className="mr-1" />
             <span>{film.duration} min</span>
@@ -58,7 +60,7 @@ function ShowCard({ film }) {
           </span>
         </div>
         
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p className={`${textMuted} text-sm mb-4 line-clamp-2`}>
           {film.description}
         </p>
         

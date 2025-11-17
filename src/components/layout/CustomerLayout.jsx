@@ -1,9 +1,12 @@
 import { Outlet } from 'react-router-dom';
+import { useThemeStore } from '../../store/themeStore';
 import Navbar from './Navbar';
 
 export default function CustomerLayout() {
+  const { isDark } = useThemeStore();
+  
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen transition-colors ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />

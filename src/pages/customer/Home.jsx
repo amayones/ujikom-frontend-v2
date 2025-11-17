@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFilmsStore } from '../../store/filmsStore';
+import { useThemeClasses } from '../../hooks/useThemeClasses';
 import ShowCard from '../../components/cinema/ShowCard';
 import Button from '../../components/ui/Button';
 import { formatRupiah } from '../../utils/currency';
@@ -9,6 +10,7 @@ import { Film, Sparkles, Ticket, Star, Clock, TrendingUp, ChevronRight, Play } f
 export default function Home() {
   const navigate = useNavigate();
   const { films, loading, fetchFilms, getPlayNowFilms, getComingSoonFilms } = useFilmsStore();
+  const { text, textMuted } = useThemeClasses();
   const playingNow = getPlayNowFilms();
   const comingSoon = getComingSoonFilms();
   const [featuredIndex, setFeaturedIndex] = useState(0);
@@ -164,7 +166,7 @@ export default function Home() {
       {/* Now Playing Section */}
       <section>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold">🎬 Sedang Tayang</h2>
+          <h2 className={`text-3xl font-bold ${text}`}>🎬 Sedang Tayang</h2>
           <Button 
             variant="outline" 
             onClick={() => navigate('/customer/films')}
@@ -185,7 +187,7 @@ export default function Home() {
       {comingSoon.length > 0 && (
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold">🔥 Segera Tayang</h2>
+            <h2 className={`text-3xl font-bold ${text}`}>🔥 Segera Tayang</h2>
             <Button 
               variant="outline" 
               onClick={() => navigate('/customer/films')}
