@@ -11,7 +11,8 @@ import {
   CheckCircle,
   Scan,
   LogOut,
-  Receipt
+  Receipt,
+  Tag
 } from 'lucide-react';
 
 const menuItems = {
@@ -20,7 +21,8 @@ const menuItems = {
     { path: '/admin/users', label: 'Kelola Pelanggan', icon: Users },
     { path: '/admin/schedules', label: 'Kelola Jadwal', icon: Calendar },
     { path: '/admin/prices', label: 'Kelola Harga', icon: DollarSign },
-    { path: '/admin/cashiers', label: 'Kelola Kasir', icon: UserCheck }
+    { path: '/admin/cashiers', label: 'Kelola Kasir', icon: UserCheck },
+    { path: '/admin/discounts', label: 'Kelola Diskon', icon: Tag }
   ],
   owner: [
     { path: '/owner/dashboard', label: 'Dashboard', icon: BarChart3 },
