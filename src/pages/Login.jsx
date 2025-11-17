@@ -45,22 +45,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-4 sm:space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center mb-2">
-            <Film size={48} className="text-red-600" />
+            <Film size={48} className="text-red-500" />
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800">
             Absolute Cinema
           </h2>
-          <p className="mt-2 text-sm text-gray-300">
+          <p className="mt-2 text-sm text-gray-600">
             Masuk ke akun Anda untuk memesan tiket
           </p>
         </div>
         
         <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
-          <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg space-y-3 sm:space-y-4">
+          <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-100 space-y-3 sm:space-y-4">
             <Input
               label="Email"
               type="email"
@@ -104,7 +104,7 @@ export default function Login() {
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600">
                 Belum punya akun?{' '}
-                <Link to="/register" className="font-medium text-red-600 hover:text-red-500">
+                <Link to="/register" className="font-semibold text-red-500 hover:text-red-600 transition-colors">
                   Daftar di sini
                 </Link>
               </p>
@@ -112,10 +112,10 @@ export default function Login() {
           </div>
         </form>
         
-        <div className="bg-white p-4 rounded-xl shadow-lg">
+        <div className="bg-white p-4 rounded-2xl shadow-xl border border-gray-100">
           <button
             onClick={() => setShowDemo(!showDemo)}
-            className="w-full text-left font-semibold text-gray-700 flex items-center justify-between"
+            className="w-full text-left font-semibold text-gray-800 flex items-center justify-between hover:text-red-500 transition-colors"
           >
             <span>Demo Accounts</span>
             {showDemo ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
@@ -124,27 +124,27 @@ export default function Login() {
             <div className="mt-3 space-y-2">
               <button
                 onClick={() => quickLogin('customer@test.com', 'password')}
-                className="w-full text-left text-sm p-2 hover:bg-gray-50 rounded"
+                className="w-full text-left text-sm p-2 hover:bg-blue-50 rounded-lg transition-colors"
               >
-                <strong>Customer:</strong> customer@test.com
+                <strong className="text-blue-600">Customer:</strong> customer@test.com
               </button>
               <button
                 onClick={() => quickLogin('admin@test.com', 'password')}
-                className="w-full text-left text-sm p-2 hover:bg-gray-50 rounded"
+                className="w-full text-left text-sm p-2 hover:bg-purple-50 rounded-lg transition-colors"
               >
-                <strong>Admin:</strong> admin@test.com
+                <strong className="text-purple-600">Admin:</strong> admin@test.com
               </button>
               <button
                 onClick={() => quickLogin('owner@test.com', 'password')}
-                className="w-full text-left text-sm p-2 hover:bg-gray-50 rounded"
+                className="w-full text-left text-sm p-2 hover:bg-green-50 rounded-lg transition-colors"
               >
-                <strong>Owner:</strong> owner@test.com
+                <strong className="text-green-600">Owner:</strong> owner@test.com
               </button>
               <button
                 onClick={() => quickLogin('cashier@test.com', 'password')}
-                className="w-full text-left text-sm p-2 hover:bg-gray-50 rounded"
+                className="w-full text-left text-sm p-2 hover:bg-orange-50 rounded-lg transition-colors"
               >
-                <strong>Cashier:</strong> cashier@test.com
+                <strong className="text-orange-600">Cashier:</strong> cashier@test.com
               </button>
             </div>
           )}

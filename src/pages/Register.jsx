@@ -53,22 +53,22 @@ export default function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gradient-to-br from-gray-900 to-gray-800 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-6 sm:space-y-8">
         <div className="text-center">
           <div className="flex items-center justify-center mb-2">
-            <Film size={48} className="text-red-600" />
+            <Film size={48} className="text-red-500" />
           </div>
-          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+          <h2 className="text-3xl font-extrabold text-gray-800 sm:text-4xl">
             Absolute Cinema
           </h2>
-          <p className="mt-2 text-sm text-gray-300">
+          <p className="mt-2 text-sm text-gray-600">
             Daftar akun baru untuk mulai memesan tiket
           </p>
         </div>
 
         <form className="mt-6 space-y-4 sm:mt-8 sm:space-y-6" onSubmit={handleSubmit}>
-          <div className="p-6 space-y-3 bg-white shadow-lg sm:p-8 rounded-xl sm:space-y-4">
+          <div className="p-6 space-y-3 bg-white shadow-xl border border-gray-100 sm:p-8 rounded-2xl sm:space-y-4">
             <Input
               label="Nama Lengkap"
               name="name"
@@ -126,7 +126,7 @@ export default function Register() {
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-600">
                 Sudah punya akun?{' '}
-                <Link to="/login" className="font-medium text-red-600 hover:text-red-500">
+                <Link to="/login" className="font-semibold text-red-500 hover:text-red-600 transition-colors">
                   Masuk di sini
                 </Link>
               </p>
