@@ -63,7 +63,7 @@ export default function Home() {
           <div className="relative h-full flex items-center px-8 lg:px-16">
             <div className="max-w-2xl space-y-6">
               <div className="flex items-center space-x-3">
-                <span className="px-3 py-1 bg-red-600 text-white text-sm font-bold rounded-full">NOW PLAYING</span>
+                <span className="px-3 py-1 bg-emerald-600 text-white text-sm font-bold rounded-full">NOW PLAYING</span>
                 <div className="flex items-center text-yellow-400">
                   <Star size={20} fill="currentColor" />
                   <span className="ml-1 text-white font-semibold">8.5</span>
@@ -91,7 +91,7 @@ export default function Home() {
               <div className="flex space-x-4">
                 <Button 
                   onClick={() => navigate(`/customer/films/${featured.id}`)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 text-lg font-semibold flex items-center"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 text-lg font-semibold flex items-center"
                 >
                   <Ticket size={20} className="mr-2" />
                   Pesan Sekarang
@@ -152,13 +152,13 @@ export default function Home() {
             <TrendingUp size={48} className="text-purple-200" />
           </div>
         </div>
-        <div className="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-xl p-6 shadow-lg">
+        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-red-100 text-sm font-medium">Harga Mulai</p>
+              <p className="text-emerald-100 text-sm font-medium">Harga Mulai</p>
               <p className="text-4xl font-bold mt-2">{formatRupiah(35000)}</p>
             </div>
-            <Ticket size={48} className="text-red-200" />
+            <Ticket size={48} className="text-emerald-200" />
           </div>
         </div>
       </div>
@@ -224,7 +224,7 @@ export default function Home() {
             <p className="text-gray-300">Audio visual berkualitas tinggi dengan teknologi Dolby Atmos</p>
           </div>
           <div className="text-center group">
-            <div className="bg-gradient-to-br from-red-500 to-red-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 transform group-hover:scale-110 transition-transform shadow-lg">
+            <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 transform group-hover:scale-110 transition-transform shadow-lg">
               <Ticket size={40} />
             </div>
             <h3 className="font-bold text-xl mb-3">Booking Mudah</h3>

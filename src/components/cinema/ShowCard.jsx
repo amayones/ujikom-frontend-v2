@@ -29,8 +29,10 @@ function ShowCard({ film }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
         <div className="absolute top-3 right-3">
-          <span className={`px-3 py-1 rounded-full text-xs font-bold ${badge.color} shadow-lg`}>
-            {badge.text}
+          <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-lg ${
+            film.status === 'play_now' ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white'
+          }`}>
+            {film.status === 'play_now' ? 'NOW PLAYING' : 'COMING SOON'}
           </span>
         </div>
         
@@ -41,14 +43,14 @@ function ShowCard({ film }) {
         
         {/* Play Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="bg-red-600 rounded-full p-4 transform scale-0 group-hover:scale-100 transition-transform duration-300">
+          <div className="bg-emerald-600 rounded-full p-4 transform scale-0 group-hover:scale-100 transition-transform duration-300">
             <Play size={32} className="text-white" fill="currentColor" />
           </div>
         </div>
       </div>
       
       <div className="p-5">
-        <h3 className={`font-bold text-xl mb-3 line-clamp-2 group-hover:text-red-600 transition-colors ${text}`}>{film.title}</h3>
+        <h3 className={`font-bold text-xl mb-3 line-clamp-2 group-hover:text-emerald-600 transition-colors ${text}`}>{film.title}</h3>
         
         <div className={`flex items-center space-x-4 text-sm ${textMuted} mb-3`}>
           <div className="flex items-center">
@@ -67,12 +69,12 @@ function ShowCard({ film }) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-xs text-gray-500">Harga mulai</p>
-            <p className="text-lg font-bold text-red-600">{formatRupiah(film.base_price)}</p>
+            <p className="text-lg font-bold text-emerald-600">{formatRupiah(film.base_price)}</p>
           </div>
         </div>
         
         <Link to={`/customer/films/${film.id}`}>
-          <Button className="w-full bg-red-600 hover:bg-red-700 font-semibold">
+          <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
             Pesan Tiket
           </Button>
         </Link>

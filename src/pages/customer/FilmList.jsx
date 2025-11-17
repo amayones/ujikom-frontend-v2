@@ -103,7 +103,7 @@ export default function FilmList() {
                 console.error('Search input error:', err);
               }
             }}
-            className={`w-full pl-10 pr-4 py-3 border ${border} ${bgSolid} ${text} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+            className={`w-full pl-10 pr-4 py-3 border ${border} ${bgSolid} ${text} rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent`}
           />
           {searchQuery && (
             <button
@@ -133,14 +133,14 @@ export default function FilmList() {
             onClick={() => handleFilterChange(id)}
             className={`flex items-center space-x-2 px-6 py-3 font-semibold transition-all ${
               activeFilter === id 
-                ? 'bg-red-600 hover:bg-red-700 shadow-lg scale-105' 
-                : 'hover:border-red-600 hover:text-red-600'
+                ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg scale-105' 
+                : 'hover:border-emerald-600 hover:text-emerald-600'
             }`}
           >
             <Icon size={18} />
             <span>{label}</span>
             <span className={`px-2 py-0.5 rounded-full text-xs ${
-              activeFilter === id ? 'bg-white text-red-600' : 'bg-gray-200 text-gray-700'
+              activeFilter === id ? 'bg-white text-emerald-600' : 'bg-gray-200 text-gray-700'
             }`}>
               {count}
             </span>
@@ -158,7 +158,7 @@ export default function FilmList() {
       ) : (
         <>
           <div className={`mb-4 ${textMuted}`}>
-            Menampilkan <span className="font-bold text-red-600">{filteredFilms.length}</span> film
+            Menampilkan <span className="font-bold text-emerald-600">{filteredFilms.length}</span> film
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredFilms.map(film => (
