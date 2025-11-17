@@ -27,12 +27,16 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 sticky top-0 z-50 shadow-xl">
+    <nav className={`sticky top-0 z-50 shadow-xl transition-colors ${
+      isDark 
+        ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' 
+        : 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500'
+    }`}>
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/customer/home" className="flex items-center space-x-2 text-white hover:text-red-400 transition-colors">
-            <div className="bg-red-600 p-1.5 rounded-lg">
+          <Link to="/customer/home" className="flex items-center space-x-2 text-white hover:text-yellow-200 transition-colors">
+            <div className={`p-1.5 rounded-lg ${isDark ? 'bg-red-600' : 'bg-white/20 backdrop-blur-sm'}`}>
               <Film size={20} className="text-white" />
             </div>
             <span className="text-base sm:text-lg font-bold">Absolute Cinema</span>
@@ -48,13 +52,13 @@ export default function Navbar() {
                   to={link.path}
                   className={`text-sm font-semibold transition-colors relative ${
                     active
-                      ? 'text-red-400'
-                      : 'text-gray-300 hover:text-white'
+                      ? (isDark ? 'text-red-400' : 'text-yellow-200')
+                      : 'text-white/90 hover:text-white'
                   }`}
                 >
                   {link.label}
                   {active && (
-                    <span className="absolute -bottom-[17px] left-0 right-0 h-0.5 bg-red-600"></span>
+                    <span className={`absolute -bottom-[17px] left-0 right-0 h-0.5 ${isDark ? 'bg-red-600' : 'bg-yellow-200'}`}></span>
                   )}
                 </Link>
               );
@@ -66,7 +70,7 @@ export default function Navbar() {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 text-gray-300 hover:text-white transition-colors rounded-lg hover:bg-gray-700"
+              className={`p-2 text-white/90 hover:text-white transition-colors rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-white/20'}`}
               title={isDark ? 'Light Mode' : 'Dark Mode'}
             >
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
@@ -76,9 +80,9 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setShowDropdown(!showDropdown)}
-                  className="flex items-center space-x-2 text-white hover:text-red-400 transition-colors"
+                  className="flex items-center space-x-2 text-white hover:text-yellow-200 transition-colors"
                 >
-                  <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDark ? 'bg-red-600' : 'bg-white/20 backdrop-blur-sm'}`}>
                     <User size={16} className="text-white" />
                   </div>
                   <span className="text-sm font-semibold">{user.name}</span>
@@ -109,7 +113,11 @@ export default function Navbar() {
             ) : (
               <Link
                 to="/login"
-                className="px-6 py-2 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors shadow-lg"
+                className={`px-6 py-2 text-sm font-bold rounded-lg transition-colors shadow-lg ${
+                  isDark 
+                    ? 'text-white bg-red-600 hover:bg-red-700' 
+                    : 'text-purple-600 bg-white hover:bg-yellow-100'
+                }`}
               >
                 Login
               </Link>
@@ -119,7 +127,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="md:hidden p-2 text-white hover:text-red-400"
+            className="md:hidden p-2 text-white hover:text-yellow-200"
           >
             {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -127,7 +135,11 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden py-4 border-t border-gray-700 bg-gray-800">
+          <div className={`md:hidden py-4 border-t transition-colors ${
+            isDark 
+              ? 'border-gray-700 bg-gray-800' 
+              : 'border-white/20 bg-white/10 backdrop-blur-md'
+          }`}>
             {/* Mobile Navigation Links */}
             <div className="space-y-2">
               {navLinks.map((link) => {
@@ -139,8 +151,8 @@ export default function Navbar() {
                     onClick={() => setShowMobileMenu(false)}
                     className={`block px-4 py-2 text-sm font-semibold rounded-lg ${
                       active
-                        ? 'bg-red-600 text-white'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                        ? (isDark ? 'bg-red-600 text-white' : 'bg-white/20 text-white')
+                        : (isDark ? 'text-gray-300 hover:bg-gray-700 hover:text-white' : 'text-white/90 hover:bg-white/20 hover:text-white')
                     }`}
                   >
                     {link.label}
@@ -153,7 +165,11 @@ export default function Navbar() {
             <div className="mt-4 pt-4 border-t border-gray-700">
               <button
                 onClick={toggleTheme}
-                className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg w-full"
+                className={`flex items-center space-x-2 px-4 py-2 text-sm rounded-lg w-full ${
+                  isDark 
+                    ? 'text-gray-300 hover:bg-gray-700 hover:text-white' 
+                    : 'text-white/90 hover:bg-white/20 hover:text-white'
+                }`}
               >
                 {isDark ? <Sun size={16} /> : <Moon size={16} />}
                 <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
@@ -162,32 +178,44 @@ export default function Navbar() {
 
             {/* Mobile User Menu */}
             {user ? (
-              <div className="mt-4 pt-4 border-t border-gray-700 space-y-2">
+              <div className={`mt-4 pt-4 border-t space-y-2 ${isDark ? 'border-gray-700' : 'border-white/20'}`}>
                 <div className="px-4 py-2 text-sm font-bold text-white">
                   {user.name}
                 </div>
                 <Link
                   to="/customer/profile"
                   onClick={() => setShowMobileMenu(false)}
-                  className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg"
+                  className={`flex items-center space-x-2 px-4 py-2 text-sm rounded-lg ${
+                    isDark 
+                      ? 'text-gray-300 hover:bg-gray-700 hover:text-white' 
+                      : 'text-white/90 hover:bg-white/20 hover:text-white'
+                  }`}
                 >
                   <User size={16} />
                   <span>Profile</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-2 px-4 py-2 text-sm text-red-400 hover:bg-red-900/30 rounded-lg w-full text-left"
+                  className={`flex items-center space-x-2 px-4 py-2 text-sm rounded-lg w-full text-left ${
+                    isDark 
+                      ? 'text-red-400 hover:bg-red-900/30' 
+                      : 'text-yellow-200 hover:bg-white/20'
+                  }`}
                 >
                   <LogOut size={16} />
                   <span>Logout</span>
                 </button>
               </div>
             ) : (
-              <div className="mt-4 pt-4 border-t border-gray-700">
+              <div className={`mt-4 pt-4 border-t ${isDark ? 'border-gray-700' : 'border-white/20'}`}>
                 <Link
                   to="/login"
                   onClick={() => setShowMobileMenu(false)}
-                  className="block px-4 py-2 text-sm font-bold text-center text-white bg-red-600 rounded-lg hover:bg-red-700"
+                  className={`block px-4 py-2 text-sm font-bold text-center rounded-lg ${
+                    isDark 
+                      ? 'text-white bg-red-600 hover:bg-red-700' 
+                      : 'text-purple-600 bg-white hover:bg-yellow-100'
+                  }`}
                 >
                   Login
                 </Link>

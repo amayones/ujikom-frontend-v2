@@ -6,7 +6,7 @@ import Button from '../ui/Button';
 import { formatRupiah } from '../../utils/currency';
 
 function ShowCard({ film }) {
-  const { bg, text, textMuted } = useThemeClasses();
+  const { bgSolid, text, textMuted } = useThemeClasses();
   const statusBadge = {
     play_now: { text: 'NOW PLAYING', color: 'bg-red-600 text-white' },
     coming_soon: { text: 'COMING SOON', color: 'bg-blue-600 text-white' }
@@ -15,7 +15,7 @@ function ShowCard({ film }) {
   const badge = statusBadge[film.status] || statusBadge.play_now;
 
   return (
-    <div className={`group ${bg} rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2`}>
+    <div className={`group ${bgSolid} rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2`}>
       <div className="relative overflow-hidden">
         <img 
           src={film.poster || `https://placehold.co/400x600/1e293b/e2e8f0?text=${encodeURIComponent(film.title)}`} 
