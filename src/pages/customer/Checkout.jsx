@@ -206,7 +206,7 @@ export default function Checkout() {
             <hr />
             <div className="flex justify-between text-lg font-bold">
               <span>Total Pembayaran</span>
-              <span className="text-blue-600">{formatRupiah(finalTotal)}</span>
+              <span className="text-emerald-600">{formatRupiah(finalTotal)}</span>
             </div>
           </div>
           

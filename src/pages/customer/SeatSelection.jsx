@@ -143,7 +143,7 @@ export default function SeatSelection() {
             <hr />
             <div className="flex justify-between text-lg font-bold">
               <span>Total:</span>
-              <span className="text-blue-600">{formatRupiah(totalPrice)}</span>
+              <span className="text-emerald-600">{formatRupiah(totalPrice)}</span>
             </div>
           </div>
           

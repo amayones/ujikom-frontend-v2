@@ -35,10 +35,10 @@ export default function History() {
   }
 
   const getStatusColor = (status, ticketStatus) => {
-    if (ticketStatus === 'scanned') return 'bg-blue-100 text-blue-800';
+    if (ticketStatus === 'scanned') return 'bg-emerald-100 text-emerald-800';
     switch (status) {
       case 'paid':
-        return 'bg-green-100 text-green-800';
+        return 'bg-emerald-100 text-emerald-800';
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'cancelled':
@@ -105,7 +105,7 @@ export default function History() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Total Pembayaran</p>
-                  <p className="font-semibold text-green-600">{formatRupiah(total)}</p>
+                  <p className="font-semibold text-emerald-600">{formatRupiah(total)}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Tanggal Pesan</p>

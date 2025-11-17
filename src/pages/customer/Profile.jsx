@@ -156,7 +156,7 @@ export default function Profile() {
           {message && (
             <div className={`p-3 rounded mb-4 ${
               message.includes('berhasil') 
-                ? 'bg-green-100 text-green-700' 
+                ? 'bg-emerald-100 text-emerald-700' 
                 : 'bg-red-100 text-red-700'
             }`}>
               {message}
@@ -214,7 +214,7 @@ export default function Profile() {
           {passwordMessage && (
             <div className={`p-3 rounded mb-4 ${
               passwordMessage.includes('berhasil') 
-                ? 'bg-green-100 text-green-700' 
+                ? 'bg-emerald-100 text-emerald-700' 
                 : 'bg-red-100 text-red-700'
             }`}>
               {passwordMessage}
@@ -227,7 +227,7 @@ export default function Profile() {
         </form>
       </div>
       
-      <div className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl shadow-lg">
+      <div className="p-6 bg-emerald-50 rounded-xl shadow-lg">
         <h2 className="text-xl font-bold mb-4">Informasi Akun</h2>
         <div className="space-y-3">
           <div>
@@ -240,7 +240,7 @@ export default function Profile() {
           </div>
           <div>
             <span className="font-semibold">Status:</span>
-            <span className="ml-2 text-green-600">Aktif</span>
+            <span className="ml-2 text-emerald-600">Aktif</span>
           </div>
         </div>
       </div>

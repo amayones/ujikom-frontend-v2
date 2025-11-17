@@ -54,7 +54,7 @@ function SchedulesByDay({ schedules, onSelectSchedule }) {
 
       {currentDate && (
         <div className="mb-6">
-          <div className="flex items-center justify-between bg-blue-50 p-4 rounded-lg">
+          <div className="flex items-center justify-between bg-emerald-50 p-4 rounded-lg">
             <Button
               variant="outline"
               size="sm"
@@ -65,7 +65,7 @@ function SchedulesByDay({ schedules, onSelectSchedule }) {
             </Button>
             
             <div className="text-center">
-              <p className="text-lg font-bold text-blue-900">
+              <p className="text-lg font-bold text-emerald-900">
                 {new Date(currentSchedules[0].show_time).toLocaleDateString('id-ID', {
                   weekday: 'long',
                   year: 'numeric',
@@ -107,7 +107,7 @@ function SchedulesByDay({ schedules, onSelectSchedule }) {
             
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-emerald-600">
                   {new Date(schedule.show_time).toLocaleTimeString('id-ID', {
                     hour: '2-digit',
                     minute: '2-digit'
@@ -267,7 +267,7 @@ export default function FilmDetail() {
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-xl flex items-center justify-center">
                 <button
                   onClick={() => setShowTrailer(true)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity bg-red-600 text-white p-4 rounded-full hover:bg-red-700 transform hover:scale-110"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity bg-emerald-600 text-white p-4 rounded-full hover:bg-emerald-700 transform hover:scale-110"
                 >
                   <Play size={32} fill="white" />
                 </button>
@@ -293,7 +293,7 @@ export default function FilmDetail() {
               <Clock size={20} className="mr-2" />
               <span>{selectedFilm.duration} menit</span>
             </div>
-            <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+            <div className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-semibold">
               {selectedFilm.genre}
             </div>
             <div className={`px-3 py-1 rounded-full text-sm font-semibold ${
@@ -310,10 +310,10 @@ export default function FilmDetail() {
             <p className="text-gray-700 leading-relaxed">{selectedFilm.description}</p>
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-lg">
+          <div className="bg-emerald-50 p-4 rounded-lg">
             <p className="text-lg">
               <span className="font-semibold">Harga Mulai:</span>{' '}
-              <span className="text-2xl font-bold text-blue-600">
+              <span className="text-2xl font-bold text-emerald-600">
                 {formatRupiah(selectedFilm.base_price)}
               </span>
             </p>

@@ -24,9 +24,9 @@ export default function SeatMap({ seats }) {
     
     switch (status) {
       case 'available':
-        return `${baseClasses} bg-green-200 hover:bg-green-300 text-green-800`;
+        return `${baseClasses} bg-emerald-200 hover:bg-emerald-300 text-emerald-800`;
       case 'selected':
-        return `${baseClasses} bg-blue-600 text-white`;
+        return `${baseClasses} bg-emerald-600 text-white`;
       case 'booked':
         return `${baseClasses} bg-red-200 text-red-800 cursor-not-allowed`;
       case 'maintenance':
@@ -78,11 +78,11 @@ export default function SeatMap({ seats }) {
       
       <div className="mt-6 flex flex-wrap justify-center gap-3 sm:gap-6 text-xs sm:text-sm">
         <div className="flex items-center">
-          <div className="w-4 h-4 bg-green-200 rounded mr-2"></div>
+          <div className="w-4 h-4 bg-emerald-200 rounded mr-2"></div>
           <span>Tersedia</span>
         </div>
         <div className="flex items-center">
-          <div className="w-4 h-4 bg-blue-600 rounded mr-2"></div>
+          <div className="w-4 h-4 bg-emerald-600 rounded mr-2"></div>
           <span>Dipilih</span>
         </div>
         <div className="flex items-center">
