@@ -19,9 +19,14 @@ export default function CashierHistory() {
     setLoading(true);
     try {
       const response = await api.get('/cashier/all-purchases');
-      setOrders(response.data.data || []);
+      console.log('API Response:', response);
+      console.log('Orders data:', response.data);
+      const ordersData = response.data.data || [];
+      console.log('Parsed orders:', ordersData);
+      setOrders(ordersData);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching orders:', error);
+      console.error('Error response:', error.response);
       setOrders([]);
     } finally {
       setLoading(false);
@@ -51,6 +56,11 @@ export default function CashierHistory() {
   if (loading) {
     return <div className="flex justify-center items-center h-64">Memuat data...</div>;
   }
+
+  console.log('Total orders:', orders.length);
+  console.log('Filtered orders:', filteredOrders.length);
+  console.log('Filter type:', filterType);
+  console.log('Filter status:', filterStatus);
 
   return (
     <div className="space-y-6">
@@ -88,7 +98,14 @@ export default function CashierHistory() {
       
       {filteredOrders.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl shadow-lg">
-          <p className="text-gray-500 text-lg mb-6">Tidak ada pembelian yang sesuai filter</p>
+          <p className="text-gray-500 text-lg mb-6">
+            {orders.length === 0 
+              ? 'Belum ada pembelian sama sekali' 
+              : 'Tidak ada pembelian yang sesuai filter'}
+          </p>
+          <p className="text-sm text-gray-400 mb-4">
+            Total data: {orders.length} | Filter: {filterType} / {filterStatus}
+          </p>
           <Link to="/cashier/offline-order">
             <Button>Buat Pesanan Offline</Button>
           </Link>
