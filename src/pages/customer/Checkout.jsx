@@ -19,7 +19,7 @@ export default function Checkout() {
   const [discountLoading, setDiscountLoading] = useState(false);
   const [discountError, setDiscountError] = useState('');
   
-  const { selectedSchedule, selectedSeats, totalPrice, discount, discountAmount, applyDiscount, removeDiscount, getFinalTotal, clearCart } = useCartStore();
+  const { selectedSchedule, selectedSeats, totalPrice, prices, discount, discountAmount, applyDiscount, removeDiscount, getFinalTotal, clearCart } = useCartStore();
   const { checkout } = useOrdersStore();
   const { user } = useAuthStore();
 
@@ -241,7 +241,7 @@ export default function Checkout() {
             </div>
             <div className="flex justify-between">
               <span>Harga per tiket:</span>
-              <span>{formatRupiah(selectedSchedule.base_price)}</span>
+              <span>{formatRupiah(prices.seatPrice || selectedSchedule.base_price)}</span>
             </div>
             <div className="flex justify-between">
               <span>Subtotal:</span>
