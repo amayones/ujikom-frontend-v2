@@ -10,8 +10,7 @@ export default function Register() {
     name: '',
     email: '',
     password: '',
-    password_confirmation: '',
-    phone: ''
+    password_confirmation: ''
   });
   const [error, setError] = useState('');
   const { register, loading } = useAuthStore();
@@ -88,15 +87,6 @@ export default function Register() {
               onChange={handleChange}
               required
               placeholder="john@example.com"
-            />
-
-            <Input
-              label="Nomor Telepon"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="081234567890"
             />
 
             <Input

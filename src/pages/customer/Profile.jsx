@@ -8,18 +8,16 @@ export default function Profile() {
   const { user, updateProfile } = useAuthStore();
   const initialFormData = useMemo(() => ({
     name: user?.name || '',
-    email: user?.email || '',
-    phone: user?.phone || ''
+    email: user?.email || ''
   }), [user]);
   
   const [formData, setFormData] = useState(initialFormData);
   
   useEffect(() => {
-    if (user?.name || user?.email || user?.phone) {
+    if (user?.name || user?.email) {
       setFormData({
         name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || ''
+        email: user.email || ''
       });
     }
   }, [user]);
@@ -45,8 +43,8 @@ export default function Profile() {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     
-    if (!formData.name?.trim() || !formData.phone?.trim()) {
-      setMessage('Nama dan nomor telepon harus diisi');
+    if (!formData.name?.trim()) {
+      setMessage('Nama harus diisi');
       return;
     }
     
@@ -55,8 +53,7 @@ export default function Profile() {
 
     try {
       await updateProfile({
-        name: formData.name.trim(),
-        phone: formData.phone.trim()
+        name: formData.name.trim()
       });
       setMessage('Profile berhasil diperbarui');
     } catch (error) {
@@ -154,14 +151,6 @@ export default function Profile() {
             type="email"
             value={formData.email}
             disabled
-          />
-          
-          <Input
-            label="Nomor Telepon"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
           />
           
           {message && (
