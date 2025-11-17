@@ -77,7 +77,6 @@ export default function ManageUsers() {
                 <th className="text-left py-3 px-4">ID</th>
                 <th className="text-left py-3 px-4">Nama</th>
                 <th className="text-left py-3 px-4">Email</th>
-                <th className="text-left py-3 px-4">Telepon</th>
                 <th className="text-left py-3 px-4">Status</th>
                 <th className="text-left py-3 px-4">Aksi</th>
               </tr>
@@ -85,7 +84,7 @@ export default function ManageUsers() {
             <tbody>
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="py-8 text-center text-gray-500">
+                  <td colSpan="5" className="py-8 text-center text-gray-500">
                     {searchTerm ? 'Tidak ada data yang sesuai' : 'Belum ada data pelanggan'}
                   </td>
                 </tr>
@@ -96,7 +95,6 @@ export default function ManageUsers() {
                   <td className="py-3 px-4 font-mono">{user.id}</td>
                   <td className="py-3 px-4 font-semibold">{user.name}</td>
                   <td className="py-3 px-4">{user.email}</td>
-                  <td className="py-3 px-4">{user.phone}</td>
                   <td className="py-3 px-4">
                     <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
                       Aktif

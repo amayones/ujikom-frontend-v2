@@ -30,7 +30,6 @@ export default function ManageCashiers() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
     password: ''
   });
 
@@ -62,7 +61,6 @@ export default function ManageCashiers() {
     setFormData({
       name: '',
       email: '',
-      phone: '',
       password: ''
     });
     setShowForm(false);
@@ -73,7 +71,6 @@ export default function ManageCashiers() {
     setFormData({
       name: cashier.name,
       email: cashier.email,
-      phone: cashier.phone,
       password: ''
     });
     setEditingCashier(cashier);
@@ -140,7 +137,6 @@ export default function ManageCashiers() {
                   <th className="text-left py-3 px-4">ID</th>
                   <th className="text-left py-3 px-4">Nama</th>
                   <th className="text-left py-3 px-4">Email</th>
-                  <th className="text-left py-3 px-4">Telepon</th>
                   <th className="text-left py-3 px-4">Status</th>
                   <th className="text-left py-3 px-4">Aksi</th>
                 </tr>
@@ -148,7 +144,7 @@ export default function ManageCashiers() {
               <tbody>
                 {filteredCashiers.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="py-8 text-center text-gray-500">
+                    <td colSpan="5" className="py-8 text-center text-gray-500">
                       {searchTerm ? 'Tidak ada data yang sesuai' : 'Belum ada data kasir'}
                     </td>
                   </tr>
@@ -159,7 +155,6 @@ export default function ManageCashiers() {
                     <td className="py-3 px-4 font-mono">{cashier.id}</td>
                     <td className="py-3 px-4 font-semibold">{cashier.name}</td>
                     <td className="py-3 px-4">{cashier.email}</td>
-                    <td className="py-3 px-4">{cashier.phone}</td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-1 rounded-full text-xs ${
                         (cashier.status || 'active') === 'active'
@@ -244,13 +239,6 @@ export default function ManageCashiers() {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                required
-              />
-              
-              <Input
-                label="Nomor Telepon"
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
                 required
               />
               
