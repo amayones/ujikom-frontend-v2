@@ -5,16 +5,21 @@ import { useOrdersStore } from '../../store/ordersStore';
 import { useAuthStore } from '../../store/authStore';
 import { payWithMidtrans } from '../../services/midtransService';
 import { formatRupiah } from '../../utils/currency';
+import { discountApi } from '../../api/discountApi';
 import api from '../../lib/api';
 import Button from '../../components/ui/Button';
+import { Tag, X } from 'lucide-react';
 
 export default function Checkout() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [clientKey, setClientKey] = useState('');
   const [error, setError] = useState(null);
+  const [discountCode, setDiscountCode] = useState('');
+  const [discountLoading, setDiscountLoading] = useState(false);
+  const [discountError, setDiscountError] = useState('');
   
-  const { selectedSchedule, selectedSeats, totalPrice, clearCart } = useCartStore();
+  const { selectedSchedule, selectedSeats, totalPrice, discount, discountAmount, applyDiscount, removeDiscount, getFinalTotal, clearCart } = useCartStore();
   const { checkout } = useOrdersStore();
   const { user } = useAuthStore();
 
@@ -79,7 +84,8 @@ export default function Checkout() {
     try {
       const orderData = {
         schedule_id: selectedSchedule.id,
-        seat_ids: selectedSeats.map(seat => seat.id || seat)
+        seat_ids: selectedSeats.map(seat => seat.id || seat),
+        discount_code: discount?.code || null
       };
 
       const result = await checkout(orderData);
@@ -142,8 +148,34 @@ export default function Checkout() {
     }
   }, [clientKey, selectedSchedule, selectedSeats, checkout, clearCart, navigate]);
 
-  // Display total from cart or show loading
-  const finalTotal = totalPrice || 0;
+  const handleApplyDiscount = async () => {
+    if (!discountCode.trim()) {
+      setDiscountError('Masukkan kode diskon');
+      return;
+    }
+    
+    setDiscountLoading(true);
+    setDiscountError('');
+    
+    try {
+      const response = await discountApi.verify(discountCode.trim());
+      applyDiscount(response.data.data);
+      setDiscountCode('');
+      setDiscountError('');
+    } catch (error) {
+      setDiscountError(error.response?.data?.message || 'Kode diskon tidak valid');
+    } finally {
+      setDiscountLoading(false);
+    }
+  };
+
+  const handleRemoveDiscount = () => {
+    removeDiscount();
+    setDiscountCode('');
+    setDiscountError('');
+  };
+
+  const finalTotal = getFinalTotal();
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
@@ -203,6 +235,59 @@ export default function Checkout() {
               <span>Subtotal:</span>
               <span>{formatRupiah(totalPrice)}</span>
             </div>
+            
+            {/* Discount Section */}
+            {!discount ? (
+              <div className="pt-3 border-t">
+                <label className="block text-sm font-medium mb-2">Punya Kode Diskon?</label>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={discountCode}
+                      onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                      placeholder="Masukkan kode"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                      disabled={discountLoading}
+                    />
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={handleApplyDiscount}
+                    disabled={discountLoading || !discountCode.trim()}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    {discountLoading ? 'Cek...' : 'Pakai'}
+                  </Button>
+                </div>
+                {discountError && (
+                  <p className="text-xs text-red-600 mt-1">{discountError}</p>
+                )}
+              </div>
+            ) : (
+              <div className="pt-3 border-t">
+                <div className="flex items-center justify-between bg-emerald-50 p-3 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <Tag size={16} className="text-emerald-600" />
+                    <div>
+                      <p className="text-sm font-semibold text-emerald-800">{discount.code}</p>
+                      <p className="text-xs text-emerald-600">{discount.name}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleRemoveDiscount}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="flex justify-between text-emerald-600 mt-2">
+                  <span>Diskon:</span>
+                  <span className="font-semibold">-{formatRupiah(discountAmount)}</span>
+                </div>
+              </div>
+            )}
+            
             <hr />
             <div className="flex justify-between text-lg font-bold">
               <span>Total Pembayaran</span>

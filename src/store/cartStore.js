@@ -6,6 +6,8 @@ export const useCartStore = create((set, get) => ({
   selectedSeats: [],
   totalPrice: 0,
   prices: {},
+  discount: null,
+  discountAmount: 0,
 
   setSchedule: (schedule) => {
     set({ selectedSchedule: schedule, selectedSeats: [], totalPrice: 0 });
@@ -60,16 +62,47 @@ export const useCartStore = create((set, get) => ({
     set({ totalPrice: price });
   },
 
+  applyDiscount: (discountData) => {
+    const { totalPrice } = get();
+    let discountAmount = 0;
+    
+    if (discountData.type === 'percentage') {
+      discountAmount = totalPrice * (discountData.value / 100);
+    } else {
+      discountAmount = Math.min(discountData.value, totalPrice);
+    }
+    
+    set({ discount: discountData, discountAmount });
+  },
+
+  removeDiscount: () => {
+    set({ discount: null, discountAmount: 0 });
+  },
+
+  getFinalTotal: () => {
+    const { totalPrice, discountAmount } = get();
+    return Math.max(0, totalPrice - discountAmount);
+  },
+
   clearCart: () => {
-    set({ selectedSchedule: null, selectedSeats: [], totalPrice: 0 });
+    set({ 
+      selectedSchedule: null, 
+      selectedSeats: [], 
+      totalPrice: 0,
+      discount: null,
+      discountAmount: 0
+    });
   },
 
   getOrderSummary: () => {
-    const { selectedSchedule, selectedSeats, totalPrice } = get();
+    const { selectedSchedule, selectedSeats, totalPrice, discount, discountAmount } = get();
     return {
       schedule: selectedSchedule,
       seats: selectedSeats,
-      total: totalPrice,
+      subtotal: totalPrice,
+      discount: discount,
+      discountAmount: discountAmount,
+      total: get().getFinalTotal(),
       seatCount: selectedSeats.length
     };
   }

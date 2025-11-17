@@ -9,7 +9,7 @@ import { formatRupiah } from '../../utils/currency';
 export default function SeatSelection() { 
   const navigate = useNavigate();
   const { scheduleId } = useParams();
-  const { selectedSchedule, selectedSeats, totalPrice } = useCartStore();
+  const { selectedSchedule, selectedSeats, totalPrice, discount, discountAmount, getFinalTotal } = useCartStore();
   const { seats, fetchSeats } = useFilmsStore();
   const [loading, setLoading] = useState(true);
 
@@ -141,9 +141,15 @@ export default function SeatSelection() {
               <span className="font-semibold">{formatRupiah(selectedSchedule.base_price)}</span>
             </div>
             <hr />
+            {discount && (
+              <div className="flex justify-between text-emerald-600">
+                <span>Diskon ({discount.code}):</span>
+                <span>-{formatRupiah(discountAmount)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-lg font-bold">
               <span>Total:</span>
-              <span className="text-emerald-600">{formatRupiah(totalPrice)}</span>
+              <span className="text-emerald-600">{formatRupiah(discount ? getFinalTotal() : totalPrice)}</span>
             </div>
           </div>
           
