@@ -87,6 +87,8 @@ export default function Checkout() {
         seat_ids: selectedSeats.map(seat => seat.id || seat),
         discount_code: discount?.code || null
       };
+      
+      console.log('Order data:', orderData);
 
       const result = await checkout(orderData);
       
@@ -157,16 +159,26 @@ export default function Checkout() {
     setDiscountLoading(true);
     setDiscountError('');
     
-    try {
-      const response = await discountApi.verify(discountCode.trim());
-      applyDiscount(response.data.data);
+    // Hardcoded discounts (temporary solution)
+    const validDiscounts = {
+      'WELCOME50': { code: 'WELCOME50', name: 'Diskon 50%', type: 'percentage', value: 50 },
+      'WEEKEND20': { code: 'WEEKEND20', name: 'Diskon 20%', type: 'percentage', value: 20 },
+      'PROMO10K': { code: 'PROMO10K', name: 'Potongan Rp 10.000', type: 'fixed', value: 10000 },
+      'STUDENT15': { code: 'STUDENT15', name: 'Diskon 15%', type: 'percentage', value: 15 },
+      'FLASH25': { code: 'FLASH25', name: 'Diskon 25%', type: 'percentage', value: 25 }
+    };
+    
+    const discount = validDiscounts[discountCode.trim().toUpperCase()];
+    
+    if (discount) {
+      applyDiscount(discount);
       setDiscountCode('');
       setDiscountError('');
-    } catch (error) {
-      setDiscountError(error.response?.data?.message || 'Kode diskon tidak valid');
-    } finally {
-      setDiscountLoading(false);
+    } else {
+      setDiscountError('Kode diskon tidak valid');
     }
+    
+    setDiscountLoading(false);
   };
 
   const handleRemoveDiscount = () => {
