@@ -1,2 +1,0 @@
-Force rebuild - timestamp: 2024-11-17 14:00:00
-Changed endpoint from /cashier/orders to /cashier/all-purchases

@@ -159,26 +159,22 @@ export default function Checkout() {
     setDiscountLoading(true);
     setDiscountError('');
     
-    // Hardcoded discounts (temporary solution)
-    const validDiscounts = {
-      'WELCOME50': { code: 'WELCOME50', name: 'Diskon 50%', type: 'percentage', value: 50 },
-      'WEEKEND20': { code: 'WEEKEND20', name: 'Diskon 20%', type: 'percentage', value: 20 },
-      'PROMO10K': { code: 'PROMO10K', name: 'Potongan Rp 10.000', type: 'fixed', value: 10000 },
-      'STUDENT15': { code: 'STUDENT15', name: 'Diskon 15%', type: 'percentage', value: 15 },
-      'FLASH25': { code: 'FLASH25', name: 'Diskon 25%', type: 'percentage', value: 25 }
-    };
-    
-    const discount = validDiscounts[discountCode.trim().toUpperCase()];
-    
-    if (discount) {
-      applyDiscount(discount);
-      setDiscountCode('');
-      setDiscountError('');
-    } else {
-      setDiscountError('Kode diskon tidak valid');
+    try {
+      const response = await discountApi.verify(discountCode.trim());
+      
+      if (response.data.success && response.data.data) {
+        applyDiscount(response.data.data);
+        setDiscountCode('');
+        setDiscountError('');
+      } else {
+        setDiscountError('Kode diskon tidak valid');
+      }
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Kode diskon tidak valid atau sudah kadaluarsa';
+      setDiscountError(errorMsg);
+    } finally {
+      setDiscountLoading(false);
     }
-    
-    setDiscountLoading(false);
   };
 
   const handleRemoveDiscount = () => {
